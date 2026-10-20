@@ -5,7 +5,7 @@ const base=process.env.PREVIEW_URL??'http://127.0.0.1:5173';
 const directory='research/screenshots';
 await fs.mkdir(directory,{recursive:true});
 const results:any[]=[];
-const sections=['journey','system','scheduling','decode-lab','experts','yoco','storage','routing','recipe','model'];
+const sections=['basics','journey','system','scheduling','decode-lab','experts','recipe','routing','yoco','storage','model','glossary'];
 for(const engine of ['chrome','webkit']){
   const browser=engine==='chrome'?await chromium.launch({channel:'chrome'}):await webkit.launch();
   try{
@@ -17,11 +17,28 @@ for(const engine of ['chrome','webkit']){
       assert.equal(await page.locator('html').getAttribute('lang'),lang==='zh'?'zh-CN':'en');
       const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
       assert(!overflow,`${engine}/${lang}/${theme}/${width}: page overflow`);
-      assert.equal(await page.locator('.chapter').count(),8);
+      assert.equal(await page.locator('.chapter').count(),10);
       assert.equal(await page.locator('#experts #dspark').count(),0);
       assert.equal(await page.locator('#decode-lab #dspark').count(),1);
       assert.equal(await page.locator('.chapter-evidence[open]').count(),0);
       assert(await page.locator('#system .tutorial-body').isVisible());
+      for(const id of sections)assert.equal(await page.locator(`#${id}`).count(),1);
+      const term=page.locator('#basics .term').first();
+      await term.focus();await page.locator('.term-popover').waitFor();
+      await page.keyboard.press('Tab');
+      assert(await page.locator('.term-popover a').first().evaluate(el=>el===document.activeElement));
+      await page.keyboard.press('Escape');
+      assert.equal(await page.locator('.term-popover').count(),0);
+      assert(await term.evaluate(el=>el===document.activeElement));
+      for(const path of ['beginner','advanced','code']){
+        const choice=page.locator(`[data-path="${path}"]`);await choice.focus();await page.keyboard.press('Enter');
+        assert.equal(await choice.getAttribute('aria-pressed'),'true');
+      }
+      const contextLength=page.locator('#kv-growth input').first();await contextLength.focus();await page.keyboard.press('End');
+      assert.equal(await contextLength.inputValue(),'32768');
+      await page.locator('#autoregressive-player button').nth(1).click();
+      assert.equal(await page.locator('.generation-tokens .cached').count(),3);
+      await page.locator('[data-path=""]').click();
       // Keyboard changes the modeled result, not just the slider appearance.
       const confidence=page.locator('#dspark input[type=range]').first();
       await confidence.focus();await page.keyboard.press('Home');
@@ -59,6 +76,7 @@ for(const engine of ['chrome','webkit']){
       }
       assert.deepEqual(errors,[]);
       results.push({engine,lang,theme,width,overflow,interactions:'pass',reducedMotion:'pass',consoleErrors:errors});
+      console.log(`PASS ${engine}/${lang}/${theme}/${width}`);
       await page.close();
     }
     const page=await browser.newPage({reducedMotion:'no-preference'});
@@ -81,5 +99,5 @@ for(const engine of ['chrome','webkit']){
     await systemPage.close();
   }finally{await browser.close();}
 }
-await fs.writeFile('research/browser-results.json',JSON.stringify({results,note:'WebKit is an engine check, not real Safari/macOS/iOS certification.'},null,2));
+await fs.writeFile('research/browser-results.json',JSON.stringify({checkedAt:new Date().toISOString(),checks:['basics','glossary','term-keyboard','reading-paths','models','theme','animation','overflow','page-errors'],screenshots:104,results,note:'WebKit is an engine check, not real Safari/macOS/iOS certification.'},null,2));
 console.log(`PASS: ${results.length} browser/locale/theme/width combinations; interaction, animation, reduced-motion checks. Screenshots in ${directory}.`);

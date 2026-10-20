@@ -42,3 +42,9 @@ test('sampled output is pending until the next forward pass and playback clamps 
  assert.deepEqual(generationFrame(1,3,3),{generated:1,visible:4,cached:3,done:false});
  assert.deepEqual(generationFrame(99,3,3),{generated:3,visible:6,cached:5,done:true});
 });
+
+import {parseTerms} from '../src/lib/rich-text';
+test('term markup keeps unsupported text literal and never interprets HTML',()=>{
+  assert.deepEqual(parseTerms('Read [[kv-cache]] and [[token|tokens]].'),[{text:'Read '},{term:'kv-cache',text:''},{text:' and '},{term:'token',text:'tokens'},{text:'.'}]);
+  for(const text of ['[[kmp|[[kmp|KMP]]]]','[[not valid]]','<script>alert(1)</script>']) assert.deepEqual(parseTerms(text),[{text}]);
+});

@@ -1,7 +1,7 @@
 export type TextPart = {text: string; term?: string};
 export function parseTerms(text: string): TextPart[] {
   const parts: TextPart[] = [];
-  const pattern = /\[\[([a-z][a-z0-9-]*)(?:\|([^\]\n]+))?\]\]/g;
+  const pattern = /(?<!\[)\[\[([a-z][a-z0-9-]*)(?:\|([^\[\]\n]+))?\]\](?!\])/g;
   let start = 0;
   for (const match of text.matchAll(pattern)) {
     if (match.index! > start) parts.push({text:text.slice(start,match.index)});

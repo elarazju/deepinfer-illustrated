@@ -8,7 +8,7 @@
 - [x] Phase 6 �� chapter prerequisites, examples, snippets and summaries
 - [x] Phase 7 �� EPLB, SWA and figure captions
 - [x] Phase 8 �� reading paths and navigation
-- [ ] Phase 9 �� independent audits, browser checks, report
+- [x] Phase 9 �� independent audits, browser checks, report
 - [ ] Publication �� awaiting user confirmation after local acceptance
 
 Background evidence explains general concepts; it does not establish DeepInfer implementation claims.

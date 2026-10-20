@@ -10,5 +10,8 @@ try {
  const data=JSON.parse(dict); data.heroText+=' [[missing-term]]'; fs.writeFileSync('src/i18n/zh.json',JSON.stringify(data));
  result=spawnSync(process.execPath,['--import','tsx','scripts/check-facts.ts'],{encoding:'utf8'});
  if(result.status===0 || !result.stderr.includes('Unknown term')) throw new Error('Missing term was not caught');
- console.log('Negative glossary ref and term validation: PASS');
+ const malformed=JSON.parse(dict); malformed.heroText+=' [[kmp|[[kmp|KMP]]]]'; fs.writeFileSync('src/i18n/zh.json',JSON.stringify(malformed));
+ result=spawnSync(process.execPath,['--import','tsx','scripts/check-facts.ts'],{encoding:'utf8'});
+ if(result.status===0 || !result.stderr.includes('Malformed term marker')) throw new Error('Nested marker was not caught');
+ console.log('Negative glossary ref, unknown term and malformed term validation: PASS');
 } finally {fs.writeFileSync('glossary.yaml',glossary);fs.writeFileSync('src/i18n/zh.json',dict);}

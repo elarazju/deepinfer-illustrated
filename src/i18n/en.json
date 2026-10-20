@@ -464,7 +464,7 @@
         },
         {
           "title": "The limits of overlap",
-          "text": "The amount of waiting that can be hidden depends on the available device interval. If CPU work takes longer, the GPU will still wait for the next prepared batch. Check the length of both lanes when interpreting the idle share. The example describes a steady teaching schedule; a real pipeline also starts, drains, and changes its membership over time. Carry the dependency-based reading method into an execution trace: first identify when a result becomes available, then look for independent work that can occupy the same interval. Consider a request that continues while another request finishes. On the CPU lane, the next batch is prepared with its updated membership. On the GPU lane, earlier work still refers to the batch for which it was submitted. The continuing request needs a connection between those two arrangements. Sequence remapping supplies that connection, allowing the result produced for its old position to reach its new position. Follow this request through preparation, execution, and result handling in that order. The timeline then describes a changing collection of requests whose identities remain traceable across the overlapping work, rather than a permanently fixed matrix of rows.",
+          "text": "Overlap can hide host work only within the available device interval. If CPU preparation takes longer, the GPU still waits for input. Increase CPU scheduling time in the interaction below: execution remains asynchronous, but idle time reappears. Real pipelines also start and drain, so the illustrative steady-state idle share is not an end-to-end latency measurement.",
           "refs": [
             "zos.overlap"
           ],
@@ -522,7 +522,7 @@
         },
         {
           "title": "Move weights with mappings",
-          "text": "The policy produces logical-to-physical and physical-to-logical mappings. Weight shuffle then moves the corresponding expert data to the selected locations. A newly arranged grid only becomes executable once those weights are present. When reading the implementation, locate the mapping output, then locate the movement path that consumes it. Finally return to the drawing and assign each copy to its resulting device. This provides a concrete route from a policy decision to the data placement used during model execution.",
+          "text": "The policy outputs logical-to-physical and physical-to-logical mappings. Weight shuffle moves expert data to those locations. These changes must take effect together: apparently even loads are useless if a token reaches mismatched weights. The snippet below shows how replica counts enter a load-sharing estimate; the linked source provides the full policy and movement path.",
           "refs": [
             "eplb.code"
           ],
@@ -530,7 +530,7 @@
         },
         {
           "title": "From placement to balance",
-          "text": "The reported moe_lb metric relates the busiest rank to the average rank load. Imagine keeping the total routed work fixed while redistributing copies of a popular expert: can work previously concentrated on a busy device be shared across other placements? Use that question to connect placement changes with the balance being observed. The official configurations and measurements remain beside the diagram for comparison. Read them with their associated stage and workload context while tracing how a change in placement can affect the distribution of work. A useful source-reading exercise is to choose a logical expert, inspect the mapping entries that name its physical copies, and then follow the shuffle operation that prepares their weights. Return to the grid after each step. This links the abstract policy output to the device locations that execute the expert.",
+          "text": "The moe_lb ratio compares the busiest device load with the average. With fixed total work, it approaches unity as placement becomes more even. The bars use the same scale: check whether the busiest device does less while other devices take more. Official observations are listed separately below the grid and cannot be derived from its illustrative loads.",
           "refs": [
             "eplb.prefill",
             "eplb.decode"

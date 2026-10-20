@@ -9,7 +9,7 @@ Checked 2026-10-20 by the implementation agent. Sources were opened and relevant
 | bg.token | [Hugging Face Transformers, Tokenization algorithms](https://huggingface.co/docs/transformers/main/en/tokenizer_summary) | Supports the scoped paraphrase; no DeepInfer implementation claim. |
 | bg.special_token | [Hugging Face Transformers, PreTrainedTokenizer, special tokens](https://huggingface.co/docs/transformers/main_classes/tokenizer) | Supports the scoped paraphrase; no DeepInfer implementation claim. |
 | bg.representation | [Vaswani et al., §3.1–3.4](https://arxiv.org/html/1706.03762v7) | Supports the scoped paraphrase; no DeepInfer implementation claim. |
-| bg.kv_cache | [Kwon et al., PagedAttention, §2.1–2.2; tensor shapes](https://arxiv.org/html/2309.06180) | Supports the scoped paraphrase; no DeepInfer implementation claim. |
+| bg.kv_cache | [Kwon et al., PagedAttention, §2.1–2.2, §3; generalized tensor-shape accounting](https://arxiv.org/html/2309.06180) | Supports the scoped paraphrase; no DeepInfer implementation claim. |
 | bg.prefix | [Zheng et al., SGLang, §3 RadixAttention](https://arxiv.org/html/2312.07104) | Supports the scoped paraphrase; no DeepInfer implementation claim. |
 | bg.prefill_decode | [Zhong et al., DistServe, §2–3](https://arxiv.org/html/2401.09670) | Supports the scoped paraphrase; no DeepInfer implementation claim. |
 | bg.batching | [Yu et al., Orca, abstract and iteration-level scheduling](https://www.usenix.org/conference/osdi22/presentation/yu) | Supports the scoped paraphrase; no DeepInfer implementation claim. |
@@ -24,7 +24,7 @@ Checked 2026-10-20 by the implementation agent. Sources were opened and relevant
 | bg.graph | [NVIDIA CUDA Programming Guide, §4.2](https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/cuda-graphs.html) | Supports the scoped paraphrase; no DeepInfer implementation claim. |
 | bg.constraints | [Dong et al., XGrammar, §2.1–2.2](https://arxiv.org/html/2411.15100) | Supports the scoped paraphrase; no DeepInfer implementation claim. |
 | bg.sse | [WHATWG HTML, §9.2 Server-sent events](https://html.spec.whatwg.org/multipage/server-sent-events.html) | Supports the scoped paraphrase; no DeepInfer implementation claim. |
-| bg.fp8 | [Micikevicius et al., FP8 Formats for Deep Learning, §2](https://arxiv.org/html/2209.05433) | Supports the scoped paraphrase; no DeepInfer implementation claim. |
+| bg.fp8 | [Micikevicius et al., FP8 Formats for Deep Learning, §2–3](https://arxiv.org/html/2209.05433) | Supports the scoped paraphrase; no DeepInfer implementation claim. |
 | bg.mx | [OCP Microscaling Formats v1.0, §5.1–5.4, pp.9–14](https://www.opencompute.org/documents/ocp-microscaling-formats-mx-v1-0-spec-final-pdf) | Supports the scoped paraphrase; no DeepInfer implementation claim. |
 | bg.erasure | [Ceph documentation, Erasure code profiles and glossary](https://docs.ceph.com/en/latest/rados/operations/erasure-code/) | Supports the scoped paraphrase; no DeepInfer implementation claim. |
 | bg.gdr | [NVIDIA GPUDirect RDMA, §1 Overview](https://docs.nvidia.com/cuda/gpudirect-rdma/) | Supports the scoped paraphrase; no DeepInfer implementation claim. |

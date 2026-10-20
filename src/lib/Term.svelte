@@ -34,7 +34,7 @@
     <span class="term-popover" id={`${uid}-card`} role="dialog" aria-label={entry[locale].term} style={`left:${left}px;top:${top}px`}>
       <strong>{entry[locale].term}</strong>
       <span id={`${uid}-description`}>{entry[locale].short}</span>
-      <a href={`#term-${id}`} onclick={()=>close()}>{t.view} →</a>
+      <a tabindex="0" href={`#term-${id}`} onclick={()=>close()}>{t.view} →</a>
       <span class="term-sources">{#each entry.refs as ref}<FactBadge id={ref} {locale}/>{/each}</span>
       <button type="button" class="term-close" onclick={()=>close(true)} aria-label={t.close}>×</button>
     </span>

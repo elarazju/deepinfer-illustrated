@@ -1,134 +1,114 @@
 [
   {
     "theme": "light",
-    "foreground": "ink",
-    "background": "paper",
-    "ratio": 13.22
+    "name": "background",
+    "foreground": "#805018",
+    "background": "#fff0d3",
+    "ratio": 6.06032451824535,
+    "passes": true
   },
   {
     "theme": "light",
-    "foreground": "ink",
-    "background": "surface",
-    "ratio": 14.17
+    "name": "cpu",
+    "foreground": "#85622a",
+    "background": "#f8ebcf",
+    "ratio": 4.705264902428803,
+    "passes": true
   },
   {
     "theme": "light",
-    "foreground": "muted",
-    "background": "paper",
-    "ratio": 5.4
+    "name": "gpu",
+    "foreground": "#286b4c",
+    "background": "#e1eedf",
+    "ratio": 5.305840392367919,
+    "passes": true
   },
   {
     "theme": "light",
-    "foreground": "muted",
-    "background": "surface",
-    "ratio": 5.78
+    "name": "storage",
+    "foreground": "#6d5393",
+    "background": "#ede6f4",
+    "ratio": 5.206008725983836,
+    "passes": true
   },
   {
     "theme": "light",
-    "foreground": "muted",
-    "background": "surface-alt",
-    "ratio": 5.1
+    "name": "network",
+    "foreground": "#2b668b",
+    "background": "#dfeef5",
+    "ratio": 5.238593071515014,
+    "passes": true
   },
   {
     "theme": "light",
-    "foreground": "accent",
-    "background": "accent-soft",
-    "ratio": 5.28
+    "name": "closed",
+    "foreground": "#626b67",
+    "background": "#edf0ec",
+    "ratio": 4.786508618947543,
+    "passes": true
   },
   {
     "theme": "light",
-    "foreground": "on-accent",
-    "background": "accent",
-    "ratio": 6.37
-  },
-  {
-    "theme": "light",
-    "foreground": "cpu",
-    "background": "cpu-soft",
-    "ratio": 4.71
-  },
-  {
-    "theme": "light",
-    "foreground": "gpu",
-    "background": "gpu-soft",
-    "ratio": 5.31
-  },
-  {
-    "theme": "light",
-    "foreground": "storage",
-    "background": "storage-soft",
-    "ratio": 5.21
-  },
-  {
-    "theme": "light",
-    "foreground": "network",
-    "background": "network-soft",
-    "ratio": 5.24
+    "name": "highlight",
+    "foreground": "#ab491e",
+    "background": "#fae7da",
+    "ratio": 4.727491041243125,
+    "passes": true
   },
   {
     "theme": "dark",
-    "foreground": "ink",
-    "background": "paper",
-    "ratio": 14.97
+    "name": "background",
+    "foreground": "#f3d091",
+    "background": "#44351c",
+    "ratio": 8.038249460348014,
+    "passes": true
   },
   {
     "theme": "dark",
-    "foreground": "ink",
-    "background": "surface",
-    "ratio": 13.6
+    "name": "cpu",
+    "foreground": "#eac284",
+    "background": "#463921",
+    "ratio": 6.71888237681279,
+    "passes": true
   },
   {
     "theme": "dark",
-    "foreground": "muted",
-    "background": "paper",
-    "ratio": 9.0
+    "name": "gpu",
+    "foreground": "#a8d39a",
+    "background": "#30452c",
+    "ratio": 6.183542864378838,
+    "passes": true
   },
   {
     "theme": "dark",
-    "foreground": "muted",
-    "background": "surface",
-    "ratio": 8.17
+    "name": "storage",
+    "foreground": "#ccb3ed",
+    "background": "#3d304e",
+    "ratio": 6.491634039262652,
+    "passes": true
   },
   {
     "theme": "dark",
-    "foreground": "muted",
-    "background": "surface-alt",
-    "ratio": 7.12
+    "name": "network",
+    "foreground": "#a1d1ec",
+    "background": "#233f50",
+    "ratio": 6.767523754452491,
+    "passes": true
   },
   {
     "theme": "dark",
-    "foreground": "accent",
-    "background": "accent-soft",
-    "ratio": 6.18
+    "name": "closed",
+    "foreground": "#bdc8c0",
+    "background": "#303b33",
+    "ratio": 6.773868416457387,
+    "passes": true
   },
   {
     "theme": "dark",
-    "foreground": "on-accent",
-    "background": "accent",
-    "ratio": 9.75
-  },
-  {
-    "theme": "dark",
-    "foreground": "cpu",
-    "background": "cpu-soft",
-    "ratio": 6.72
-  },
-  {
-    "theme": "dark",
-    "foreground": "gpu",
-    "background": "gpu-soft",
-    "ratio": 6.18
-  },
-  {
-    "theme": "dark",
-    "foreground": "storage",
-    "background": "storage-soft",
-    "ratio": 6.49
-  },
-  {
-    "theme": "dark",
-    "foreground": "network",
-    "background": "network-soft",
-    "ratio": 6.77
+    "name": "highlight",
+    "foreground": "#ffb18a",
+    "background": "#4c3025",
+    "ratio": 6.77816738601243,
+    "passes": true
   }
 ]

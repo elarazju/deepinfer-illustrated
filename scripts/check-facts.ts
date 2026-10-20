@@ -80,6 +80,8 @@ const terms = new Map<string,any>(glossary.map((entry:any)=>[entry.id,entry]));
 if(terms.size!==glossary.length) errors.push('Duplicate glossary ID');
 for(const entry of glossary){
   if(!entry.id || !entry.first_chapter || !Array.isArray(entry.refs) || !entry.refs.length || !Array.isArray(entry.related)) errors.push(`Invalid glossary structure: ${entry.id}`);
+  if(entry.zh?.short?.length>40 || entry.en?.short?.trim().split(/\s+/).length>25)errors.push(`Glossary short definition too long: ${entry.id}`);
+  if(!['basics','journey','system','scheduling','decode-lab','experts','recipe','routing','yoco','storage','model'].includes(entry.first_chapter))errors.push(`Unknown first chapter: ${entry.id}`);
   if(JSON.stringify(shape(entry.zh))!==JSON.stringify(shape(entry.en))) errors.push(`Glossary translation mismatch: ${entry.id}`);
   for(const lang of ['zh','en']) {
     for(const key of ['term','short','long']) if(typeof entry[lang]?.[key]!=='string' || !entry[lang][key]) errors.push(`Missing glossary ${entry.id}.${lang}.${key}`);
@@ -104,6 +106,7 @@ for(const [lang,dict] of Object.entries({zh,en})){
       }
     }else if(value&&typeof value==='object'){
       const refs=Array.isArray(value.refs)?value.refs:inherited;
+      if(value.demo && !db.demo_defaults.examples[value.demo])errors.push(`Unknown illustrative scenario: ${value.demo}`);
       for(const id of refs)if(!facts.has(id)||facts.get(id).status==='unverified')errors.push(`Invalid prose evidence: ${id}`);
       for(const [k,v] of Object.entries(value))walk(v,key?`${key}.${k}`:k,refs,value.demo?(db.demo_defaults.examples[value.demo]??[]):demoValues);
     }

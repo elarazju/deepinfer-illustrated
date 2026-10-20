@@ -11,6 +11,10 @@ try{
     await page.evaluate(()=>document.querySelectorAll('details').forEach(d=>d.open=true));
     const audit=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
     results.push({lang,theme,violations:audit.violations,incomplete:audit.incomplete.map(i=>({id:i.id,description:i.description}))});
+    await page.locator('#basics .term').first().focus();
+    await page.locator('.term-popover').waitFor();
+    const popup=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+    results.push({lang,theme,state:'term-open',violations:popup.violations,incomplete:popup.incomplete.map(i=>({id:i.id,description:i.description}))});
     await context.close();
   }
 }finally{await browser.close();}

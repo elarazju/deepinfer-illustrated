@@ -16,7 +16,39 @@
   },
   {
     "lang": "zh",
+    "theme": "light",
+    "state": "term-open",
+    "violations": [],
+    "incomplete": [
+      {
+        "id": "aria-prohibited-attr",
+        "description": "Ensure ARIA attributes are not prohibited for an element's role"
+      },
+      {
+        "id": "color-contrast",
+        "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds"
+      }
+    ]
+  },
+  {
+    "lang": "zh",
     "theme": "dark",
+    "violations": [],
+    "incomplete": [
+      {
+        "id": "aria-prohibited-attr",
+        "description": "Ensure ARIA attributes are not prohibited for an element's role"
+      },
+      {
+        "id": "color-contrast",
+        "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds"
+      }
+    ]
+  },
+  {
+    "lang": "zh",
+    "theme": "dark",
+    "state": "term-open",
     "violations": [],
     "incomplete": [
       {
@@ -46,7 +78,39 @@
   },
   {
     "lang": "en",
+    "theme": "light",
+    "state": "term-open",
+    "violations": [],
+    "incomplete": [
+      {
+        "id": "aria-prohibited-attr",
+        "description": "Ensure ARIA attributes are not prohibited for an element's role"
+      },
+      {
+        "id": "color-contrast",
+        "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds"
+      }
+    ]
+  },
+  {
+    "lang": "en",
     "theme": "dark",
+    "violations": [],
+    "incomplete": [
+      {
+        "id": "aria-prohibited-attr",
+        "description": "Ensure ARIA attributes are not prohibited for an element's role"
+      },
+      {
+        "id": "color-contrast",
+        "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds"
+      }
+    ]
+  },
+  {
+    "lang": "en",
+    "theme": "dark",
+    "state": "term-open",
     "violations": [],
     "incomplete": [
       {

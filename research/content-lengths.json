@@ -2,113 +2,129 @@
   {
     "chapter": "system",
     "lang": "zh",
-    "visible": 1067,
-    "withDetails": 1633,
+    "paragraphsOnly": 1103,
+    "visible": 1296,
+    "withDetails": 1904,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "scheduling",
     "lang": "zh",
-    "visible": 692,
-    "withDetails": 1118,
+    "paragraphsOnly": 714,
+    "visible": 866,
+    "withDetails": 1334,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "experts",
     "lang": "zh",
-    "visible": 835,
-    "withDetails": 1343,
+    "paragraphsOnly": 944,
+    "visible": 1116,
+    "withDetails": 1666,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "recipe",
     "lang": "zh",
-    "visible": 805,
-    "withDetails": 1180,
+    "paragraphsOnly": 893,
+    "visible": 1122,
+    "withDetails": 1539,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "routing",
     "lang": "zh",
-    "visible": 948,
-    "withDetails": 1356,
+    "paragraphsOnly": 959,
+    "visible": 1163,
+    "withDetails": 1613,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "yoco",
     "lang": "zh",
-    "visible": 925,
-    "withDetails": 1643,
+    "paragraphsOnly": 957,
+    "visible": 1150,
+    "withDetails": 1910,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "storage",
     "lang": "zh",
-    "visible": 944,
-    "withDetails": 1579,
+    "paragraphsOnly": 976,
+    "visible": 1150,
+    "withDetails": 1827,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "model",
     "lang": "zh",
-    "visible": 959,
-    "withDetails": 1446,
+    "paragraphsOnly": 1006,
+    "visible": 1176,
+    "withDetails": 1713,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "system",
     "lang": "en",
-    "visible": 566,
-    "withDetails": 801,
+    "paragraphsOnly": 568,
+    "visible": 659,
+    "withDetails": 919,
     "unit": "words"
   },
   {
     "chapter": "scheduling",
     "lang": "en",
-    "visible": 522,
-    "withDetails": 671,
+    "paragraphsOnly": 391,
+    "visible": 463,
+    "withDetails": 637,
     "unit": "words"
   },
   {
     "chapter": "experts",
     "lang": "en",
-    "visible": 532,
-    "withDetails": 750,
+    "paragraphsOnly": 444,
+    "visible": 524,
+    "withDetails": 767,
     "unit": "words"
   },
   {
     "chapter": "recipe",
     "lang": "en",
-    "visible": 472,
-    "withDetails": 635,
+    "paragraphsOnly": 497,
+    "visible": 597,
+    "withDetails": 785,
     "unit": "words"
   },
   {
     "chapter": "routing",
     "lang": "en",
-    "visible": 555,
-    "withDetails": 737,
+    "paragraphsOnly": 557,
+    "visible": 640,
+    "withDetails": 847,
     "unit": "words"
   },
   {
     "chapter": "yoco",
     "lang": "en",
-    "visible": 559,
-    "withDetails": 860,
+    "paragraphsOnly": 564,
+    "visible": 655,
+    "withDetails": 981,
     "unit": "words"
   },
   {
     "chapter": "storage",
     "lang": "en",
-    "visible": 552,
-    "withDetails": 846,
+    "paragraphsOnly": 555,
+    "visible": 637,
+    "withDetails": 956,
     "unit": "words"
   },
   {
     "chapter": "model",
     "lang": "en",
-    "visible": 491,
-    "withDetails": 690,
+    "paragraphsOnly": 495,
+    "visible": 570,
+    "withDetails": 793,
     "unit": "words"
   }
 ]

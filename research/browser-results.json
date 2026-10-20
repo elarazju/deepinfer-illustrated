@@ -1,4 +1,17 @@
 {
+  "checkedAt": "2026-10-20T13:19:35.102610+00:00",
+  "checks": [
+    "basics",
+    "glossary",
+    "term-keyboard",
+    "reading-paths",
+    "models",
+    "theme",
+    "animation",
+    "overflow",
+    "page-errors"
+  ],
+  "screenshots": 104,
   "results": [
     {
       "engine": "chrome",
