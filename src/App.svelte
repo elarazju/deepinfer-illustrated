@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { chapters, database, dictionaries, type Locale } from './lib/data';
+  import Glossary from './chapters/Glossary.svelte';
   import Chapter from './chapters/Chapter.svelte';
   import DecodeLab from './chapters/DecodeLab.svelte';
   import Figure from './figures/Figure.svelte';
@@ -47,7 +48,7 @@
     <a href="#top" class="brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>DeepInfer <em>Illustrated</em></span></a>
     <div class="header-actions">
       <span class="edition mono">FIELDNOTES / 001</span>
-      <button class="locale-toggle" onclick={()=>locale=locale==='zh'?'en':'zh'} aria-label={locale==='zh'?'Switch to English':'切换至中文'}>{locale==='zh'?'EN':'中文'}</button>
+      <button class="locale-toggle" onclick={()=>locale=locale==='zh'?'en':'zh'} aria-label={locale==='zh'?'EN — Switch to English':'中文 — 切换至中文'}>{locale==='zh'?'EN':'中文'}</button>
       <button class="theme-toggle" onclick={()=>{theme=theme==='light'?'dark':'light';explicitTheme=true;saveStored('di-theme',theme);}} aria-label={theme==='light'?t.dark:t.light}>{theme==='light'?'◐':'◑'}</button>
       <a href="https://github.com/elarazju/deepinfer-illustrated" target="_blank" rel="noreferrer" class="repo-link">{t.sourceRepo} ↗</a>
     </div>
@@ -61,6 +62,7 @@
           <a href={`#${chapter.id}`} class:current={active===chapter.id}><span class="mono">{String(i+1).padStart(2,'0')}</span>{t.chapters[i].short}</a>
           {#if chapter.id === 'scheduling'}<a class="lab-nav" class:current={active==='decode-lab'} href="#decode-lab"><span>↳</span> DSpark · Decode Lab</a>{/if}
         {/each}
+        <a href="#glossary">{t.glossaryUi.title}</a>
       </nav>
       <div class="sidebar-foot"><p>{t.version}</p><a class="mono" href={`${database.repository}/tree/${database.commit}`} target="_blank" rel="noreferrer">{database.commit.slice(0,7)} ↗</a><small>{t.about}</small></div>
     </aside>
@@ -84,6 +86,7 @@
         <Chapter {index} {locale} {theme}/>
         {#if chapter.id === 'scheduling'}<DecodeLab {locale}/>{/if}
       {/each}
+      <Glossary {locale}/>
       <footer>
         <p class="eyebrow">DEEPINFER ILLUSTRATED</p><h2>{t.about}</h2><p>{t.aboutText}</p><p>{t.sourceLegend}</p>
         <p class="mono">{t.version}: <a href={`${database.repository}/tree/${database.commit}`}>{database.commit}</a></p>

@@ -3,7 +3,7 @@
 - [x] Phase 1 �� engineering cleanup
 - [x] Phase 2 �� background evidence and glossary schema
 - [x] Phase 3 �� verified background sources and bilingual glossary
-- [ ] Phase 4 �� inline terms and glossary UI
+- [x] Phase 4 �� inline terms and glossary UI
 - [ ] Phase 5 �� basics chapter, diagrams and interactions
 - [ ] Phase 6 �� chapter prerequisites, examples, snippets and summaries
 - [ ] Phase 7 �� EPLB, SWA and figure captions

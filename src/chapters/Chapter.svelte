@@ -1,5 +1,6 @@
 <script lang="ts">
   import { chapters, dictionaries, facts, type Locale } from '../lib/data';
+  import RichText from '../lib/RichText.svelte';
   import Figure from '../figures/Figure.svelte';
   import FactBadge from '../lib/FactBadge.svelte';
   import CodeRef from '../lib/CodeRef.svelte';
@@ -16,14 +17,14 @@
 {#snippet paragraph(text: string, refs: string[])}
   <p class:inference={refs.some(id=>facts[id].status==='inferred')}>
     {#if refs.some(id=>facts[id].status==='inferred')}<strong class="inference-label">{t.inferred} — </strong>{/if}
-    {text} {#each refs as id}<FactBadge {id} {locale}/>{/each}
+    <RichText {text} {locale}/> {#each refs as id}<FactBadge {id} {locale}/>{/each}
   </p>
 {/snippet}
 
 <section id={chapter.id} class="chapter">
   <header class="chapter-heading">
     <div class="chapter-index">{String(index+1).padStart(2,'0')}</div>
-    <div><p class="eyebrow">{copy.short}</p><h2>{copy.title}</h2><p class="chapter-intro">{copy.intro}</p></div>
+    <div><p class="eyebrow">{copy.short}</p><h2>{copy.title}</h2><p class="chapter-intro"><RichText text={copy.intro} {locale}/></p></div>
   </header>
   <p class="question"><span aria-hidden="true">↳</span> {copy.question}</p>
   {#if chapter.closed}<NotOpenSource {locale}/>{/if}
@@ -57,7 +58,7 @@
   <details class="chapter-evidence">
     <summary>{t.evidenceTitle}</summary>
     {#if reading}
-      <p>{reading.scope}</p>
+      <p><RichText text={reading.scope} {locale}/></p>
       {#each chapter.facts as id}
         {@render paragraph(facts[id][locale], [id])}
       {/each}

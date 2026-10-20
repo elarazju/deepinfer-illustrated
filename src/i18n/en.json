@@ -283,9 +283,10 @@
       "blocks": [
         {
           "title": "Follow a request",
-          "text": "Imagine sending a picture to a model and then asking a follow-up question about it. The application sees a conversation. The inference system sees several jobs: turn the picture into a usable representation, process the input that still needs computation, and keep extending the answer. Following that request gives the boxes in this diagram a purpose. Each boundary marks a handoff of data or state, and each resource pool can be considered in terms of the work it receives.",
+          "text": "Imagine sending a picture to a model and then asking a follow-up question about it. The application sees a conversation. The inference system sees several jobs: turn the picture into a usable representation, process the input that still needs computation, and keep extending the answer. Following that request gives the boxes in this diagram a purpose. Each boundary marks a handoff of data or state, and each resource pool can be considered in terms of the work it receives. This incremental process is [[autoregressive|autoregressive generation]].",
           "refs": [
-            "system.disaggregation"
+            "system.disaggregation",
+            "bg.autoregressive"
           ]
         },
         {
@@ -742,5 +743,16 @@
     "scope": "The sliders and timing curve explain a trade-off. Production allocates a shared budget across requests; official reported results are listed separately in the demo."
   },
   "background": "Background",
-  "sourceLegend": "Sources: code documents the public implementation; official Q&A describes deployment practice; inference labels mark interpretation; background explains general concepts and does not establish DeepInfer implementation claims."
+  "sourceLegend": "Sources: code documents the public implementation; official Q&A describes deployment practice; inference labels mark interpretation; background explains general concepts and does not establish DeepInfer implementation claims.",
+  "glossaryUi": {
+    "title": "Glossary",
+    "intro": "Alphabetical definitions with inspectable sources. Search either language.",
+    "filter": "Find a term",
+    "view": "View in glossary",
+    "close": "Close definition",
+    "results": "matching terms",
+    "appears": "Appears in:",
+    "related": "Related:",
+    "basics": "Before you start"
+  }
 }

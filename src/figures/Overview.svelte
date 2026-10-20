@@ -35,7 +35,7 @@
 
 <svg xmlns="http://www.w3.org/2000/svg" class="diagram" data-figure={kind}
   viewBox={kind === 'overview' ? `0 0 ${overviewWidth} ${overviewHeight}` : '0 0 840 410'}
-  role={kind === 'overview' ? 'group' : 'img'} aria-label={t.overview}>
+  role={kind === 'overview' ? 'group' : 'img'} >
   <title>{t.overview}</title>
   <defs>
     <marker id={`arrow-${kind}`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -69,7 +69,7 @@
           {@render arrow(i < 3 ? p.x+w : p.x, p.y+59, i < 3 ? next.x-7 : next.x+w+7, next.y+59)}
         {/if}
       {/if}
-      <a href={`#${stage.target}`} aria-label={`${station}: ${detail}`}>
+      <a href={`#${stage.target}`}>
         <g class={`node ${color} station`} class:closed={stage.closed}>
           <rect x={p.x} y={p.y} width={w} height="116" rx="12" />
           <text class="station-number" x={p.x+15} y={p.y+27}>{String(i+1).padStart(2,'0')}</text>

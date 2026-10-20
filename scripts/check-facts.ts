@@ -86,15 +86,19 @@ function checkTerms(value:any,label:string){
 }
 checkTerms(zh,'zh');checkTerms(en,'en');
 for(const [lang,dict] of Object.entries({zh,en})){
-  const walk=(value:any,key='')=>{
+  const walk=(value:any,key='', inherited:string[]=[])=>{
     if(typeof value==='string'){
-      if(/\d/.test(value)&&key!=='license'&&!key.startsWith('reading.'))checkNumeric(value,uiEvidence[key]??[],`${lang}.${key}`);
-    }else if(value&&typeof value==='object')for(const [k,v] of Object.entries(value))walk(v,key?`${key}.${k}`:k);
+      if(/\d/.test(value)&&key!=='license'&&!key.endsWith('.ref')&&!key.includes('.refs.')&&!key.endsWith('.id')) {
+        const termRefs=[...value.matchAll(/\[\[([^|\]]+)(?:\|[^\]]*)?\]\]/g)].flatMap(m=>terms.get(m[1])?.refs??[]);
+        const displayed=value.replace(/\[\[([^|\]]+)(?:\|([^\]]*))?\]\]/g,(_,id,label)=>label??terms.get(id)?.[lang]?.term??id);
+        checkNumeric(displayed,[...inherited,...termRefs,...(uiEvidence[key]??[])],`${lang}.${key}`);
+      }
+    }else if(value&&typeof value==='object'){
+      const refs=Array.isArray(value.refs)?value.refs:inherited;
+      for(const id of refs)if(!facts.has(id)||facts.get(id).status==='unverified')errors.push(`Invalid prose evidence: ${id}`);
+      for(const [k,v] of Object.entries(value))walk(v,key?`${key}.${k}`:k,refs);
+    }
   };walk(dict);
-  dict.reading.forEach((chapter:any,i:number)=>chapter.blocks.forEach((block:any)=>{
-    for(const id of block.refs)if(!facts.has(id)||facts.get(id).status==='unverified')errors.push(`Invalid prose evidence: ${id}`);
-    checkNumeric(block.text,block.refs,`${lang}.reading.${i}`);
-  }));
 }
 assert.equal(db.demo_defaults.dspark.confidence.length,facts.get('dspark.method').values.drafts);
 assert.equal(db.demo_defaults.dspark.stepTime.length,db.demo_defaults.dspark.confidence.length+1);
