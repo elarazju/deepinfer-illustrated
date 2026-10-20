@@ -1,1 +1,985 @@
-[]
+[
+  {
+    "id": "token",
+    "zh": {
+      "term": "词元（token）",
+      "short": "模型处理文本的基本单位",
+      "long": "不必对应一个完整单词或汉字。具体边界由所用词表和分词规则决定。"
+    },
+    "en": {
+      "term": "Token",
+      "short": "A basic text unit processed by a model.",
+      "long": "It need not match a whole word or character. Its boundaries depend on the tokenizer."
+    },
+    "refs": [
+      "bg.token"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "tokenizer",
+    "zh": {
+      "term": "分词器（tokenizer）",
+      "short": "在文本与 token 编号之间转换",
+      "long": "输入文本先转换为词表编号。输出编号也要经过解码才能变回可读文本。"
+    },
+    "en": {
+      "term": "Tokenizer",
+      "short": "Converts between text and token IDs.",
+      "long": "It maps input text to vocabulary IDs. Decoding maps those IDs back to readable text."
+    },
+    "refs": [
+      "bg.token"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "special-token",
+    "zh": {
+      "term": "特殊 token（special token）",
+      "short": "承载边界或控制信息的词元",
+      "long": "它可以标记序列开始或结束。不能把普通文本中相似的字符自动当成控制符。"
+    },
+    "en": {
+      "term": "Special token",
+      "short": "A token carrying boundary or control information.",
+      "long": "It can mark sequence boundaries. Similar-looking ordinary text is not automatically a control token."
+    },
+    "refs": [
+      "bg.special_token"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "autoregressive",
+    "zh": {
+      "term": "自回归生成（autoregressive generation）",
+      "short": "把已生成内容用于预测后续内容",
+      "long": "每次预测都以当前已有序列为条件。选出的 token 加入序列，再进行下一轮。"
+    },
+    "en": {
+      "term": "Autoregressive generation",
+      "short": "Predicts later tokens from the existing sequence.",
+      "long": "Each prediction uses the current prefix. The chosen token becomes part of the next input."
+    },
+    "refs": [
+      "bg.autoregressive"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "sampling",
+    "zh": {
+      "term": "采样（sampling）",
+      "short": "从候选 token 的概率中作出选择",
+      "long": "模型输出候选分布，解码规则决定如何选择。贪心选择和随机抽取会得到不同的生成行为。"
+    },
+    "en": {
+      "term": "Sampling",
+      "short": "Chooses a token from a candidate distribution.",
+      "long": "The model provides scores and decoding rules determine the choice. Greedy and random selection behave differently."
+    },
+    "refs": [
+      "bg.sampling"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "embedding",
+    "zh": {
+      "term": "嵌入（embedding）",
+      "short": "把离散输入转为可计算的向量",
+      "long": "一个 token 编号会对应一个数值向量。这个向量是后续层计算的起点。"
+    },
+    "en": {
+      "term": "Embedding",
+      "short": "A vector representation of a discrete input.",
+      "long": "A token ID maps to a numeric vector. That vector starts the subsequent layer computations."
+    },
+    "refs": [
+      "bg.representation"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "hidden-state",
+    "zh": {
+      "term": "隐藏状态（hidden state）",
+      "short": "模型各层内部传递的向量表示",
+      "long": "它会随着层计算而更新。它不是用户看见的文本，也不是 KV 缓存的同义词。"
+    },
+    "en": {
+      "term": "Hidden state",
+      "short": "An intermediate vector representation inside the model.",
+      "long": "Layers update this representation. It is neither displayed text nor a synonym for the KV cache."
+    },
+    "refs": [
+      "bg.representation"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "attention",
+    "zh": {
+      "term": "注意力（attention）",
+      "short": "按相关程度加权读取其他位置的信息",
+      "long": "查询 Q 与键 K 比较产生权重。权重用于汇总值 V，得到当前位置的新表示。"
+    },
+    "en": {
+      "term": "Attention",
+      "short": "Reads other positions through weighted combinations.",
+      "long": "Queries Q are compared with keys K. The weights combine values V into a new representation."
+    },
+    "refs": [
+      "bg.representation"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "qkv",
+    "zh": {
+      "term": "查询、键和值（Q/K/V）",
+      "short": "注意力中的匹配向量与内容向量",
+      "long": "Q 表示本次读取要寻找什么，K 用于匹配。V 是实际被加权汇总的向量。"
+    },
+    "en": {
+      "term": "Query, key and value",
+      "short": "Matching and content vectors used by attention.",
+      "long": "Q is compared with K to form weights. V contains the vectors combined by those weights."
+    },
+    "refs": [
+      "bg.representation"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "kv-cache",
+    "zh": {
+      "term": "KV 缓存（KV cache）",
+      "short": "保存已处理位置的注意力键和值",
+      "long": "后续生成可以复用历史键和值。普通全注意力仍需要读取相关历史缓存，省下的是重复生成这些键和值的计算。"
+    },
+    "en": {
+      "term": "KV cache",
+      "short": "Stored attention keys and values for processed positions.",
+      "long": "Later generation reuses these vectors. Full attention still reads relevant history; caching saves recomputing it."
+    },
+    "refs": [
+      "bg.kv_cache"
+    ],
+    "first_chapter": "basics",
+    "related": [
+      "attention",
+      "prefix-cache",
+      "swa"
+    ]
+  },
+  {
+    "id": "prefix-cache",
+    "zh": {
+      "term": "前缀缓存（prefix cache）",
+      "short": "跨请求复用相同开头的计算状态",
+      "long": "命中以 token 序列及兼容状态为条件。含义相近而编号不同的句子不能直接共用这段缓存。"
+    },
+    "en": {
+      "term": "Prefix cache",
+      "short": "Reuses computed state for a shared request prefix.",
+      "long": "Reuse requires matching tokens and compatible state. Similar meaning alone does not produce a cache hit."
+    },
+    "refs": [
+      "bg.prefix"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "prefill-decode",
+    "zh": {
+      "term": "预填充与解码（Prefill / Decode）",
+      "short": "先处理已知输入，再逐步生成输出",
+      "long": "Prefill 能同时处理已知位置。普通 Decode 的后续输入依赖前一步选出的 token。"
+    },
+    "en": {
+      "term": "Prefill and decode",
+      "short": "Processes a known prompt, then generates incrementally.",
+      "long": "Prefill works on known positions together. Ordinary decode depends on the token chosen in the previous step."
+    },
+    "refs": [
+      "bg.prefill_decode"
+    ],
+    "first_chapter": "basics",
+    "related": [
+      "kv-cache",
+      "pd-separation"
+    ]
+  },
+  {
+    "id": "bandwidth",
+    "zh": {
+      "term": "显存带宽（memory bandwidth）",
+      "short": "单位时间内能搬运的数据量",
+      "long": "计算单元可能在等权重或缓存被读取。批量变大可增加权重复用，因此带宽瓶颈不是所有负载都相同。"
+    },
+    "en": {
+      "term": "Memory bandwidth",
+      "short": "The rate at which memory can transfer data.",
+      "long": "Compute units can wait for weights or cache reads. Larger batches can reuse weights, changing the bottleneck."
+    },
+    "refs": [
+      "bg.prefill_decode"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "pd-separation",
+    "zh": {
+      "term": "PD 分离（disaggregation）",
+      "short": "为输入处理和输出生成分别配置资源",
+      "long": "两个阶段的工作形态不同。分离后还需要传输请求状态，并协调两侧的排队与容量。"
+    },
+    "en": {
+      "term": "PD disaggregation",
+      "short": "Allocates separate resources to prefill and decode.",
+      "long": "The phases have different workloads. Separation requires state transfer and coordinated capacity."
+    },
+    "refs": [
+      "bg.prefill_decode"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "batching",
+    "zh": {
+      "term": "批处理（batching）",
+      "short": "让多个请求共享一次执行",
+      "long": "同一批内的请求一起进入部分模型运算。这样可以利用设备同时处理更多工作。"
+    },
+    "en": {
+      "term": "Batching",
+      "short": "Groups requests into a shared execution.",
+      "long": "Requests share parts of a model invocation. This lets the device process more work together."
+    },
+    "refs": [
+      "bg.batching"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "continuous-batching",
+    "zh": {
+      "term": "连续批处理（continuous batching）",
+      "short": "在迭代之间更新批内请求",
+      "long": "已完成的请求退出，等待的请求可以加入。不同请求不必等同一批全部结束才换入。"
+    },
+    "en": {
+      "term": "Continuous batching",
+      "short": "Updates batch membership between iterations.",
+      "long": "Completed requests leave and waiting requests may join. A whole batch need not finish together."
+    },
+    "refs": [
+      "bg.batching"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "chunked-prefill",
+    "zh": {
+      "term": "分块预填充（chunked prefill）",
+      "short": "把长输入处理拆成连续的小任务",
+      "long": "每块保留对前文的依赖。调度器可以在块之间穿插其他工作，而不是一次占住设备很久。"
+    },
+    "en": {
+      "term": "Chunked prefill",
+      "short": "Splits prompt processing into consecutive work units.",
+      "long": "Each chunk retains its context dependency. Other work can run between chunks."
+    },
+    "refs": [
+      "bg.chunk"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "moe",
+    "zh": {
+      "term": "混合专家（MoE）",
+      "short": "按 token 选择部分专家参与计算",
+      "long": "门控根据当前表示选择路由专家。专家不是分别扮演人类职业的独立聊天机器人。"
+    },
+    "en": {
+      "term": "Mixture of experts",
+      "short": "Selects a subset of expert networks for a token.",
+      "long": "A gate chooses routed experts from the current representation. Experts are neural modules, not separate chatbots."
+    },
+    "refs": [
+      "bg.moe"
+    ],
+    "first_chapter": "basics",
+    "related": [
+      "expert-routing",
+      "ep",
+      "shared-expert"
+    ]
+  },
+  {
+    "id": "expert-routing",
+    "zh": {
+      "term": "专家路由（expert routing）",
+      "short": "决定 token 交给哪些专家处理",
+      "long": "top-k 指选择评分靠前的若干专家。热门专家得到更多 token，可能使所在设备成为慢点。"
+    },
+    "en": {
+      "term": "Expert routing",
+      "short": "Chooses which experts process a token.",
+      "long": "Top-k selects the highest-scoring candidates. Popular experts can concentrate work on a device."
+    },
+    "refs": [
+      "bg.moe"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "shared-expert",
+    "zh": {
+      "term": "共享专家（shared expert）",
+      "short": "不经过同样择优路由的公共专家",
+      "long": "共享专家与被门控选中的专家承担不同路径。它不是为了负载均衡复制出来的物理副本。"
+    },
+    "en": {
+      "term": "Shared expert",
+      "short": "A common expert outside the routed selection.",
+      "long": "It has a different role from selected routed experts. It is not a load-balancing replica."
+    },
+    "refs": [
+      "bg.moe"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "expert-replica",
+    "zh": {
+      "term": "专家副本（expert replica）",
+      "short": "同一逻辑专家在设备上的复制实例",
+      "long": "副本提供另一处执行相同专家的资源。新增副本不等于增加一个具有不同权重的逻辑专家。"
+    },
+    "en": {
+      "term": "Expert replica",
+      "short": "Another physical instance of the same logical expert.",
+      "long": "A replica supplies another execution location. It does not introduce a differently trained logical expert."
+    },
+    "refs": [
+      "eplb.strategy"
+    ],
+    "first_chapter": "basics",
+    "related": [
+      "moe",
+      "ep"
+    ]
+  },
+  {
+    "id": "dp",
+    "zh": {
+      "term": "数据并行（DP）",
+      "short": "模型副本分别处理不同数据",
+      "long": "不同设备持有相同部分的权重，分担请求或 token。本文谈的是推理阶段的数据分工。"
+    },
+    "en": {
+      "term": "Data parallelism",
+      "short": "Replicates model work across different data.",
+      "long": "Devices retain matching weights and handle different requests or tokens. Here the context is inference."
+    },
+    "refs": [
+      "bg.parallel"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "tp",
+    "zh": {
+      "term": "张量并行（TP）",
+      "short": "把同一层的计算切到多个设备",
+      "long": "矩阵按维度拆分，设备各算一部分。结果还要通过通信组合，切分并不免费。"
+    },
+    "en": {
+      "term": "Tensor parallelism",
+      "short": "Partitions a layer computation across devices.",
+      "long": "Each device computes a tensor partition. Communication combines the results."
+    },
+    "refs": [
+      "bg.parallel"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "ep",
+    "zh": {
+      "term": "专家并行（EP）",
+      "short": "把不同专家部署到不同设备",
+      "long": "token 必须送到所选专家所在的设备。计算后的结果再汇合到原请求路径。"
+    },
+    "en": {
+      "term": "Expert parallelism",
+      "short": "Places experts on different devices.",
+      "long": "Tokens travel to the devices hosting their chosen experts. Results return to the request path."
+    },
+    "refs": [
+      "bg.ep"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "all-to-all",
+    "zh": {
+      "term": "全互换通信（all-to-all）",
+      "short": "参与设备相互发送各自对应的数据",
+      "long": "dispatch 发送专家输入，combine 送回专家输出。通信内容由路由结果决定。"
+    },
+    "en": {
+      "term": "All-to-all",
+      "short": "Participating devices exchange destination-specific data.",
+      "long": "Dispatch sends expert inputs and combine returns outputs. Routing determines destinations."
+    },
+    "refs": [
+      "bg.ep"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "swa",
+    "zh": {
+      "term": "滑动窗口注意力（SWA）",
+      "short": "直接关注最近一段历史位置",
+      "long": "窗口随着当前查询位置移动。较远的信息仍可能经多层传播，窗口长度不是模型全部信息范围。"
+    },
+    "en": {
+      "term": "Sliding-window attention",
+      "short": "Directly attends to a moving local history window.",
+      "long": "The window advances with the query. Distant information may propagate through multiple layers."
+    },
+    "refs": [
+      "bg.swa"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "yoco",
+    "zh": {
+      "term": "只缓存一次（YOCO）",
+      "short": "让后半部分复用前半部分产生的全局 KV",
+      "long": "原论文称两部分为 self-decoder 与 cross-decoder。它们都是因果语言模型内部的层组。"
+    },
+    "en": {
+      "term": "You Only Cache Once",
+      "short": "Reuses global KV across two causal layer groups.",
+      "long": "The paper calls them self-decoder and cross-decoder. Both belong to an autoregressive language model."
+    },
+    "refs": [
+      "bg.yoco"
+    ],
+    "first_chapter": "basics",
+    "related": [
+      "ced",
+      "swa",
+      "hidden-state"
+    ]
+  },
+  {
+    "id": "ced",
+    "zh": {
+      "term": "因果编码器—解码器（CED）",
+      "short": "本模型内部生成与消费全局 KV 的层分工",
+      "long": "这里的 encoder 与 decoder 指内部层组。不能套用翻译任务中源文本编码器与目标文本解码器的含义。"
+    },
+    "en": {
+      "term": "Causal encoder–decoder",
+      "short": "Internal layer groups producing and consuming global KV.",
+      "long": "These names refer to causal layer groups. They are not source and target modules of translation."
+    },
+    "refs": [
+      "yoco.ced"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "block-kv",
+    "zh": {
+      "term": "块式 KV（Block KV）",
+      "short": "本项目中可复用的全局 KV 块",
+      "long": "它与局部窗口所需的 SWA 状态分开讨论。名称相近不意味着生命周期和持久化路径相同。"
+    },
+    "en": {
+      "term": "Block KV",
+      "short": "Reusable global KV blocks in this project.",
+      "long": "They are discussed separately from local SWA state. Their lifetime and storage path differ."
+    },
+    "refs": [
+      "storage.block"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "speculative-decoding",
+    "zh": {
+      "term": "投机解码（speculative decoding）",
+      "short": "先提议草稿，再验证可保留的前缀",
+      "long": "draft 负责提出候选，verify 由目标模型检查。草稿越长不一定越快，还要付出验证成本。"
+    },
+    "en": {
+      "term": "Speculative decoding",
+      "short": "Drafts candidates and verifies the acceptable prefix.",
+      "long": "A drafter proposes tokens and the target verifies them. Longer drafts also cost more to verify."
+    },
+    "refs": [
+      "bg.speculative"
+    ],
+    "first_chapter": "basics",
+    "related": [
+      "sampling",
+      "acceptance"
+    ]
+  },
+  {
+    "id": "acceptance",
+    "zh": {
+      "term": "接受率（acceptance rate）",
+      "short": "候选草稿被验证保留的概率或比例",
+      "long": "期望接受长度是多次验证平均能保留多少草稿。单个位置的概率不等于整段前缀存活的概率。"
+    },
+    "en": {
+      "term": "Acceptance rate",
+      "short": "Probability or observed fraction of accepted drafts.",
+      "long": "Expected accepted length averages retained drafts. A position probability differs from whole-prefix survival."
+    },
+    "refs": [
+      "bg.speculative"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "kernel-launch",
+    "zh": {
+      "term": "内核提交（kernel launch）",
+      "short": "把一项计算提交给 GPU",
+      "long": "CPU 返回后 GPU 可能还没开始执行。读取结果前仍要遵守同步和依赖关系。"
+    },
+    "en": {
+      "term": "Kernel launch",
+      "short": "Submits a computation to the GPU.",
+      "long": "The CPU can return before the GPU starts. Reading results requires correct synchronization."
+    },
+    "refs": [
+      "bg.cuda"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "cuda-stream",
+    "zh": {
+      "term": "CUDA 流（CUDA stream）",
+      "short": "组织有序设备操作的队列抽象",
+      "long": "流内操作按规定顺序执行。不同流是否真正重叠还取决于依赖与硬件资源。"
+    },
+    "en": {
+      "term": "CUDA stream",
+      "short": "An abstraction for ordered device operations.",
+      "long": "Operations follow stream ordering rules. Cross-stream overlap depends on dependencies and hardware."
+    },
+    "refs": [
+      "bg.cuda"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "cuda-graph",
+    "zh": {
+      "term": "CUDA 执行图（CUDA Graph）",
+      "short": "可重复启动的一组操作及依赖",
+      "long": "预先定义和实例化可以减少重复提交成本。它不会自动消除数据依赖。"
+    },
+    "en": {
+      "term": "CUDA Graph",
+      "short": "A reusable graph of operations and dependencies.",
+      "long": "Predefinition reduces repeated submission overhead. Data dependencies still apply."
+    },
+    "refs": [
+      "bg.graph"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "constrained-decoding",
+    "zh": {
+      "term": "约束解码（constrained decoding）",
+      "short": "用语法规则限制下一个 token",
+      "long": "语法状态决定哪些候选合法。格式正确不保证答案内容正确。"
+    },
+    "en": {
+      "term": "Constrained decoding",
+      "short": "Restricts the next token using grammar rules.",
+      "long": "Grammar state determines valid candidates. Valid syntax does not guarantee a correct answer."
+    },
+    "refs": [
+      "bg.constraints"
+    ],
+    "first_chapter": "basics",
+    "related": [
+      "token-mask",
+      "automaton"
+    ]
+  },
+  {
+    "id": "token-mask",
+    "zh": {
+      "term": "词元掩码（token mask）",
+      "short": "标出当前允许生成的候选",
+      "long": "生成概率会排除不合法候选。随着已生成内容变化，掩码也需要更新。"
+    },
+    "en": {
+      "term": "Token mask",
+      "short": "Marks candidates currently allowed by a grammar.",
+      "long": "Invalid candidates are excluded. The mask changes as output progresses."
+    },
+    "refs": [
+      "bg.constraints"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "automaton",
+    "zh": {
+      "term": "语法自动机（grammar automaton）",
+      "short": "跟踪输出是否符合语法的状态机",
+      "long": "接收新字符或 token 后更新状态。嵌套语法可能还需要栈保存上下文。"
+    },
+    "en": {
+      "term": "Grammar automaton",
+      "short": "Tracks progress through a grammar.",
+      "long": "New output advances its state. Nested grammars may require a stack."
+    },
+    "refs": [
+      "bg.constraints"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "sse",
+    "zh": {
+      "term": "服务端发送事件（SSE）",
+      "short": "服务器持续向客户端传送事件文本",
+      "long": "事件使用 UTF-8 编码。接收端要把零散网络数据按事件边界重新组合。"
+    },
+    "en": {
+      "term": "Server-sent events",
+      "short": "Streams event text from server to client.",
+      "long": "Events use UTF-8. Receivers assemble partial network reads into events."
+    },
+    "refs": [
+      "bg.sse"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "fp8",
+    "zh": {
+      "term": "低精度浮点（FP8）",
+      "short": "用较少位数表示浮点数",
+      "long": "指数决定范围，尾数影响精细程度。E4M3 与 E5M2 的位分配不同。"
+    },
+    "en": {
+      "term": "FP8",
+      "short": "A low-bit floating-point representation.",
+      "long": "Exponent bits control range and mantissa bits affect precision. E4M3 and E5M2 divide the bits differently."
+    },
+    "refs": [
+      "bg.fp8"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "mx",
+    "zh": {
+      "term": "微缩放格式（MX）",
+      "short": "一块低精度元素共享一个缩放值",
+      "long": "元素格式和缩放格式要分别说明。只写低精度位数不足以描述完整存储布局。"
+    },
+    "en": {
+      "term": "Microscaling formats",
+      "short": "Low-precision elements with a shared block scale.",
+      "long": "Element and scale formats are specified separately. Bit width alone does not describe the layout."
+    },
+    "refs": [
+      "bg.mx"
+    ],
+    "first_chapter": "basics",
+    "related": [
+      "fp8"
+    ]
+  },
+  {
+    "id": "erasure-code",
+    "zh": {
+      "term": "纠删码（erasure code）",
+      "short": "用编码冗余恢复丢失的数据块",
+      "long": "k 是数据块数，m 是额外编码块数。可容忍的丢失程度取决于所用编码。"
+    },
+    "en": {
+      "term": "Erasure code",
+      "short": "Adds coded redundancy to recover lost chunks.",
+      "long": "k counts data chunks and m counts coding chunks. Recovery depends on the code."
+    },
+    "refs": [
+      "bg.erasure"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "gpudirect-rdma",
+    "zh": {
+      "term": "直接远程显存访问（GPUDirect RDMA）",
+      "short": "GPU 与兼容设备间的直接数据路径",
+      "long": "它减少主机内存中转。硬件、驱动与连接拓扑必须支持这条路径。"
+    },
+    "en": {
+      "term": "GPUDirect RDMA",
+      "short": "A direct data path between GPU and compatible peers.",
+      "long": "It avoids host-memory staging where supported. Hardware, drivers and topology matter."
+    },
+    "refs": [
+      "bg.gdr"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "ttft",
+    "zh": {
+      "term": "首词元延迟（TTFT）",
+      "short": "从请求到首个输出 token 的等待时间",
+      "long": "排队和输入处理都会贡献等待时间。首个 token 快不代表后续输出也快。"
+    },
+    "en": {
+      "term": "Time to first token",
+      "short": "Delay from request arrival to the first output token.",
+      "long": "Queueing and prompt processing contribute. A quick start does not guarantee fast later output."
+    },
+    "refs": [
+      "bg.metrics"
+    ],
+    "first_chapter": "basics",
+    "related": [
+      "tpot",
+      "goodput"
+    ]
+  },
+  {
+    "id": "tpot",
+    "zh": {
+      "term": "每词元时间（TPOT）",
+      "short": "后续输出 token 的平均间隔",
+      "long": "它描述持续生成阶段的速度。比较时应保持测量口径与负载一致。"
+    },
+    "en": {
+      "term": "Time per output token",
+      "short": "Average interval for subsequent output tokens.",
+      "long": "It describes ongoing generation speed. Comparisons require consistent workloads and measurement."
+    },
+    "refs": [
+      "bg.metrics"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "throughput",
+    "zh": {
+      "term": "吞吐量（throughput）",
+      "short": "单位时间内完成的工作量",
+      "long": "必须说明按请求还是按 token 计数。更大的批量可能提高吞吐却增加单个请求等待。"
+    },
+    "en": {
+      "term": "Throughput",
+      "short": "Completed work per unit of time.",
+      "long": "Specify requests or tokens. Larger batches can trade latency for throughput."
+    },
+    "refs": [
+      "bg.metrics"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "goodput",
+    "zh": {
+      "term": "有效吞吐（goodput）",
+      "short": "满足延迟目标的服务能力",
+      "long": "先确定首 token 与后续 token 的延迟要求。超出要求的高吞吐不能当成同等服务质量。"
+    },
+    "en": {
+      "term": "Goodput",
+      "short": "Serving capacity that meets latency objectives.",
+      "long": "First define latency targets. Raw throughput beyond those targets is not equivalent service quality."
+    },
+    "refs": [
+      "bg.metrics"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "residual",
+    "zh": {
+      "term": "残差连接（residual connection）",
+      "short": "把变换结果加回原输入的连接",
+      "long": "输入沿直接路径保留，子层贡献增量。不同残差混合结构需要分别看实现。"
+    },
+    "en": {
+      "term": "Residual connection",
+      "short": "Adds a transformed result back to the input.",
+      "long": "A direct path retains the input. More elaborate mixing schemes require separate definitions."
+    },
+    "refs": [
+      "bg.representation"
+    ],
+    "first_chapter": "model",
+    "related": []
+  },
+  {
+    "id": "sinkhorn",
+    "zh": {
+      "term": "Sinkhorn 归一化",
+      "short": "交替调整矩阵的行和与列和",
+      "long": "对元素严格为正的正方阵反复执行行、列缩放。有限次迭代得到近似结果，不能当成任意矩阵都已精确收敛。"
+    },
+    "en": {
+      "term": "Sinkhorn normalization",
+      "short": "Alternately normalizes matrix rows and columns.",
+      "long": "Repeated scaling of a strictly positive square matrix targets a doubly stochastic matrix. Finite iterations yield an approximation."
+    },
+    "refs": [
+      "bg.sinkhorn"
+    ],
+    "first_chapter": "model",
+    "related": []
+  },
+  {
+    "id": "ngram-hash",
+    "zh": {
+      "term": "连续片段哈希（n-gram hash）",
+      "short": "把连续 token 片段映射到表地址",
+      "long": "哈希地址用来查找向量。不同片段可能碰撞，因此不能把地址当作完整文本。"
+    },
+    "en": {
+      "term": "N-gram hash",
+      "short": "Maps consecutive token fragments to table addresses.",
+      "long": "The address retrieves a vector. Hash collisions mean an address is not the original text."
+    },
+    "refs": [
+      "bg.ngram"
+    ],
+    "first_chapter": "model",
+    "related": []
+  },
+  {
+    "id": "sparse-attention",
+    "zh": {
+      "term": "稀疏注意力（sparse attention）",
+      "short": "只读取被选中的部分候选位置",
+      "long": "本页介绍的 top-k 路径先评分并选择候选位置。固定窗口也是稀疏方式，不一定有索引器。"
+    },
+    "en": {
+      "term": "Sparse attention",
+      "short": "Attends to a selected subset of positions.",
+      "long": "The top-k path discussed here scores and selects positions. Fixed windows are also sparse patterns and need no such indexer."
+    },
+    "refs": [
+      "bg.sparse"
+    ],
+    "first_chapter": "model",
+    "related": []
+  },
+  {
+    "id": "pareto",
+    "zh": {
+      "term": "帕累托前沿（Pareto front）",
+      "short": "多个目标之间不可再全面改进的方案集合",
+      "long": "先确认横纵轴哪个方向更好。前沿上的不同点代表取舍，不是单一总冠军。"
+    },
+    "en": {
+      "term": "Pareto front",
+      "short": "Solutions where improving one objective worsens another.",
+      "long": "Check which axis direction is preferable. Different points represent different tradeoffs."
+    },
+    "refs": [
+      "bg.pareto"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "gpu-utilization",
+    "zh": {
+      "term": "GPU 利用率（GPU utilization）",
+      "short": "采样时间内设备有计算在运行的占比",
+      "long": "这里采用 nvidia-smi 的时间口径。数值高不等于所有算术单元都已饱和。"
+    },
+    "en": {
+      "term": "GPU utilization",
+      "short": "The fraction of sampled time with active kernels.",
+      "long": "This uses the nvidia-smi time-based definition. A high value does not imply peak arithmetic throughput."
+    },
+    "refs": [
+      "bg.utilization"
+    ],
+    "first_chapter": "basics",
+    "related": []
+  },
+  {
+    "id": "utf",
+    "zh": {
+      "term": "UTF-8 字符编码",
+      "short": "把字符编码为字节序列的规则",
+      "long": "一个字符可以跨网络读取边界。解析器应保留不完整字节直到收到后续部分。"
+    },
+    "en": {
+      "term": "UTF-8 encoding",
+      "short": "Encodes characters as byte sequences.",
+      "long": "A character can span network read boundaries. A decoder retains partial bytes until completion."
+    },
+    "refs": [
+      "bg.utf"
+    ],
+    "first_chapter": "recipe",
+    "related": []
+  }
+]

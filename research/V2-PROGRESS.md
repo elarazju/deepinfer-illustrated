@@ -2,7 +2,7 @@
 
 - [x] Phase 1 �� engineering cleanup
 - [x] Phase 2 �� background evidence and glossary schema
-- [ ] Phase 3 �� verified background sources and bilingual glossary
+- [x] Phase 3 �� verified background sources and bilingual glossary
 - [ ] Phase 4 �� inline terms and glossary UI
 - [ ] Phase 5 �� basics chapter, diagrams and interactions
 - [ ] Phase 6 �� chapter prerequisites, examples, snippets and summaries
@@ -12,5 +12,6 @@
 - [ ] Publication �� awaiting user confirmation after local acceptance
 
 Background evidence explains general concepts; it does not establish DeepInfer implementation claims.
+
 
 
