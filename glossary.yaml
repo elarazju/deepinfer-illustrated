@@ -50,7 +50,7 @@
     "refs": [
       "bg.special_token"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "recipe",
     "related": []
   },
   {
@@ -255,7 +255,7 @@
     "refs": [
       "bg.prefill_decode"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "system",
     "related": []
   },
   {
@@ -291,7 +291,7 @@
     "refs": [
       "bg.batching"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "scheduling",
     "related": []
   },
   {
@@ -309,7 +309,7 @@
     "refs": [
       "bg.chunk"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "routing",
     "related": []
   },
   {
@@ -478,7 +478,7 @@
     "refs": [
       "bg.swa"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "yoco",
     "related": []
   },
   {
@@ -496,7 +496,7 @@
     "refs": [
       "bg.yoco"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "yoco",
     "related": [
       "ced",
       "swa",
@@ -518,7 +518,7 @@
     "refs": [
       "yoco.ced"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "yoco",
     "related": []
   },
   {
@@ -536,7 +536,7 @@
     "refs": [
       "storage.block"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "system",
     "related": []
   },
   {
@@ -554,7 +554,7 @@
     "refs": [
       "bg.speculative"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "decode-lab",
     "related": [
       "sampling",
       "acceptance"
@@ -575,7 +575,7 @@
     "refs": [
       "bg.speculative"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "decode-lab",
     "related": []
   },
   {
@@ -593,7 +593,7 @@
     "refs": [
       "bg.cuda"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "scheduling",
     "related": []
   },
   {
@@ -611,7 +611,7 @@
     "refs": [
       "bg.cuda"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "scheduling",
     "related": []
   },
   {
@@ -647,7 +647,7 @@
     "refs": [
       "bg.constraints"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "recipe",
     "related": [
       "token-mask",
       "automaton"
@@ -668,7 +668,7 @@
     "refs": [
       "bg.constraints"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "recipe",
     "related": []
   },
   {
@@ -686,7 +686,7 @@
     "refs": [
       "bg.constraints"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "recipe",
     "related": []
   },
   {
@@ -704,7 +704,7 @@
     "refs": [
       "bg.sse"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "recipe",
     "related": []
   },
   {
@@ -722,7 +722,7 @@
     "refs": [
       "bg.fp8"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "model",
     "related": []
   },
   {
@@ -740,7 +740,7 @@
     "refs": [
       "bg.mx"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "model",
     "related": [
       "fp8"
     ]
@@ -760,7 +760,7 @@
     "refs": [
       "bg.erasure"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "storage",
     "related": []
   },
   {
@@ -778,7 +778,7 @@
     "refs": [
       "bg.gdr"
     ],
-    "first_chapter": "basics",
+    "first_chapter": "storage",
     "related": []
   },
   {

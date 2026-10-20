@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ChapterNav from '../lib/ChapterNav.svelte';
+  import type { ReadingPath } from '../lib/routes';
   import { dictionaries, type Locale } from '../lib/data';
   import CodeSnippet from '../lib/CodeSnippet.svelte';
   import { decodeMetadata } from '../lib/chapters';
@@ -6,7 +8,7 @@
   import RichText from '../lib/RichText.svelte';
   import DSpark from '../interactive/DSpark.svelte';
   import FactBadge from '../lib/FactBadge.svelte';
-  let { locale }: { locale: Locale } = $props();
+  let { locale, path='' }: { locale: Locale; path?:ReadingPath } = $props();
   let copy = $derived(dictionaries[locale].decodeLab);
 </script>
 
@@ -25,4 +27,5 @@
   <CodeSnippet id="snippet.decode" {locale}/>
   <div class="takeaways"><h3>{dictionaries[locale].chapterUi.takeaways}</h3><ul>{#each copy.takeaways as item}<li>{item}</li>{/each}</ul></div>
   <p class="lab-scope"><RichText text={copy.scope} {locale}/> <FactBadge id="dspark.zos" {locale}/></p>
+<ChapterNav id="decode-lab" {locale} {path}/>
 </section>

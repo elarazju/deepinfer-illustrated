@@ -11,6 +11,7 @@
 </script>
 <section class="demo" id="kv-growth">
   <h3>{t.kvTitle}</h3><p class="illustrative">{t.kvScope}</p>
+  <p>{t.kvParameters} <FactBadge id="bg.kv_cache" {locale}/><FactBadge id="bg.representation" {locale}/></p>
   <div class="basics-controls">
     <label>{t.length}: <output>{length}</output><input aria-label={t.length} type="range" min="0" max={defaults.maxLength} step="128" bind:value={length}/></label>
     <label>{t.layers}: <output>{layers}</output><input aria-label={t.layers} type="range" min="1" max={defaults.maxLayers} bind:value={layers}/></label>

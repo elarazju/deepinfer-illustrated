@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { chapters, database, dictionaries, type Locale } from './lib/data';
+  import ChapterNav from './lib/ChapterNav.svelte';
+  import {pageOrder,readingPaths,parsePath,routeFor,sectionTitle,sectionLevel,type ReadingPath} from './lib/routes';
   import Basics from './chapters/Basics.svelte';
   import Glossary from './chapters/Glossary.svelte';
   import Chapter from './chapters/Chapter.svelte';
@@ -17,6 +19,8 @@
   let explicitTheme = $state(params.has('theme') || storedTheme !== null);
   let locale = $state<Locale>(params.get('lang') === 'en' || (!params.has('lang') && readStored('di-language') === 'en') ? 'en' : 'zh');
   let theme = $state(params.get('theme') ?? storedTheme ?? (systemTheme?.matches ? 'dark' : 'light'));
+  let path = $state<ReadingPath>(parsePath(params.has('path')?params.get('path'):readStored('di-path')));
+  let route = $derived(routeFor(path));
   let active = $state('journey');
   let t = $derived(dictionaries[locale]);
   const exportKind = params.get('figure');
@@ -36,7 +40,8 @@
     document.title=locale==='zh'?'图解 DeepInfer · 跟着一个请求走':'DeepInfer Illustrated · Follow a request';
     if(!exportMode){
       saveStored('di-language',locale);
-      const url=new URL(location.href);url.searchParams.set('lang',locale);history.replaceState(null,'',url);
+      saveStored('di-path',path);
+      const url=new URL(location.href);url.searchParams.set('lang',locale);if(path)url.searchParams.set('path',path);else url.searchParams.delete('path');history.replaceState(null,'',url);
     }
   });
 </script>
@@ -58,11 +63,11 @@
     <aside class="sidebar">
       <p class="eyebrow">{t.contents}</p>
       <nav aria-label={t.contents}>
-        <a href="#basics" class:current={active==='basics'}><span class="mono">{String(0).padStart(2,'0')}</span>{t.glossaryUi.basics}</a>
-        <a href="#journey" class:current={active==='journey'}><span class="mono">{String(1).padStart(2,'0')}</span>{t.overview}</a>
-        {#each chapters as chapter,i}
-          <a href={`#${chapter.id}`} class:current={active===chapter.id}><span class="mono">{chapter.number}</span>{t.chapters[chapter.copyIndex].short}</a>
-          {#if chapter.id === 'scheduling'}<a class="lab-nav" class:current={active==='decode-lab'} href="#decode-lab"><span>↳</span> DSpark · Decode Lab</a>{/if}
+        {#each pageOrder as id,i}
+          <a href={`#${id}`} class:current={active===id} class:outside-route={!!path&&!route.includes(id)} class:in-route={!!path&&route.includes(id)}>
+            <span class="mono">{path&&route.includes(id)?`${route.indexOf(id)+1} →`:String(i).padStart(2,'0')}</span>
+            <span>{sectionTitle(id,locale)}<small class="nav-level">{t.chapterUi[sectionLevel(id)]}</small></span>
+          </a>
         {/each}
         <a href="#glossary">{t.glossaryUi.title}</a>
       </nav>
@@ -76,7 +81,12 @@
         <div class="hero-actions"><a class="primary-button" href="#basics">{t.start}<span>↓</span></a><a class="secondary-link" href="#dspark">{t.try} ↗</a></div>
         <div class="hero-meta"><span class="mono">DEEPINFER / {database.commit.slice(0,7)}</span><FactBadge id="release.scope" {locale}/><span>{locale==='zh'?'中文 / EN':'EN / 中文'}</span></div>
       </section>
-      <Basics {locale} {theme}/>
+      <div class="reading-paths" role="group" aria-label={t.paths.title}>
+        <h2>{t.paths.title}</h2>
+        <div>{#each Object.keys(readingPaths) as key}<button data-path={key} aria-pressed={path===key} onclick={()=>path=key as ReadingPath}>{t.paths[key as keyof typeof readingPaths]}</button>{/each}
+        <button data-path="" aria-pressed={path===''} onclick={()=>path=''}>{t.paths.all}</button></div><p>{t.paths.hint}</p>
+      </div>
+      <Basics {locale} {theme} {path}/>
       <section id="journey" class="journey">
         <div class="section-title"><div><p class="eyebrow">THE BIG PICTURE</p><h2>{t.overview}</h2></div><span class="section-arrow" aria-hidden="true">↘</span></div>
         <Figure kind="overview" {locale} number="01" source="system.disaggregation" {theme}/>
@@ -84,10 +94,11 @@
         <div class="legend">
           {#each t.legend as label,i}<span><i class={['cpu','gpu','storage','network','closed'][i]}></i>{label}</span>{/each}
         </div>
+        <ChapterNav id="journey" {locale} {path}/>
       </section>
       {#each chapters as chapter,index}
-        <Chapter {index} {locale} {theme}/>
-        {#if chapter.id === 'scheduling'}<DecodeLab {locale}/>{/if}
+        <Chapter {index} {locale} {theme} {path}/>
+        {#if chapter.id === 'scheduling'}<DecodeLab {locale} {path}/>{/if}
       {/each}
       <Glossary {locale}/>
       <footer>

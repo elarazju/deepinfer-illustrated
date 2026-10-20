@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ChapterNav from '../lib/ChapterNav.svelte';
+  import type { ReadingPath } from '../lib/routes';
   import { chapters, dictionaries, facts, terms, type Locale } from '../lib/data';
   import CodeSnippet from '../lib/CodeSnippet.svelte';
   import RichText from '../lib/RichText.svelte';
@@ -8,7 +10,7 @@
   import NotOpenSource from '../lib/NotOpenSource.svelte';
   import SWA from '../interactive/SWA.svelte';
   import Timeline from '../interactive/Timeline.svelte';
-  let { index, locale, theme }: { index: number; locale: Locale; theme: string } = $props();
+  let { index, locale, theme, path='' }: { index: number; locale: Locale; theme: string; path?:ReadingPath } = $props();
   let chapter = $derived(chapters[index]);
   let t = $derived(dictionaries[locale]);
   let copy = $derived(t.chapters[chapter.copyIndex]);
@@ -73,4 +75,5 @@
     {#if chapter.code}<CodeRef path={chapter.code} line={chapter.line!}/>{/if}
   </details>
   <a href="#journey" class="back-link">{t.back} ↑</a>
+<ChapterNav id={chapter.id} {locale} {path}/>
 </section>

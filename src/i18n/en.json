@@ -116,7 +116,7 @@
       "transfer": "KV transfer",
       "reuse": "Prefix reuse",
       "caption": "E / P / D disaggregation",
-      "howToRead": "Follow input into Prefill and the cache transfer into Decode. Green boxes are compute roles, purple is storage, and dashed boxes are unpublished components."
+      "howToRead": "Follow input into Prefill and the cache transfer into Decode. Green boxes are compute roles, purple is storage, and dashed boxes are unpublished components. P and D abbreviate Prefill and Decode; their counts are devices, not requests. E denotes the vision encoder."
     },
     "timeline": {
       "sync": "Synchronous",
@@ -290,7 +290,14 @@
     "reported": "Official figures, separate from this demo",
     "coupling": "Why recompute lengths on the GPU?",
     "reset": "Reset illustration",
-    "best": "Best prefix"
+    "best": "Best prefix",
+    "explanation": {
+      "text": "Read slider pᵢ as the chance that this position passes given that all earlier drafts passed. Later positions count only when their entire prefix survives, so multiply probabilities along each prefix before adding them. The leading unit in the formula represents one base output token from the step. Expected output divided by illustrative step time gives this demo’s effective throughput; it compares candidate lengths rather than predicting production speed. In the reported results, a rank identifies a process in the distributed execution group, commonly associated here with a participating device.",
+      "refs": [
+        "dspark.cumulative",
+        "dspark.results"
+      ]
+    }
   },
   "swa": {
     "title": "Encoder SWA: where does recovery begin?",
@@ -393,7 +400,7 @@
         },
         {
           "title": "How reuse affects routing",
-          "text": "Shared storage makes prefix reuse available beyond the original compute host. A prefill instance can retrieve the required Block KV and continue processing input. This connects routing decisions with both compute load and the availability of reusable state. It also separates scaling storage from scaling computation. The storage box therefore represents a capability assembled from locating state, retrieving it, and making it available to the engine. Follow those operations separately when the storage chapter expands this part of the overview.",
+          "text": "Shared storage makes prefix reuse available beyond the original compute host. A prefill instance can retrieve the required [[block-kv|Block KV]] and continue processing input. This connects routing decisions with both compute load and the availability of reusable state. It also separates scaling storage from scaling computation. The storage box therefore represents a capability assembled from locating state, retrieving it, and making it available to the engine. Follow those operations separately when the storage chapter expands this part of the overview.",
           "refs": [
             "storage.block"
           ],
@@ -476,7 +483,7 @@
       "blocks": [
         {
           "title": "Why some experts become busy",
-          "text": "[[moe|MoE]] uses [[expert-routing]] to choose experts from token representations, rather than choosing whichever device is idle. Even with [[ep]], a batch may concentrate on a few experts. Dispatch and combine use [[all-to-all]] communication and must obtain the required results; slow devices can extend the iteration. A large number of experts therefore does not imply equal device workloads. Routing answers which computation the model needs, while placement answers where that computation runs. Load balancing works on the latter without inventing different expert weights.",
+          "text": "EPLB means Expert Parallel Load Balancing: balancing expert work across devices. [[moe|MoE]] uses [[expert-routing]] to choose experts from token representations, rather than choosing whichever device is idle. Even with [[ep]], a batch may concentrate on a few experts. Dispatch and combine use [[all-to-all]] communication and must obtain the required results; slow devices can extend the iteration. A large number of experts therefore does not imply equal device workloads. Routing answers which computation the model needs, while placement answers where that computation runs. Load balancing works on the latter without inventing different expert weights.",
           "refs": [
             "bg.moe",
             "bg.ep",
@@ -776,7 +783,7 @@
         },
         {
           "title": "From grammar state to allowed candidates",
-          "text": "An [[automaton]] tracks the structure generated so far, while a [[token-mask]] excludes currently invalid candidates. DeepInfer’s Q&A describes asynchronous grammar compilation and incremental state updates; its public matcher connects grammar matching to the masks used during sampling. A format constraint does not decide whether the content is true or useful. A syntactically valid tool argument can still be inappropriate for a task. Keep the grammar’s acceptance condition separate from application-level validation.",
+          "text": "A [[automaton|grammar automaton]] tracks the structure generated so far, while a [[token-mask]] excludes currently invalid candidates. DeepInfer’s Q&A describes asynchronous grammar compilation and incremental state updates; its public matcher connects grammar matching to the masks used during sampling. A format constraint does not decide whether the content is true or useful. A syntactically valid tool argument can still be inappropriate for a task. Keep the grammar’s acceptance condition separate from application-level validation.",
           "refs": [
             "bg.constraints",
             "so.pipeline"
@@ -785,7 +792,7 @@
         },
         {
           "title": "Scenario: a character and a marker span chunks",
-          "text": "As an illustration, split the [[utf|UTF-8]] bytes for the character 中 across two network reads. The first part is not a complete character and must be retained until the rest arrives. [[sse|SSE]] event boundaries likewise do not coincide with arbitrary network chunks. If an end marker begins in an old chunk and finishes in a new one, incremental matching must retain progress. [[kmp|KMP]] uses a failure table to fall back to a prefix that can still match, avoiding a fresh scan of all previous output on each chunk.",
+          "text": "Here a chunk means a piece of data delivered by the network; its boundary need not align with a whole character or delimiter. As an illustration, split the [[utf|UTF-8]] bytes for the character 中 across two network reads. The first part is not a complete character and must be retained until the rest arrives. [[sse|SSE]] event boundaries likewise do not coincide with arbitrary network chunks. If an end marker begins in an old chunk and finishes in a new one, incremental matching must retain progress. [[kmp|KMP]] uses a failure table to fall back to a prefix that can still match, avoiding a fresh scan of all previous output on each chunk.",
           "refs": [
             "bg.utf",
             "bg.sse",
@@ -1072,7 +1079,8 @@
         ],
         "figure": ""
       }
-    ]
+    ],
+    "kvParameters": "An attention head uses its own query, key and value representations. KV head count is the number of key/value groups stored; head dimension is the number of values in each vector. Larger settings require more space for the same context. MiB is a binary unit of storage."
   },
   "chapterUi": {
     "prereqs": "Before this chapter",
@@ -1081,10 +1089,22 @@
     "expert": "Expert",
     "minutes": "minutes",
     "takeaways": "Takeaways",
-    "next": "Use this next",
+    "next": "Further reading",
     "example": "Illustrative scenario",
     "code": "Read the code",
     "codeScope": "Original excerpt with commentary; follow the source for full context."
   },
-  "howToRead": "How to read this figure"
+  "howToRead": "How to read this figure",
+  "paths": {
+    "title": "Choose a reading path",
+    "beginner": "I am new to inference",
+    "advanced": "I know the basics",
+    "code": "Take me to the code",
+    "all": "Read in page order",
+    "navigation": "Chapter navigation",
+    "previous": "Previous chapter",
+    "next": "Next chapter",
+    "finished": "Explore the glossary",
+    "hint": "Recommended chapters show their route order. Every other chapter remains available."
+  }
 }

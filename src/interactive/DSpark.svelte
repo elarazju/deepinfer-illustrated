@@ -2,6 +2,7 @@
   import { line, scaleLinear } from 'd3';
   import { dictionaries, database, facts, type Locale } from '../lib/data';
   import { evaluateDrafts } from '../lib/models';
+  import RichText from '../lib/RichText.svelte';
   import FactBadge from '../lib/FactBadge.svelte';
   let { locale }: { locale: Locale } = $props();
   let t = $derived(dictionaries[locale]);
@@ -18,7 +19,8 @@
 
 <section class="demo" id="dspark">
   <div class="demo-heading"><span class="eyebrow">LAB / DSPARK</span><span class="illustrative">{t.illustration}</span></div>
-  <h3>{t.dspark.title}</h3><p>{t.dspark.intro}</p>
+  <h3>{t.dspark.title}</h3><p><RichText text={t.dspark.intro} {locale}/></p>
+  <p><RichText text={t.dspark.explanation.text} {locale}/> {#each t.dspark.explanation.refs as id}<FactBadge {id} {locale}/>{/each}</p>
   <div class="segmented" aria-label={t.dspark.selected}>
     <button class:active={dynamic} aria-pressed={dynamic} onclick={()=>dynamic=true}>{t.dspark.dynamic}</button>
     <button class:active={!dynamic} aria-pressed={!dynamic} onclick={()=>dynamic=false}>{t.dspark.fixed} {confidence.length}</button>

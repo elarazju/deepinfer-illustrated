@@ -89,6 +89,7 @@ for(const entry of glossary){
   for(const id of entry.related??[])if(!terms.has(id)) errors.push(`Invalid related term: ${id}`);
 }
 function checkTerms(value:any,label:string){
+  if(typeof value==='string' && /\[\[|\]\]/.test(value.replace(/\[\[[a-z][a-z0-9-]*(?:\|[^\[\]\n]+)?\]\]/g,'')))errors.push(`Malformed term marker (${label})`);
   if(typeof value==='string')for(const match of value.matchAll(/\[\[([^|\]]+)(?:\|[^\]]*)?\]\]/g))if(!terms.has(match[1])) errors.push(`Unknown term ${match[1]} (${label})`);
   if(value&&typeof value==='object')for(const [key,item] of Object.entries(value))checkTerms(item,`${label}.${key}`);
 }

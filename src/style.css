@@ -1287,3 +1287,30 @@ footer a {
 .line-number { display: inline-block; width: 3rem; text-align: right; padding-right: 1rem; color: var(--muted); user-select: none; }
 .code-notes { padding-left: 1.2rem; font-size: .9rem; }
 .code-notes li { margin: .65rem 0; }
+.reading-paths {
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  border-radius: .75rem;
+}
+.reading-paths h2 { font-size: 1.2rem; margin-top: 0; }
+.reading-paths > div { display: flex; flex-wrap: wrap; gap: .6rem; }
+.reading-paths button {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--muted);
+  border-radius: .4rem;
+  padding: .7rem 1rem;
+  font: inherit;
+  cursor: pointer;
+}
+.reading-paths button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+.reading-paths p { color: var(--muted); font-size: .85rem; }
+.sidebar nav a.in-route { background: var(--accent-soft); }
+.sidebar nav a.outside-route { color: var(--muted); background: transparent; }
+.sidebar nav .nav-level { display: block; font-size: .65rem; color: var(--muted); margin-top: .2rem; }
+.chapter-navigation { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding: 1.5rem 0; }
+.chapter-navigation a { max-width: 46%; font-size: .8rem; }
+.chapter-navigation strong { display: block; margin-top: .4rem; font-size: 1rem; }
+.figure-reading { flex-basis: 100%; margin: .5rem 0; line-height: 1.7; }

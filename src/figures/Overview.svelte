@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { safeMedia } from '../lib/browser';
-  import { dictionaries, type Locale } from '../lib/data';
+  import { chapters, terms, dictionaries, type Locale } from '../lib/data';
   let { locale, exportMode = false }: { locale: Locale; exportMode?: boolean } = $props();
   const kind = 'overview';
   let t = $derived(dictionaries[locale]);
@@ -70,6 +70,7 @@
         {/if}
       {/if}
       <a href={`#${stage.target}`}>
+        <title>{station} · {t.chapterUi.prereqs}: {(chapters.find(c=>c.id===stage.target)?.prereqs??['prefill-decode','speculative-decoding']).map(id=>terms[id][locale].term).join(', ')}</title>
         <g class={`node ${color} station`} class:closed={stage.closed}>
           <rect x={p.x} y={p.y} width={w} height="116" rx="12" />
           <text class="station-number" x={p.x+15} y={p.y+27}>{String(i+1).padStart(2,'0')}</text>

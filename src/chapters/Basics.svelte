@@ -1,11 +1,13 @@
 <script lang="ts">
+  import ChapterNav from '../lib/ChapterNav.svelte';
+  import type { ReadingPath } from '../lib/routes';
   import {dictionaries,type Locale} from '../lib/data';
   import RichText from '../lib/RichText.svelte';
   import FactBadge from '../lib/FactBadge.svelte';
   import Figure from '../figures/Figure.svelte';
   import KVGrowth from '../interactive/KVGrowth.svelte';
   import Autoregressive from '../interactive/Autoregressive.svelte';
-  let {locale,theme}:{locale:Locale;theme:string}=$props();
+  let {locale,theme,path=''}:{locale:Locale;theme:string;path?:ReadingPath}=$props();
   let t=$derived(dictionaries[locale].basics);
 </script>
 <section id="basics" class="chapter basics">
@@ -21,4 +23,5 @@
   {/each}
   <h3>{t.selfTest}</h3>
   {#each t.questions as item}<details class="self-test"><summary>{item.q}</summary><p><RichText text={item.a} {locale}/></p></details>{/each}
+<ChapterNav id="basics" {locale} {path}/>
 </section>
