@@ -41,6 +41,7 @@
       {/each}
     </div>
   {/if}
+  {#if chapter.id==='yoco'}<Figure kind="swa-window" {locale} number={`${chapter.number}a`} source="swa.hit" {theme}/>{/if}
   <Figure kind={chapter.figure ?? chapter.id} {locale} number={chapter.number} source={chapter.facts[0]} {theme}/>
   {#if reading}
     <div class="prose tutorial-body">

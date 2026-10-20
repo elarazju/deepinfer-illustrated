@@ -18,6 +18,8 @@ export type Fact = {
 export const database = parse(raw) as {
   commit: string; repository: string; qa_path: string; facts: Fact[];
   demo_defaults: {
+    swaWindow: {length:number;window:number};
+    eplb: {original:string;replicas:string[];hotLoad:number;maxLoad:number;before:{name:string;load:number}[][];after:{name:string;load:number}[][]};
     basics: {length:number;layers:number;heads:number;dimension:number;bytes:number;maxLength:number;maxLayers:number;maxDimension:number;promptTokens:number;outputTokens:number;intervalMs:number};
     dspark: { confidence: number[]; stepTime: number[]; mode: string };
     swa: { length: number; hit: number; cached: boolean; min: number; max: number };

@@ -15,6 +15,7 @@
   {#if kind !== 'overview'}<p class="figure-scroll-hint">{t.scrollFigure} ↔</p>{/if}
   <figcaption>
     <span><RichText text={kind === 'overview' ? t.overviewSub : t.figures[kind as keyof typeof t.figures]?.caption ?? ''} {locale}/></span>
+    <p class="figure-reading"><strong>{t.howToRead}:</strong> <RichText text={t.figures[kind as keyof typeof t.figures]?.howToRead??''} {locale}/></p>
     <span class="downloads">{t.download}
       <a download href={`${import.meta.env.BASE_URL}figures/${kind}-${locale}-${theme}.svg`}>SVG ↘</a>
       <a download href={`${import.meta.env.BASE_URL}figures/${kind}-${locale}-${theme}.png`}>PNG ↘</a>

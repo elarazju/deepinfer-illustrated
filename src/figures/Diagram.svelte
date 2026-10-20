@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Locale } from '../lib/data';
+  import SwaWindow from './SwaWindow.svelte';
   import Overview from './Overview.svelte';
   import System from './System.svelte';
   import Timeline from './Timeline.svelte';
@@ -14,7 +15,7 @@
   import BasicsPrefillDecode from './BasicsPrefillDecode.svelte';
   import BasicsMoe from './BasicsMoe.svelte';
   import BasicsParallel from './BasicsParallel.svelte';
-  const diagrams = {'basics-autoregressive': BasicsAutoregressive,'basics-prefill-decode': BasicsPrefillDecode,'basics-moe': BasicsMoe,'basics-parallel': BasicsParallel,overview: Overview, system: System, timeline: Timeline, experts: Experts, yoco: Yoco, storage: Storage, routing: Routing, recipe: Recipe, model: Model};
+  const diagrams = {'swa-window': SwaWindow,'basics-autoregressive': BasicsAutoregressive,'basics-prefill-decode': BasicsPrefillDecode,'basics-moe': BasicsMoe,'basics-parallel': BasicsParallel,overview: Overview, system: System, timeline: Timeline, experts: Experts, yoco: Yoco, storage: Storage, routing: Routing, recipe: Recipe, model: Model};
   let Component = $derived(diagrams[kind as keyof typeof diagrams]);
 </script>
 {#if Component}<Component {locale} {exportMode}/>{/if}

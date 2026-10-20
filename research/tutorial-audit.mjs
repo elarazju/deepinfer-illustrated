@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import {figureKinds} from '../src/lib/figure-kinds.mjs';
 import { chromium, webkit } from '@playwright/test';
 await fs.mkdir('research/tutorial-audit',{recursive:true});
 const results=[];
@@ -24,7 +25,7 @@ for(const [engine,type] of [['chrome',chromium],['webkit',webkit]]){
    return {overflow:document.documentElement.scrollWidth>innerWidth,issues,collisions,chapters:document.querySelectorAll('.chapter').length,labs:document.querySelectorAll('#decode-lab').length};
   });
   if(engine==='chrome'){
-   for(const kind of finalCheck?['timeline','experts','yoco']:['system','timeline','experts','yoco','storage','routing','recipe','model']){
+   for(const kind of figureKinds){
     const fig=page.locator(`svg[data-figure="${kind}"]`).first();
     if(await fig.count())await fig.screenshot({path:`research/tutorial-audit/${kind}-${lang}-${theme}-${width}.png`});
    }

@@ -115,7 +115,8 @@
       "embeddings": "Image embeddings",
       "transfer": "KV transfer",
       "reuse": "Prefix reuse",
-      "caption": "E / P / D disaggregation"
+      "caption": "E / P / D disaggregation",
+      "howToRead": "Follow input into Prefill and the cache transfer into Decode. Green boxes are compute roles, purple is storage, and dashed boxes are unpublished components."
     },
     "timeline": {
       "sync": "Synchronous",
@@ -136,14 +137,22 @@
       "next": "Next batch",
       "previous": "Older batch",
       "current": "Current batch",
-      "queued": "Submit to device queue"
+      "queued": "Submit to device queue",
+      "howToRead": "Time runs left to right. Compare idle gaps for the same work: brown is CPU, green is GPU. Arrows are dependencies; overlap does not remove work."
     },
     "experts": {
       "device": "Device",
       "logical": "Logical expert",
       "replica": "Replica of a popular expert",
       "workflow": "Measure load → allocate replicas → move weights",
-      "caption": "Illustrative layout, not actual expert counts"
+      "caption": "Illustrative layout, not actual expert counts",
+      "howToRead": "Orange marks the hot expert; numbers encode illustrative load. Primes identify replicas of the same logical expert. Balanced bars appear on the right; official parameters are separate below.",
+      "before": "Observed load",
+      "allocate": "Replicate",
+      "after": "After placement",
+      "toy": "Grid and loads are illustrative",
+      "sameWeights": "Same expert weights",
+      "splitLoad": "Share the hot workload"
     },
     "yoco": {
       "input": "Uncached input",
@@ -159,7 +168,8 @@
       "cachedPath": "Decoder Block KV",
       "tokens": "Input tokens",
       "cache": "Block KV",
-      "replayLength": "Replay window"
+      "replayLength": "Replay window",
+      "howToRead": "The upper panel separates local state from reusable global KV. Purple paths transfer cache; green paths compute. The lower timeline shows work needed after a cache hit."
     },
     "storage": {
       "block": "Block KV",
@@ -171,7 +181,8 @@
       "directory": "Entrypoint directory",
       "restore": "Remote fetch / replay",
       "overlap": "Overlap layer transfer and forward",
-      "caption": "Overlap layer transfer and forward"
+      "caption": "Overlap layer transfer and forward",
+      "howToRead": "Purple is persistent cache and blue arrows are transfers. Dashed boxes are unpublished services. Read fan-out and the number of encoded fragments are different quantities."
     },
     "routing": {
       "request": "Incoming request",
@@ -182,7 +193,8 @@
       "decode": "Decode",
       "patches": "Image patch count",
       "encoder": "Vision Encoder",
-      "caption": "Vision Encoder"
+      "caption": "Vision Encoder",
+      "howToRead": "Follow how cache-hit information reaches routing and work reaches compute pools. Dashed boxes identify unpublished production services."
     },
     "recipe": {
       "request": "API request",
@@ -194,7 +206,8 @@
       "compile": "Async compilation",
       "mask": "Automaton → mask",
       "sampling": "Constrain sampling",
-      "caption": "Keep parser state across chunks"
+      "caption": "Keep parser state across chunks",
+      "howToRead": "Read the text/token conversions left to right. Constrained decoding restricts candidate tokens; stream parsing reconstructs displayable output from chunks."
     },
     "model": {
       "residual": "Residual streams",
@@ -205,7 +218,8 @@
       "kv": "Compressed KV",
       "indexer": "Indexer top-k",
       "reuse": "Cross-layer reuse",
-      "caption": "Code relationship schematic"
+      "caption": "Code relationship schematic",
+      "howToRead": "Boxes identify inspectable code modules. Connections guide code reading rather than assert a performance-validated architecture. Read inferences with their source badges."
     },
     "basics-autoregressive": {
       "caption": "Output grows step by step; KV follows processed positions",
@@ -246,6 +260,18 @@
       "dispatch": "Dispatch tokens to experts",
       "combine": "Combine expert outputs",
       "howToRead": "Left: identical weights handle different requests. Right: distributed experts exchange tokens. Device counts are illustrative."
+    },
+    "overview": {
+      "howToRead": "Arrows follow request processing. Brown denotes CPU work, green GPU work, blue transfers; gray dashed boxes are unpublished services.",
+      "caption": "Choose a stop to follow the data into its chapter."
+    },
+    "swa-window": {
+      "caption": "Sliding attention keeps a recent visible window",
+      "full": "Causal full attention: all earlier positions",
+      "local": "Sliding window: recent positions only",
+      "window": "Window size",
+      "toy": "Illustrative sequence length",
+      "howToRead": "Each cell is a token position. Green KV is visible, gray is hidden in this layer, and orange is the current position. The window includes the current position and never reaches into the future."
     }
   },
   "dspark": {
@@ -904,7 +930,8 @@
       "text": "Ordinary [[autoregressive|autoregressive generation]] selects an output before the next input is known. [[speculative-decoding|Speculative decoding]] proposes a draft first, then checks its known positions in parallel with the target. When weight movement dominates and spare arithmetic capacity remains, verification can approach the cost of a short decode step, but it is not always equally fast. [[acceptance|Acceptance]] determines how much draft survives; verification cost determines the time spent producing it. DSpark then asks how many candidates are worth verifying.",
       "refs": [
         "bg.autoregressive",
-        "bg.speculative"
+        "bg.speculative",
+        "dspark.method"
       ]
     },
     "takeaways": [
@@ -1058,5 +1085,6 @@
     "example": "Illustrative scenario",
     "code": "Read the code",
     "codeScope": "Original excerpt with commentary; follow the source for full context."
-  }
+  },
+  "howToRead": "How to read this figure"
 }

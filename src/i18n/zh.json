@@ -115,7 +115,8 @@
       "embeddings": "图片 embedding",
       "transfer": "KV 传输",
       "reuse": "前缀复用",
-      "caption": "E / P / D 分离"
+      "caption": "E / P / D 分离",
+      "howToRead": "从输入进入 Prefill，再把缓存交给 Decode。绿色框是计算角色，紫色框是存储，虚线框表示未开源部分。"
     },
     "timeline": {
       "sync": "同步调度",
@@ -136,14 +137,22 @@
       "next": "下一轮",
       "previous": "上一轮",
       "current": "当前轮",
-      "queued": "提交到设备队列"
+      "queued": "提交到设备队列",
+      "howToRead": "横向是时间，比较同一批工作的空白间隙。棕色是 CPU，绿色是 GPU；箭头表示依赖，重叠不等于省略工作。"
     },
     "experts": {
       "device": "设备",
       "logical": "逻辑专家",
       "replica": "热门专家的冗余副本",
       "workflow": "负载统计 → 副本分配 → 权重重排",
-      "caption": "布局示意，不表示实际专家数"
+      "caption": "布局示意，不表示实际专家数",
+      "howToRead": "左侧橙色格是热门专家，格内数字是示意负载。中间撇号表示同一逻辑专家的副本；右侧负载条趋于相等，下方官方参数另列。",
+      "before": "统计窗内负载",
+      "allocate": "副本分配",
+      "after": "重排后",
+      "toy": "网格与负载均为示意值",
+      "sameWeights": "同一份专家权重",
+      "splitLoad": "把热门负载分摊开"
     },
     "yoco": {
       "input": "待计算输入",
@@ -159,7 +168,8 @@
       "cachedPath": "Decoder Block KV",
       "tokens": "输入 tokens",
       "cache": "Block KV",
-      "replayLength": "回放窗口"
+      "replayLength": "回放窗口",
+      "howToRead": "上半部区分局部状态与可复用的全局 KV；紫色路径传缓存，绿色路径做计算。下半部时间线展示命中后需要补做的部分。"
     },
     "storage": {
       "block": "Block KV",
@@ -171,7 +181,8 @@
       "directory": "Entrypoint 目录",
       "restore": "跨机取回 / 回放",
       "overlap": "逐层传输与前向重叠",
-      "caption": "逐层传输与前向重叠"
+      "caption": "逐层传输与前向重叠",
+      "howToRead": "紫色是持久化缓存，蓝色箭头是传输；虚线表示未开源服务。读取扇出与编码片段数量应分别理解。"
     },
     "routing": {
       "request": "请求到达",
@@ -182,7 +193,8 @@
       "decode": "Decode",
       "patches": "图片 patch 数",
       "encoder": "Vision Encoder",
-      "caption": "Vision Encoder"
+      "caption": "Vision Encoder",
+      "howToRead": "顺着箭头看入口如何把缓存命中信息交给路由，再把工作分配给计算池。虚线标出未公开的线上服务。"
     },
     "recipe": {
       "request": "API 请求",
@@ -194,7 +206,8 @@
       "compile": "异步编译",
       "mask": "自动机 → mask",
       "sampling": "约束采样",
-      "caption": "跨 chunk 保留解析进度"
+      "caption": "跨 chunk 保留解析进度",
+      "howToRead": "从左向右看文本与 token 的转换。约束输出限制候选 token；流式解析则把输出片段还原成可展示内容。"
     },
     "model": {
       "residual": "多路残差",
@@ -205,7 +218,8 @@
       "kv": "压缩 KV",
       "indexer": "Indexer top-k",
       "reuse": "跨层复用",
-      "caption": "代码关系示意"
+      "caption": "代码关系示意",
+      "howToRead": "各框对应可定位的代码模块；连线是代码导读关系，不是经过性能验证的架构结论。推断内容与来源徽章一同阅读。"
     },
     "basics-autoregressive": {
       "caption": "每步增加一个输出；缓存只追上已处理的位置",
@@ -246,6 +260,18 @@
       "dispatch": "分发 token → 专家",
       "combine": "合并专家输出",
       "howToRead": "左侧设备有相同权重，各处理不同请求；右侧设备持有不同专家，需要互相传送 token。设备数量为示意。"
+    },
+    "overview": {
+      "howToRead": "箭头跟随请求的处理顺序；棕色是 CPU，绿色是 GPU，蓝色是传输。灰色虚线表示未公开的服务。",
+      "caption": "点击任一站，沿着数据流继续阅读。"
+    },
+    "swa-window": {
+      "caption": "滑动窗口：保留最近的可见位置",
+      "full": "因果全注意力：可看全部历史",
+      "local": "滑动窗口：只看最近的窗口",
+      "window": "窗口大小",
+      "toy": "序列长度为示意值",
+      "howToRead": "每格是一个 token 位置；绿色为可见 KV，灰色在本层不可见，橙色是当前位置。窗口端点包含当前位置，窗口不会穿越未来。"
     }
   },
   "dspark": {
@@ -904,7 +930,8 @@
       "text": "普通[[autoregressive]]每次先得到一个输出，才知道下一步输入。[[speculative-decoding]]让草稿模块先提出一段候选，目标模型再把这些已知位置并行检查；当权重搬运占主导且仍有空闲算力时，这段验证可能接近一次短 Decode 的成本，但并非总是同样快。[[acceptance]]决定草稿平均留下多少，验证成本决定为这些产出花了多少时间。DSpark 接下来解决的是验证多少候选更划算。",
       "refs": [
         "bg.autoregressive",
-        "bg.speculative"
+        "bg.speculative",
+        "dspark.method"
       ]
     },
     "takeaways": [
@@ -1058,5 +1085,6 @@
     "example": "示意场景",
     "code": "代码一起读",
     "codeScope": "原始片段，旁注解释；点击来源查看完整上下文。"
-  }
+  },
+  "howToRead": "如何读这张图"
 }
