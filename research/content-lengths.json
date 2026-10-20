@@ -1,0 +1,86 @@
+[
+  {
+    "chapter": "system",
+    "lang": "zh",
+    "count": 1181,
+    "unit": "non-whitespace characters"
+  },
+  {
+    "chapter": "scheduling",
+    "lang": "zh",
+    "count": 982,
+    "unit": "non-whitespace characters"
+  },
+  {
+    "chapter": "experts",
+    "lang": "zh",
+    "count": 1071,
+    "unit": "non-whitespace characters"
+  },
+  {
+    "chapter": "yoco",
+    "lang": "zh",
+    "count": 1277,
+    "unit": "non-whitespace characters"
+  },
+  {
+    "chapter": "storage",
+    "lang": "zh",
+    "count": 1201,
+    "unit": "non-whitespace characters"
+  },
+  {
+    "chapter": "routing",
+    "lang": "zh",
+    "count": 1017,
+    "unit": "non-whitespace characters"
+  },
+  {
+    "chapter": "recipe",
+    "lang": "zh",
+    "count": 960,
+    "unit": "non-whitespace characters"
+  },
+  {
+    "chapter": "system",
+    "lang": "en",
+    "count": 888,
+    "unit": "words"
+  },
+  {
+    "chapter": "scheduling",
+    "lang": "en",
+    "count": 842,
+    "unit": "words"
+  },
+  {
+    "chapter": "experts",
+    "lang": "en",
+    "count": 829,
+    "unit": "words"
+  },
+  {
+    "chapter": "yoco",
+    "lang": "en",
+    "count": 897,
+    "unit": "words"
+  },
+  {
+    "chapter": "storage",
+    "lang": "en",
+    "count": 886,
+    "unit": "words"
+  },
+  {
+    "chapter": "routing",
+    "lang": "en",
+    "count": 833,
+    "unit": "words"
+  },
+  {
+    "chapter": "recipe",
+    "lang": "en",
+    "count": 825,
+    "unit": "words"
+  }
+]

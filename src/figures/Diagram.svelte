@@ -217,7 +217,7 @@
     {@render arrow(415,235,415,287)}
     {@render box(25,170,210,65,labels[5],'storage')}
     {@render arrow(235,202,302,202)}
-    {@render box(600,170,210,65,labels[6],'network')}
+    {@render box(600,170,210,65,labels[6],'gpu')}
     {@render arrow(600,202,528,202)}
     <text x="130" y="280" text-anchor="middle" class="small">{labels[7]}</text>
     <text x="420" y="400" text-anchor="middle" class="small">{labels[8]}</text>

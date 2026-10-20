@@ -1,0 +1,165 @@
+{
+  "results": [
+    {
+      "engine": "chrome",
+      "lang": "zh",
+      "theme": "light",
+      "width": 1280,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    },
+    {
+      "engine": "chrome",
+      "lang": "zh",
+      "theme": "light",
+      "width": 375,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    },
+    {
+      "engine": "chrome",
+      "lang": "zh",
+      "theme": "dark",
+      "width": 1280,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    },
+    {
+      "engine": "chrome",
+      "lang": "zh",
+      "theme": "dark",
+      "width": 375,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    },
+    {
+      "engine": "chrome",
+      "lang": "en",
+      "theme": "light",
+      "width": 1280,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    },
+    {
+      "engine": "chrome",
+      "lang": "en",
+      "theme": "light",
+      "width": 375,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    },
+    {
+      "engine": "chrome",
+      "lang": "en",
+      "theme": "dark",
+      "width": 1280,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    },
+    {
+      "engine": "chrome",
+      "lang": "en",
+      "theme": "dark",
+      "width": 375,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    },
+    {
+      "engine": "webkit",
+      "lang": "zh",
+      "theme": "light",
+      "width": 1280,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    },
+    {
+      "engine": "webkit",
+      "lang": "zh",
+      "theme": "light",
+      "width": 375,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    },
+    {
+      "engine": "webkit",
+      "lang": "zh",
+      "theme": "dark",
+      "width": 1280,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    },
+    {
+      "engine": "webkit",
+      "lang": "zh",
+      "theme": "dark",
+      "width": 375,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    },
+    {
+      "engine": "webkit",
+      "lang": "en",
+      "theme": "light",
+      "width": 1280,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    },
+    {
+      "engine": "webkit",
+      "lang": "en",
+      "theme": "light",
+      "width": 375,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    },
+    {
+      "engine": "webkit",
+      "lang": "en",
+      "theme": "dark",
+      "width": 1280,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    },
+    {
+      "engine": "webkit",
+      "lang": "en",
+      "theme": "dark",
+      "width": 375,
+      "overflow": false,
+      "interactions": "pass",
+      "reducedMotion": "pass",
+      "consoleErrors": []
+    }
+  ],
+  "note": "WebKit is an engine check, not real Safari/macOS/iOS certification."
+}

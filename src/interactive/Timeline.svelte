@@ -47,7 +47,7 @@
     {/if}
     <rect x={70+scale*gpuStart/model.total} y="110" width={scale*defaults.forward/model.total} height="45" rx="6" fill="var(--gpu-soft)" stroke="var(--gpu)"/>
     <text x={78+scale*gpuStart/model.total} y="138" class="small">{t.figures.timeline[3]} (N)</text>
-    <rect x={70+scale*(gpuStart+defaults.forward)/model.total} y="110" width={scale*defaults.sample/model.total} height="45" rx="6" fill="var(--network-soft)" stroke="var(--network)"/>
+    <rect x={70+scale*(gpuStart+defaults.forward)/model.total} y="110" width={scale*defaults.sample/model.total} height="45" rx="6" fill="var(--gpu-soft)" stroke="var(--gpu)"/>
     <text x={78+scale*(gpuStart+defaults.forward)/model.total} y="138" class="small">{t.figures.timeline[4]} (N)</text>
     <path d={`M${70+scale*progress/100} 15 V170`} stroke="var(--highlight)" stroke-width="2"/>
   </svg>

@@ -1,0 +1,1170 @@
+[
+  {
+    "engine": "chrome",
+    "lang": "zh",
+    "theme": "light",
+    "width": 1280,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 671
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 614
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 626
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 693
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 637
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 667
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 640
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-zh-light.svg",
+      "http://127.0.0.1:5173/figures/overview-zh-light.png",
+      "http://127.0.0.1:5173/figures/system-zh-light.svg",
+      "http://127.0.0.1:5173/figures/system-zh-light.png",
+      "http://127.0.0.1:5173/figures/timeline-zh-light.svg",
+      "http://127.0.0.1:5173/figures/timeline-zh-light.png",
+      "http://127.0.0.1:5173/figures/experts-zh-light.svg",
+      "http://127.0.0.1:5173/figures/experts-zh-light.png",
+      "http://127.0.0.1:5173/figures/yoco-zh-light.svg",
+      "http://127.0.0.1:5173/figures/yoco-zh-light.png",
+      "http://127.0.0.1:5173/figures/storage-zh-light.svg",
+      "http://127.0.0.1:5173/figures/storage-zh-light.png",
+      "http://127.0.0.1:5173/figures/routing-zh-light.svg",
+      "http://127.0.0.1:5173/figures/routing-zh-light.png",
+      "http://127.0.0.1:5173/figures/recipe-zh-light.svg",
+      "http://127.0.0.1:5173/figures/recipe-zh-light.png",
+      "http://127.0.0.1:5173/figures/model-zh-light.svg",
+      "http://127.0.0.1:5173/figures/model-zh-light.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  },
+  {
+    "engine": "chrome",
+    "lang": "zh",
+    "theme": "light",
+    "width": 375,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 671
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 614
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 626
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 693
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 637
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 667
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 640
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-zh-light.svg",
+      "http://127.0.0.1:5173/figures/overview-zh-light.png",
+      "http://127.0.0.1:5173/figures/system-zh-light.svg",
+      "http://127.0.0.1:5173/figures/system-zh-light.png",
+      "http://127.0.0.1:5173/figures/timeline-zh-light.svg",
+      "http://127.0.0.1:5173/figures/timeline-zh-light.png",
+      "http://127.0.0.1:5173/figures/experts-zh-light.svg",
+      "http://127.0.0.1:5173/figures/experts-zh-light.png",
+      "http://127.0.0.1:5173/figures/yoco-zh-light.svg",
+      "http://127.0.0.1:5173/figures/yoco-zh-light.png",
+      "http://127.0.0.1:5173/figures/storage-zh-light.svg",
+      "http://127.0.0.1:5173/figures/storage-zh-light.png",
+      "http://127.0.0.1:5173/figures/routing-zh-light.svg",
+      "http://127.0.0.1:5173/figures/routing-zh-light.png",
+      "http://127.0.0.1:5173/figures/recipe-zh-light.svg",
+      "http://127.0.0.1:5173/figures/recipe-zh-light.png",
+      "http://127.0.0.1:5173/figures/model-zh-light.svg",
+      "http://127.0.0.1:5173/figures/model-zh-light.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  },
+  {
+    "engine": "chrome",
+    "lang": "zh",
+    "theme": "dark",
+    "width": 1280,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 671
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 614
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 626
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 693
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 637
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 667
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 640
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/overview-zh-dark.png",
+      "http://127.0.0.1:5173/figures/system-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/system-zh-dark.png",
+      "http://127.0.0.1:5173/figures/timeline-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/timeline-zh-dark.png",
+      "http://127.0.0.1:5173/figures/experts-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/experts-zh-dark.png",
+      "http://127.0.0.1:5173/figures/yoco-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/yoco-zh-dark.png",
+      "http://127.0.0.1:5173/figures/storage-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/storage-zh-dark.png",
+      "http://127.0.0.1:5173/figures/routing-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/routing-zh-dark.png",
+      "http://127.0.0.1:5173/figures/recipe-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/recipe-zh-dark.png",
+      "http://127.0.0.1:5173/figures/model-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/model-zh-dark.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  },
+  {
+    "engine": "chrome",
+    "lang": "zh",
+    "theme": "dark",
+    "width": 375,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 671
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 614
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 626
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 693
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 637
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 667
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 640
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/overview-zh-dark.png",
+      "http://127.0.0.1:5173/figures/system-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/system-zh-dark.png",
+      "http://127.0.0.1:5173/figures/timeline-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/timeline-zh-dark.png",
+      "http://127.0.0.1:5173/figures/experts-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/experts-zh-dark.png",
+      "http://127.0.0.1:5173/figures/yoco-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/yoco-zh-dark.png",
+      "http://127.0.0.1:5173/figures/storage-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/storage-zh-dark.png",
+      "http://127.0.0.1:5173/figures/routing-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/routing-zh-dark.png",
+      "http://127.0.0.1:5173/figures/recipe-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/recipe-zh-dark.png",
+      "http://127.0.0.1:5173/figures/model-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/model-zh-dark.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  },
+  {
+    "engine": "chrome",
+    "lang": "en",
+    "theme": "light",
+    "width": 1280,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 4380
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 4703
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 4171
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 4134
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 4036
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 4428
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 4642
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-en-light.svg",
+      "http://127.0.0.1:5173/figures/overview-en-light.png",
+      "http://127.0.0.1:5173/figures/system-en-light.svg",
+      "http://127.0.0.1:5173/figures/system-en-light.png",
+      "http://127.0.0.1:5173/figures/timeline-en-light.svg",
+      "http://127.0.0.1:5173/figures/timeline-en-light.png",
+      "http://127.0.0.1:5173/figures/experts-en-light.svg",
+      "http://127.0.0.1:5173/figures/experts-en-light.png",
+      "http://127.0.0.1:5173/figures/yoco-en-light.svg",
+      "http://127.0.0.1:5173/figures/yoco-en-light.png",
+      "http://127.0.0.1:5173/figures/storage-en-light.svg",
+      "http://127.0.0.1:5173/figures/storage-en-light.png",
+      "http://127.0.0.1:5173/figures/routing-en-light.svg",
+      "http://127.0.0.1:5173/figures/routing-en-light.png",
+      "http://127.0.0.1:5173/figures/recipe-en-light.svg",
+      "http://127.0.0.1:5173/figures/recipe-en-light.png",
+      "http://127.0.0.1:5173/figures/model-en-light.svg",
+      "http://127.0.0.1:5173/figures/model-en-light.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  },
+  {
+    "engine": "chrome",
+    "lang": "en",
+    "theme": "light",
+    "width": 375,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 4380
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 4703
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 4171
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 4134
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 4036
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 4428
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 4642
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-en-light.svg",
+      "http://127.0.0.1:5173/figures/overview-en-light.png",
+      "http://127.0.0.1:5173/figures/system-en-light.svg",
+      "http://127.0.0.1:5173/figures/system-en-light.png",
+      "http://127.0.0.1:5173/figures/timeline-en-light.svg",
+      "http://127.0.0.1:5173/figures/timeline-en-light.png",
+      "http://127.0.0.1:5173/figures/experts-en-light.svg",
+      "http://127.0.0.1:5173/figures/experts-en-light.png",
+      "http://127.0.0.1:5173/figures/yoco-en-light.svg",
+      "http://127.0.0.1:5173/figures/yoco-en-light.png",
+      "http://127.0.0.1:5173/figures/storage-en-light.svg",
+      "http://127.0.0.1:5173/figures/storage-en-light.png",
+      "http://127.0.0.1:5173/figures/routing-en-light.svg",
+      "http://127.0.0.1:5173/figures/routing-en-light.png",
+      "http://127.0.0.1:5173/figures/recipe-en-light.svg",
+      "http://127.0.0.1:5173/figures/recipe-en-light.png",
+      "http://127.0.0.1:5173/figures/model-en-light.svg",
+      "http://127.0.0.1:5173/figures/model-en-light.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  },
+  {
+    "engine": "chrome",
+    "lang": "en",
+    "theme": "dark",
+    "width": 1280,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 4380
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 4703
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 4171
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 4134
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 4036
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 4428
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 4642
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-en-dark.svg",
+      "http://127.0.0.1:5173/figures/overview-en-dark.png",
+      "http://127.0.0.1:5173/figures/system-en-dark.svg",
+      "http://127.0.0.1:5173/figures/system-en-dark.png",
+      "http://127.0.0.1:5173/figures/timeline-en-dark.svg",
+      "http://127.0.0.1:5173/figures/timeline-en-dark.png",
+      "http://127.0.0.1:5173/figures/experts-en-dark.svg",
+      "http://127.0.0.1:5173/figures/experts-en-dark.png",
+      "http://127.0.0.1:5173/figures/yoco-en-dark.svg",
+      "http://127.0.0.1:5173/figures/yoco-en-dark.png",
+      "http://127.0.0.1:5173/figures/storage-en-dark.svg",
+      "http://127.0.0.1:5173/figures/storage-en-dark.png",
+      "http://127.0.0.1:5173/figures/routing-en-dark.svg",
+      "http://127.0.0.1:5173/figures/routing-en-dark.png",
+      "http://127.0.0.1:5173/figures/recipe-en-dark.svg",
+      "http://127.0.0.1:5173/figures/recipe-en-dark.png",
+      "http://127.0.0.1:5173/figures/model-en-dark.svg",
+      "http://127.0.0.1:5173/figures/model-en-dark.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  },
+  {
+    "engine": "chrome",
+    "lang": "en",
+    "theme": "dark",
+    "width": 375,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 4380
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 4703
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 4171
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 4134
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 4036
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 4428
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 4642
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-en-dark.svg",
+      "http://127.0.0.1:5173/figures/overview-en-dark.png",
+      "http://127.0.0.1:5173/figures/system-en-dark.svg",
+      "http://127.0.0.1:5173/figures/system-en-dark.png",
+      "http://127.0.0.1:5173/figures/timeline-en-dark.svg",
+      "http://127.0.0.1:5173/figures/timeline-en-dark.png",
+      "http://127.0.0.1:5173/figures/experts-en-dark.svg",
+      "http://127.0.0.1:5173/figures/experts-en-dark.png",
+      "http://127.0.0.1:5173/figures/yoco-en-dark.svg",
+      "http://127.0.0.1:5173/figures/yoco-en-dark.png",
+      "http://127.0.0.1:5173/figures/storage-en-dark.svg",
+      "http://127.0.0.1:5173/figures/storage-en-dark.png",
+      "http://127.0.0.1:5173/figures/routing-en-dark.svg",
+      "http://127.0.0.1:5173/figures/routing-en-dark.png",
+      "http://127.0.0.1:5173/figures/recipe-en-dark.svg",
+      "http://127.0.0.1:5173/figures/recipe-en-dark.png",
+      "http://127.0.0.1:5173/figures/model-en-dark.svg",
+      "http://127.0.0.1:5173/figures/model-en-dark.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  },
+  {
+    "engine": "webkit",
+    "lang": "zh",
+    "theme": "light",
+    "width": 1280,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 671
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 614
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 626
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 693
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 637
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 667
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 640
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-zh-light.svg",
+      "http://127.0.0.1:5173/figures/overview-zh-light.png",
+      "http://127.0.0.1:5173/figures/system-zh-light.svg",
+      "http://127.0.0.1:5173/figures/system-zh-light.png",
+      "http://127.0.0.1:5173/figures/timeline-zh-light.svg",
+      "http://127.0.0.1:5173/figures/timeline-zh-light.png",
+      "http://127.0.0.1:5173/figures/experts-zh-light.svg",
+      "http://127.0.0.1:5173/figures/experts-zh-light.png",
+      "http://127.0.0.1:5173/figures/yoco-zh-light.svg",
+      "http://127.0.0.1:5173/figures/yoco-zh-light.png",
+      "http://127.0.0.1:5173/figures/storage-zh-light.svg",
+      "http://127.0.0.1:5173/figures/storage-zh-light.png",
+      "http://127.0.0.1:5173/figures/routing-zh-light.svg",
+      "http://127.0.0.1:5173/figures/routing-zh-light.png",
+      "http://127.0.0.1:5173/figures/recipe-zh-light.svg",
+      "http://127.0.0.1:5173/figures/recipe-zh-light.png",
+      "http://127.0.0.1:5173/figures/model-zh-light.svg",
+      "http://127.0.0.1:5173/figures/model-zh-light.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  },
+  {
+    "engine": "webkit",
+    "lang": "zh",
+    "theme": "light",
+    "width": 375,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 671
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 614
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 626
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 693
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 637
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 667
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 640
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-zh-light.svg",
+      "http://127.0.0.1:5173/figures/overview-zh-light.png",
+      "http://127.0.0.1:5173/figures/system-zh-light.svg",
+      "http://127.0.0.1:5173/figures/system-zh-light.png",
+      "http://127.0.0.1:5173/figures/timeline-zh-light.svg",
+      "http://127.0.0.1:5173/figures/timeline-zh-light.png",
+      "http://127.0.0.1:5173/figures/experts-zh-light.svg",
+      "http://127.0.0.1:5173/figures/experts-zh-light.png",
+      "http://127.0.0.1:5173/figures/yoco-zh-light.svg",
+      "http://127.0.0.1:5173/figures/yoco-zh-light.png",
+      "http://127.0.0.1:5173/figures/storage-zh-light.svg",
+      "http://127.0.0.1:5173/figures/storage-zh-light.png",
+      "http://127.0.0.1:5173/figures/routing-zh-light.svg",
+      "http://127.0.0.1:5173/figures/routing-zh-light.png",
+      "http://127.0.0.1:5173/figures/recipe-zh-light.svg",
+      "http://127.0.0.1:5173/figures/recipe-zh-light.png",
+      "http://127.0.0.1:5173/figures/model-zh-light.svg",
+      "http://127.0.0.1:5173/figures/model-zh-light.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  },
+  {
+    "engine": "webkit",
+    "lang": "zh",
+    "theme": "dark",
+    "width": 1280,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 671
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 614
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 626
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 693
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 637
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 667
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 640
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/overview-zh-dark.png",
+      "http://127.0.0.1:5173/figures/system-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/system-zh-dark.png",
+      "http://127.0.0.1:5173/figures/timeline-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/timeline-zh-dark.png",
+      "http://127.0.0.1:5173/figures/experts-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/experts-zh-dark.png",
+      "http://127.0.0.1:5173/figures/yoco-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/yoco-zh-dark.png",
+      "http://127.0.0.1:5173/figures/storage-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/storage-zh-dark.png",
+      "http://127.0.0.1:5173/figures/routing-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/routing-zh-dark.png",
+      "http://127.0.0.1:5173/figures/recipe-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/recipe-zh-dark.png",
+      "http://127.0.0.1:5173/figures/model-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/model-zh-dark.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  },
+  {
+    "engine": "webkit",
+    "lang": "zh",
+    "theme": "dark",
+    "width": 375,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 671
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 614
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 626
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 693
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 637
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 667
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 640
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/overview-zh-dark.png",
+      "http://127.0.0.1:5173/figures/system-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/system-zh-dark.png",
+      "http://127.0.0.1:5173/figures/timeline-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/timeline-zh-dark.png",
+      "http://127.0.0.1:5173/figures/experts-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/experts-zh-dark.png",
+      "http://127.0.0.1:5173/figures/yoco-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/yoco-zh-dark.png",
+      "http://127.0.0.1:5173/figures/storage-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/storage-zh-dark.png",
+      "http://127.0.0.1:5173/figures/routing-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/routing-zh-dark.png",
+      "http://127.0.0.1:5173/figures/recipe-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/recipe-zh-dark.png",
+      "http://127.0.0.1:5173/figures/model-zh-dark.svg",
+      "http://127.0.0.1:5173/figures/model-zh-dark.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  },
+  {
+    "engine": "webkit",
+    "lang": "en",
+    "theme": "light",
+    "width": 1280,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 4380
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 4703
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 4171
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 4134
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 4036
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 4428
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 4642
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-en-light.svg",
+      "http://127.0.0.1:5173/figures/overview-en-light.png",
+      "http://127.0.0.1:5173/figures/system-en-light.svg",
+      "http://127.0.0.1:5173/figures/system-en-light.png",
+      "http://127.0.0.1:5173/figures/timeline-en-light.svg",
+      "http://127.0.0.1:5173/figures/timeline-en-light.png",
+      "http://127.0.0.1:5173/figures/experts-en-light.svg",
+      "http://127.0.0.1:5173/figures/experts-en-light.png",
+      "http://127.0.0.1:5173/figures/yoco-en-light.svg",
+      "http://127.0.0.1:5173/figures/yoco-en-light.png",
+      "http://127.0.0.1:5173/figures/storage-en-light.svg",
+      "http://127.0.0.1:5173/figures/storage-en-light.png",
+      "http://127.0.0.1:5173/figures/routing-en-light.svg",
+      "http://127.0.0.1:5173/figures/routing-en-light.png",
+      "http://127.0.0.1:5173/figures/recipe-en-light.svg",
+      "http://127.0.0.1:5173/figures/recipe-en-light.png",
+      "http://127.0.0.1:5173/figures/model-en-light.svg",
+      "http://127.0.0.1:5173/figures/model-en-light.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  },
+  {
+    "engine": "webkit",
+    "lang": "en",
+    "theme": "light",
+    "width": 375,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 4380
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 4703
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 4171
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 4134
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 4036
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 4428
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 4642
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-en-light.svg",
+      "http://127.0.0.1:5173/figures/overview-en-light.png",
+      "http://127.0.0.1:5173/figures/system-en-light.svg",
+      "http://127.0.0.1:5173/figures/system-en-light.png",
+      "http://127.0.0.1:5173/figures/timeline-en-light.svg",
+      "http://127.0.0.1:5173/figures/timeline-en-light.png",
+      "http://127.0.0.1:5173/figures/experts-en-light.svg",
+      "http://127.0.0.1:5173/figures/experts-en-light.png",
+      "http://127.0.0.1:5173/figures/yoco-en-light.svg",
+      "http://127.0.0.1:5173/figures/yoco-en-light.png",
+      "http://127.0.0.1:5173/figures/storage-en-light.svg",
+      "http://127.0.0.1:5173/figures/storage-en-light.png",
+      "http://127.0.0.1:5173/figures/routing-en-light.svg",
+      "http://127.0.0.1:5173/figures/routing-en-light.png",
+      "http://127.0.0.1:5173/figures/recipe-en-light.svg",
+      "http://127.0.0.1:5173/figures/recipe-en-light.png",
+      "http://127.0.0.1:5173/figures/model-en-light.svg",
+      "http://127.0.0.1:5173/figures/model-en-light.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  },
+  {
+    "engine": "webkit",
+    "lang": "en",
+    "theme": "dark",
+    "width": 1280,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 4380
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 4703
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 4171
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 4134
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 4036
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 4428
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 4642
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-en-dark.svg",
+      "http://127.0.0.1:5173/figures/overview-en-dark.png",
+      "http://127.0.0.1:5173/figures/system-en-dark.svg",
+      "http://127.0.0.1:5173/figures/system-en-dark.png",
+      "http://127.0.0.1:5173/figures/timeline-en-dark.svg",
+      "http://127.0.0.1:5173/figures/timeline-en-dark.png",
+      "http://127.0.0.1:5173/figures/experts-en-dark.svg",
+      "http://127.0.0.1:5173/figures/experts-en-dark.png",
+      "http://127.0.0.1:5173/figures/yoco-en-dark.svg",
+      "http://127.0.0.1:5173/figures/yoco-en-dark.png",
+      "http://127.0.0.1:5173/figures/storage-en-dark.svg",
+      "http://127.0.0.1:5173/figures/storage-en-dark.png",
+      "http://127.0.0.1:5173/figures/routing-en-dark.svg",
+      "http://127.0.0.1:5173/figures/routing-en-dark.png",
+      "http://127.0.0.1:5173/figures/recipe-en-dark.svg",
+      "http://127.0.0.1:5173/figures/recipe-en-dark.png",
+      "http://127.0.0.1:5173/figures/model-en-dark.svg",
+      "http://127.0.0.1:5173/figures/model-en-dark.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  },
+  {
+    "engine": "webkit",
+    "lang": "en",
+    "theme": "dark",
+    "width": 375,
+    "overflow": false,
+    "chapters": [
+      {
+        "id": "system",
+        "facts": 4,
+        "reading": 4380
+      },
+      {
+        "id": "scheduling",
+        "facts": 3,
+        "reading": 4703
+      },
+      {
+        "id": "experts",
+        "facts": 4,
+        "reading": 4171
+      },
+      {
+        "id": "yoco",
+        "facts": 5,
+        "reading": 4134
+      },
+      {
+        "id": "storage",
+        "facts": 5,
+        "reading": 4036
+      },
+      {
+        "id": "routing",
+        "facts": 3,
+        "reading": 4428
+      },
+      {
+        "id": "recipe",
+        "facts": 3,
+        "reading": 4642
+      },
+      {
+        "id": "model",
+        "facts": 4,
+        "reading": 0
+      }
+    ],
+    "svgIssues": [],
+    "downloadLinks": [
+      "http://127.0.0.1:5173/figures/overview-en-dark.svg",
+      "http://127.0.0.1:5173/figures/overview-en-dark.png",
+      "http://127.0.0.1:5173/figures/system-en-dark.svg",
+      "http://127.0.0.1:5173/figures/system-en-dark.png",
+      "http://127.0.0.1:5173/figures/timeline-en-dark.svg",
+      "http://127.0.0.1:5173/figures/timeline-en-dark.png",
+      "http://127.0.0.1:5173/figures/experts-en-dark.svg",
+      "http://127.0.0.1:5173/figures/experts-en-dark.png",
+      "http://127.0.0.1:5173/figures/yoco-en-dark.svg",
+      "http://127.0.0.1:5173/figures/yoco-en-dark.png",
+      "http://127.0.0.1:5173/figures/storage-en-dark.svg",
+      "http://127.0.0.1:5173/figures/storage-en-dark.png",
+      "http://127.0.0.1:5173/figures/routing-en-dark.svg",
+      "http://127.0.0.1:5173/figures/routing-en-dark.png",
+      "http://127.0.0.1:5173/figures/recipe-en-dark.svg",
+      "http://127.0.0.1:5173/figures/recipe-en-dark.png",
+      "http://127.0.0.1:5173/figures/model-en-dark.svg",
+      "http://127.0.0.1:5173/figures/model-en-dark.png"
+    ],
+    "missingDownloads": [],
+    "errors": [],
+    "keyboardAndReducedMotion": "pass"
+  }
+]
