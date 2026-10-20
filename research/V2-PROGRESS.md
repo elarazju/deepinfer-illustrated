@@ -5,7 +5,7 @@
 - [x] Phase 3 �� verified background sources and bilingual glossary
 - [x] Phase 4 �� inline terms and glossary UI
 - [x] Phase 5 �� basics chapter, diagrams and interactions
-- [ ] Phase 6 �� chapter prerequisites, examples, snippets and summaries
+- [x] Phase 6 �� chapter prerequisites, examples, snippets and summaries
 - [ ] Phase 7 �� EPLB, SWA and figure captions
 - [ ] Phase 8 �� reading paths and navigation
 - [ ] Phase 9 �� independent audits, browser checks, report

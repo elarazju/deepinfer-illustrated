@@ -13,6 +13,7 @@ export type Fact = {
   url?: string;
   ref: string; status: 'confirmed' | 'inferred' | 'unverified';
   values?: Record<string, number>;
+  snippet?: {start:number;end:number;text:string;notes:{line:number;zh:string;en:string}[]};
 };
 export const database = parse(raw) as {
   commit: string; repository: string; qa_path: string; facts: Fact[];

@@ -59,9 +59,9 @@
       <p class="eyebrow">{t.contents}</p>
       <nav aria-label={t.contents}>
         <a href="#basics" class:current={active==='basics'}><span class="mono">{String(0).padStart(2,'0')}</span>{t.glossaryUi.basics}</a>
-        <a href="#journey" class:current={active==='journey'}><span class="mono">00</span>{t.overview}</a>
+        <a href="#journey" class:current={active==='journey'}><span class="mono">{String(1).padStart(2,'0')}</span>{t.overview}</a>
         {#each chapters as chapter,i}
-          <a href={`#${chapter.id}`} class:current={active===chapter.id}><span class="mono">{String(i+1).padStart(2,'0')}</span>{t.chapters[i].short}</a>
+          <a href={`#${chapter.id}`} class:current={active===chapter.id}><span class="mono">{chapter.number}</span>{t.chapters[chapter.copyIndex].short}</a>
           {#if chapter.id === 'scheduling'}<a class="lab-nav" class:current={active==='decode-lab'} href="#decode-lab"><span>↳</span> DSpark · Decode Lab</a>{/if}
         {/each}
         <a href="#glossary">{t.glossaryUi.title}</a>
@@ -79,7 +79,7 @@
       <Basics {locale} {theme}/>
       <section id="journey" class="journey">
         <div class="section-title"><div><p class="eyebrow">THE BIG PICTURE</p><h2>{t.overview}</h2></div><span class="section-arrow" aria-hidden="true">↘</span></div>
-        <Figure kind="overview" {locale} number="00" source="system.disaggregation" {theme}/>
+        <Figure kind="overview" {locale} number="01" source="system.disaggregation" {theme}/>
         <p class="source-legend">{t.sourceLegend}</p>
         <div class="legend">
           {#each t.legend as label,i}<span><i class={['cpu','gpu','storage','network','closed'][i]}></i>{label}</span>{/each}

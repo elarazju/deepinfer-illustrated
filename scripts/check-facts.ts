@@ -16,6 +16,13 @@ for (const fact of db.facts) {
   if (fact.source === 'background') {
     if (!fact.id.startsWith('bg.') || fact.status !== 'confirmed' || !/^https:\/\//.test(fact.url ?? '')) errors.push(`Invalid background: ${fact.id}`);
   }
+  if (fact.snippet) {
+    const snippet=fact.snippet;
+    if(fact.source!=='code' || snippet.end-snippet.start+1>20 || snippet.end<snippet.start || snippet.text.split('\n').length!==snippet.end-snippet.start+1)errors.push(`Invalid snippet bounds: ${fact.id}`);
+    const file=path.join('vendor/deepinfer',fact.ref.split(':')[0]);
+    if(fs.existsSync(file) && fs.readFileSync(file,'utf8').split(/\r?\n/).slice(snippet.start-1,snippet.end).join('\n')!==snippet.text)errors.push(`Snippet does not match locked source: ${fact.id}`);
+    for(const note of snippet.notes)if(note.line<snippet.start||note.line>snippet.end||!note.zh||!note.en)errors.push(`Invalid snippet note: ${fact.id}`);
+  }
   if (!['qa_pdf','background'].includes(fact.source)) {
     const [file, line] = fact.ref.split(':');
     if (!line || !/^\d+$/.test(line)) errors.push(`Missing line: ${fact.id}`);
@@ -63,8 +70,9 @@ const uiEvidence: Record<string,string[]> = {
   'figureNotes.tiers':['lb.prefill'],
   'figureNotes.stream':['recipe.stream'],
 };
-function checkNumeric(value:string,ids:string[],label:string) {
+function checkNumeric(value:string,ids:string[],label:string,demoValues:number[]=[]) {
   const allowed = new Set(ids.flatMap(id=>[...((facts.get(id)?.zh??'')+' '+(facts.get(id)?.en??'')).matchAll(/\d+(?:\.\d+)?/g)].map(m=>m[0])));
+  demoValues.forEach(value=>allowed.add(String(value)));
   for(const number of value.matchAll(/\d+(?:\.\d+)?/g))if(!allowed.has(number[0]))errors.push(`Unregistered number ${number[0]} (${label})`);
 }
 const glossary = parse(fs.readFileSync('glossary.yaml','utf8'));
@@ -86,17 +94,17 @@ function checkTerms(value:any,label:string){
 }
 checkTerms(zh,'zh');checkTerms(en,'en');
 for(const [lang,dict] of Object.entries({zh,en})){
-  const walk=(value:any,key='', inherited:string[]=[])=>{
+  const walk=(value:any,key='', inherited:string[]=[],demoValues:number[]=[])=>{
     if(typeof value==='string'){
       if(/\d/.test(value)&&key!=='license'&&!key.endsWith('.ref')&&!key.includes('.refs.')&&!key.endsWith('.id')) {
         const termRefs=[...value.matchAll(/\[\[([^|\]]+)(?:\|[^\]]*)?\]\]/g)].flatMap(m=>terms.get(m[1])?.refs??[]);
         const displayed=value.replace(/\[\[([^|\]]+)(?:\|([^\]]*))?\]\]/g,(_,id,label)=>label??terms.get(id)?.[lang]?.term??id);
-        checkNumeric(displayed,[...inherited,...termRefs,...(uiEvidence[key]??[])],`${lang}.${key}`);
+        checkNumeric(displayed,[...inherited,...termRefs,...(uiEvidence[key]??[])],`${lang}.${key}`,demoValues);
       }
     }else if(value&&typeof value==='object'){
       const refs=Array.isArray(value.refs)?value.refs:inherited;
       for(const id of refs)if(!facts.has(id)||facts.get(id).status==='unverified')errors.push(`Invalid prose evidence: ${id}`);
-      for(const [k,v] of Object.entries(value))walk(v,key?`${key}.${k}`:k,refs);
+      for(const [k,v] of Object.entries(value))walk(v,key?`${key}.${k}`:k,refs,value.demo?(db.demo_defaults.examples[value.demo]??[]):demoValues);
     }
   };walk(dict);
 }

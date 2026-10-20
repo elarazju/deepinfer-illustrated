@@ -981,5 +981,27 @@
     ],
     "first_chapter": "recipe",
     "related": []
+  },
+  {
+    "id": "kmp",
+    "zh": {
+      "term": "增量字符串匹配（KMP）",
+      "short": "利用前缀失败表继续匹配字符串",
+      "long": "失配时回到仍可能匹配的前缀，而不是重扫全部历史。流式处理保留匹配进度，跨块继续识别标记。"
+    },
+    "en": {
+      "term": "Incremental string matching (KMP)",
+      "short": "Continues matching through a prefix failure table.",
+      "long": "A mismatch falls back to a viable prefix instead of rescanning all prior text. Streaming code retains progress across chunks."
+    },
+    "refs": [
+      "recipe.stream",
+      "snippet.recipe"
+    ],
+    "first_chapter": "recipe",
+    "related": [
+      "utf",
+      "sse"
+    ]
   }
 ]
