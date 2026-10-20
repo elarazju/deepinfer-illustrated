@@ -740,5 +740,7 @@
     "intro": "Once decoding is underway, another way to save time is to propose candidate tokens and verify them together. Having seen how a batch is scheduled, explore how DSpark chooses the candidates worth checking.",
     "lead": "Lower an early confidence slider and watch later candidates lose value too. Then switch to fixed length and compare the choices made from exactly the same proposals.",
     "scope": "The sliders and timing curve explain a trade-off. Production allocates a shared budget across requests; official reported results are listed separately in the demo."
-  }
+  },
+  "background": "Background",
+  "sourceLegend": "Sources: code documents the public implementation; official Q&A describes deployment practice; inference labels mark interpretation; background explains general concepts and does not establish DeepInfer implementation claims."
 }

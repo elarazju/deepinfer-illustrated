@@ -75,6 +75,7 @@
       <section id="journey" class="journey">
         <div class="section-title"><div><p class="eyebrow">THE BIG PICTURE</p><h2>{t.overview}</h2></div><span class="section-arrow" aria-hidden="true">↘</span></div>
         <Figure kind="overview" {locale} number="00" source="system.disaggregation" {theme}/>
+        <p class="source-legend">{t.sourceLegend}</p>
         <div class="legend">
           {#each t.legend as label,i}<span><i class={['cpu','gpu','storage','network','closed'][i]}></i>{label}</span>{/each}
         </div>
@@ -84,7 +85,7 @@
         {#if chapter.id === 'scheduling'}<DecodeLab {locale}/>{/if}
       {/each}
       <footer>
-        <p class="eyebrow">DEEPINFER ILLUSTRATED</p><h2>{t.about}</h2><p>{t.aboutText}</p>
+        <p class="eyebrow">DEEPINFER ILLUSTRATED</p><h2>{t.about}</h2><p>{t.aboutText}</p><p>{t.sourceLegend}</p>
         <p class="mono">{t.version}: <a href={`${database.repository}/tree/${database.commit}`}>{database.commit}</a></p>
         <p>{t.license}</p>
         <a href="#top">{t.back} ↑</a>

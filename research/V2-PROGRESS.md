@@ -1,7 +1,7 @@
 # v2 implementation
 
 - [x] Phase 1 �� engineering cleanup
-- [ ] Phase 2 �� background evidence and glossary schema
+- [x] Phase 2 �� background evidence and glossary schema
 - [ ] Phase 3 �� verified background sources and bilingual glossary
 - [ ] Phase 4 �� inline terms and glossary UI
 - [ ] Phase 5 �� basics chapter, diagrams and interactions
@@ -12,4 +12,5 @@
 - [ ] Publication �� awaiting user confirmation after local acceptance
 
 Background evidence explains general concepts; it does not establish DeepInfer implementation claims.
+
 

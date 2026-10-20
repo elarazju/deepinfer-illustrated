@@ -1,5 +1,7 @@
 :root {
   color-scheme: light;
+  --background: #805018;
+  --background-soft: #fff0d3;
   --paper: #f7f6f2;
   --surface: #fffefa;
   --surface-alt: #f0f0e8;
@@ -26,6 +28,8 @@
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
+  --background: #f3d091;
+  --background-soft: #44351c;
   --paper: #141c19;
   --surface: #1b2520;
   --surface-alt: #243028;

@@ -1247,3 +1247,5 @@ footer a {
     transition: none !important;
   }
 }
+
+.fact-badge.background { color: var(--background); background: var(--background-soft); border-color: var(--background); }

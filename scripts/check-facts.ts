@@ -13,7 +13,10 @@ for (const fact of db.facts) {
   if (!fact.ref || !fact.zh || !fact.en) errors.push(`Missing evidence or translation: ${fact.id}`);
   if (!['confirmed','inferred','unverified'].includes(fact.status)) errors.push(`Invalid status: ${fact.id}`);
   if (fact.source === 'qa_pdf' && !/^pp?\.\d/.test(fact.ref)) errors.push(`Missing PDF page: ${fact.id}`);
-  if (fact.source !== 'qa_pdf') {
+  if (fact.source === 'background') {
+    if (!fact.id.startsWith('bg.') || fact.status !== 'confirmed' || !/^https:\/\//.test(fact.url ?? '')) errors.push(`Invalid background: ${fact.id}`);
+  }
+  if (!['qa_pdf','background'].includes(fact.source)) {
     const [file, line] = fact.ref.split(':');
     if (!line || !/^\d+$/.test(line)) errors.push(`Missing line: ${fact.id}`);
     const source = path.join('vendor/deepinfer',file);
@@ -29,7 +32,7 @@ function files(dir: string): string[] {
 const referenced = new Set<string>();
 for(const file of files('src').filter(f=>/\.(svelte|ts)$/.test(f))) {
   const source=fs.readFileSync(file,'utf8');
-  for(const match of source.matchAll(/['"]((?:release|system|zos|eplb|yoco|swa|storage|lb|recipe|so|dspark|model)\.[a-z_]+)['"]/g)){
+  for(const match of source.matchAll(/['"]((?:bg|snippet|release|system|zos|eplb|yoco|swa|storage|lb|recipe|so|dspark|model)\.[a-z_]+)['"]/g)){
     const id=match[1];referenced.add(id);
     if(!facts.has(id))errors.push(`Unknown fact ${id} in ${file}`);
     if(facts.get(id)?.status==='unverified')errors.push(`Unverified fact used: ${id}`);
@@ -61,9 +64,27 @@ const uiEvidence: Record<string,string[]> = {
   'figureNotes.stream':['recipe.stream'],
 };
 function checkNumeric(value:string,ids:string[],label:string) {
-  const allowed = new Set(ids.flatMap(id=>[...(facts.get(id)?.zh??'').matchAll(/\d+(?:\.\d+)?/g)].map(m=>m[0])));
+  const allowed = new Set(ids.flatMap(id=>[...((facts.get(id)?.zh??'')+' '+(facts.get(id)?.en??'')).matchAll(/\d+(?:\.\d+)?/g)].map(m=>m[0])));
   for(const number of value.matchAll(/\d+(?:\.\d+)?/g))if(!allowed.has(number[0]))errors.push(`Unregistered number ${number[0]} (${label})`);
 }
+const glossary = parse(fs.readFileSync('glossary.yaml','utf8'));
+const terms = new Map<string,any>(glossary.map((entry:any)=>[entry.id,entry]));
+if(terms.size!==glossary.length) errors.push('Duplicate glossary ID');
+for(const entry of glossary){
+  if(!entry.id || !entry.first_chapter || !Array.isArray(entry.refs) || !entry.refs.length || !Array.isArray(entry.related)) errors.push(`Invalid glossary structure: ${entry.id}`);
+  if(JSON.stringify(shape(entry.zh))!==JSON.stringify(shape(entry.en))) errors.push(`Glossary translation mismatch: ${entry.id}`);
+  for(const lang of ['zh','en']) {
+    for(const key of ['term','short','long']) if(typeof entry[lang]?.[key]!=='string' || !entry[lang][key]) errors.push(`Missing glossary ${entry.id}.${lang}.${key}`);
+    checkNumeric(Object.values(entry[lang]??{}).join(' '),entry.refs??[],`glossary.${entry.id}.${lang}`);
+  }
+  for(const id of entry.refs??[])if(!facts.has(id)||facts.get(id).status==='unverified') errors.push(`Invalid glossary ref: ${id}`);
+  for(const id of entry.related??[])if(!terms.has(id)) errors.push(`Invalid related term: ${id}`);
+}
+function checkTerms(value:any,label:string){
+  if(typeof value==='string')for(const match of value.matchAll(/\[\[([^|\]]+)(?:\|[^\]]*)?\]\]/g))if(!terms.has(match[1])) errors.push(`Unknown term ${match[1]} (${label})`);
+  if(value&&typeof value==='object')for(const [key,item] of Object.entries(value))checkTerms(item,`${label}.${key}`);
+}
+checkTerms(zh,'zh');checkTerms(en,'en');
 for(const [lang,dict] of Object.entries({zh,en})){
   const walk=(value:any,key='')=>{
     if(typeof value==='string'){

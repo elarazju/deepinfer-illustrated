@@ -1,5 +1,6 @@
 import { parse } from 'yaml';
 import raw from '../../facts.yaml?raw';
+import glossaryRaw from '../../glossary.yaml?raw';
 import zh from '../i18n/zh.json';
 import en from '../i18n/en.json';
 
@@ -8,7 +9,8 @@ export type Dictionary = typeof zh;
 export const dictionaries = { zh, en };
 export type Fact = {
   id: string; zh: string; en: string;
-  source: 'qa_pdf' | 'readme' | 'code';
+  source: 'qa_pdf' | 'readme' | 'code' | 'background';
+  url?: string;
   ref: string; status: 'confirmed' | 'inferred' | 'unverified';
   values?: Record<string, number>;
 };
@@ -21,7 +23,11 @@ export const database = parse(raw) as {
   };
 };
 export const facts = Object.fromEntries(database.facts.map(f => [f.id, f]));
+export type GlossaryEntry = {id: string; zh: {term: string; short: string; long: string}; en: {term: string; short: string; long: string}; refs: string[]; first_chapter: string; related: string[]};
+export const glossary = parse(glossaryRaw) as GlossaryEntry[];
+export const terms = Object.fromEntries(glossary.map(entry=>[entry.id,entry]));
 export function sourceUrl(fact: Fact) {
+  if (fact.source === 'background') return fact.url!;
   if (fact.source === 'qa_pdf') return `${database.repository}/blob/${database.commit}/${encodeURI(database.qa_path)}#page=${fact.ref.match(/\d+/)?.[0] ?? '1'}`;
   const [path, line] = fact.ref.split(':');
   return `${database.repository}/blob/${database.commit}/${path}${line ? `#L${line}` : ''}`;
