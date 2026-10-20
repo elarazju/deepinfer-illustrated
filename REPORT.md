@@ -22,7 +22,7 @@
 - 浏览器：Chrome/WebKit × 中英 × 深浅 × 1280/375共16组合。新增检查DSpark位置、默认正文可见、来源区默认折叠、跟随系统主题和保存手动选择。见[浏览器结果](research/browser-results.json)。
 - 自动无障碍四组合零违规：[axe结果](research/accessibility-results.json)。本轮新增的页码文字曾因透明度降低对比度，已修复并重新检查。
 - 独立复核：[教程审查记录](research/TUTORIAL-REVIEW.md)。这是未参与制作的agent进行的来源、机制和浏览器审查，不能代替人工内容评审。记录区分了自动几何检查、生成截图和实际查看的样本。
-- 发布与图片一致性：发布后由`scripts/verify-published.ts`验证正式子路径、交互位置、下载内容哈希和导出提交号；结果记录在[线上检查](research/published-results.json)。
+- 发布与图片一致性：[本轮Actions](https://github.com/elarazju/deepinfer-illustrated/actions/runs/39417747395)构建和部署成功，站点代码提交为`499f96d55a1e190ee9515ceab68d6d91fd6fba86`。线上检查通过中文浅色桌面、英文深色手机，验证独立Decode Lab、36个可见下载链接的内容哈希及清单提交号，见[线上检查](research/published-results.json)。清单包含本轮全部72个导出文件。
 
 ## 篇幅统计口径
 
@@ -30,7 +30,7 @@
 
 ## 证据归档与复查
 
-初版80张页面截图和10张审核拼图见[v0.1.0证据压缩包](https://github.com/elarazju/deepinfer-illustrated/releases/download/v0.1.0/deepinfer-v0.1-evidence.zip)。本轮截图在本地`research/screenshots/`及`research/tutorial-audit/`生成，归档于[v0.2.0教程改版Release](https://github.com/elarazju/deepinfer-illustrated/releases/tag/v0.2.0)，不再增加源码提交体积。当前网站的下载图由对应Actions构建生成。
+初版80张页面截图和10张审核拼图见[v0.1.0证据压缩包](https://github.com/elarazju/deepinfer-illustrated/releases/download/v0.1.0/deepinfer-v0.1-evidence.zip)。本轮最终88张页面截图和96张独立审查截图在本地`research/screenshots/`及`research/tutorial-audit/`生成，归档于[v0.2.0教程改版Release](https://github.com/elarazju/deepinfer-illustrated/releases/tag/v0.2.0)，不再增加源码提交体积。当前网站的下载图由对应Actions构建生成。
 
 推荐人工抽查的关键点是：异步调度的批次依赖、Encoder/Decoder两种有界回放、DSpark教学收益与官方观测的区别。相关原始证据分别见facts.yaml的`zos.overlap`、`yoco.replay`/`swa.hit`、`dspark.cumulative`/`dspark.results`。本轮没有声称已获得人工抽查结论。
 
