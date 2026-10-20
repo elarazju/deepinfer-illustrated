@@ -1,0 +1,235 @@
+version: 1
+commit: 8b16149741a4935e1dec8cea27853f273b374c5b
+repository: https://github.com/deepseek-ai/DeepInfer
+qa_path: doc/DeepSeek V4.1 Flash 推理部署 Q&A.pdf
+facts:
+  - id: release.scope
+    source: readme
+    ref: README.md:3
+    status: confirmed
+    zh: DeepInfer 开源的是支撑离线推理的核心引擎。此版本支持 DeepSeek-V4.1-Flash，目标硬件为 NVIDIA SM100 与华为 Ascend 950。完整在线服务还需要缓存、分离部署与负载均衡设施；不能把生产系统总览理解成仓库中已提供的整套服务。
+    en: DeepInfer releases the core engine for offline inference. This version supports DeepSeek-V4.1-Flash on NVIDIA SM100 and Huawei Ascend 950. A complete online service additionally needs cache infrastructure, disaggregated deployment, and load balancing. The production-system overview therefore describes a larger system than the runnable open-source release.
+  - id: system.disaggregation
+    source: qa_pdf
+    ref: "p.2 · 推理系统设计概览"
+    status: confirmed
+    zh: 带图片的对话先经过协议转换与编码，再进行前缀匹配和 Prefill 路由。Vision Encoder 生成图片 embedding，Prefill 处理输入，Decode 逐步产生输出，最后由 Recipe 转回流式协议。生产系统将 E、P、D 与存储分开部署，让它们各自调整资源；图中的路径是阅读顺序，不能据此假设所有工作都严格串行执行。
+    en: A conversation containing an image first passes through protocol conversion and encoding, followed by prefix matching and prefill routing. A vision encoder supplies image embeddings; prefill processes the input; decode produces output incrementally; Recipe converts the result into a streamed response. Production separates E, P, D, and storage so their resources can be adjusted independently. The diagram is a reading order, not a claim that every operation is strictly serialized.
+  - id: system.parallelism
+    source: qa_pdf
+    ref: "p.2 · 并行策略"
+    status: confirmed
+    values: { prefillMin: 2, prefillMax: 8, decodeMin: 64, decodeMax: 128 }
+    zh: Q&A 的生产建议是 Prefill 使用 EP2–8 / DP2–8，显存允许时尽量缩小并行组；Decode 使用 EP64–128 / DP64–128，硬件允许时扩大专家并行。Attention 使用数据并行，MoE 使用专家并行。Vision Encoder 通常单卡部署。这里描述的是生产配置建议，不是开源引擎支持的全部并行能力。
+    en: The Q&A recommends EP2–8 / DP2–8 for prefill, keeping the group small when memory permits, and EP64–128 / DP64–128 for decode, increasing expert parallelism when hardware permits. Attention uses data parallelism while MoE uses expert parallelism. The vision encoder generally runs on a single device. These are production recommendations, rather than a complete list of parallel configurations supported by the engine.
+  - id: system.minimum
+    source: qa_pdf
+    ref: "p.3 · 最小部署单元"
+    status: confirmed
+    zh: Q&A 区分“能够部署”与“较高效率”：1P + 1D 也能部署；考虑到 Decode 推荐的专家并行规模及实践中的资源比例，高效的最小单元为 64 卡 Prefill + 64 卡 Decode。这不是运行示例程序的最低硬件门槛，也不代表任何工作负载都应该照搬这个比例。
+    en: The Q&A distinguishes a deployable configuration from an efficient production unit. A 1P + 1D deployment is possible, while the recommended decode parallelism and observed resource ratio lead to an efficient minimum of 64 prefill devices plus 64 decode devices. This is not the minimum hardware requirement for an example program, nor a universal sizing rule for every workload.
+  - id: zos.serial
+    source: qa_pdf
+    ref: "p.9 · Asynchronous Scheduling · 优化目标"
+    status: confirmed
+    zh: 同步解码的顺序为 schedule(N) → forward(N) → sample(N) → post-process(N)。后处理必须先取得采样结果；当 CPU 做后处理和下一轮调度时，GPU 可能没有新任务可执行。问题在于依赖链造成的等待，而不是这段 CPU 工作本身没有必要。
+    en: Synchronous decoding follows schedule(N), forward(N), sample(N), then post-process(N). Post-processing must first obtain the sampled result. While the CPU processes that result and schedules the next batch, the GPU can run out of queued work. The problem is the dependency-induced wait, rather than the existence of necessary CPU work.
+  - id: zos.overlap
+    source: qa_pdf
+    ref: "p.9 · Asynchronous Scheduling · 实现方法"
+    status: confirmed
+    zh: 异步调度让 GPU 的 forward(N) → sample(N) 与 CPU 的 schedule(N+1) → launch_forward(N+1) → post-process(N−1) → launch_sample(N+1) 重叠。CPU 处理的是更早完成的结果，而不是等待当前批。图中无间隙的稳态是一种理想化示意；不能由它推出任意实际负载的 GPU 空闲率恒为零。
+    en: Asynchronous scheduling overlaps GPU forward(N) and sample(N) with CPU schedule(N+1), launch_forward(N+1), post-process(N−1), and launch_sample(N+1). The CPU processes an older completed result instead of waiting for the current batch. A gap-free steady-state illustration is an idealization; it does not imply that every real workload has zero GPU idle time.
+  - id: zos.remap
+    source: code
+    ref: csrc/engine/zos.cpp:142
+    status: confirmed
+    zh: 批次会加入新请求，也会移除完成的请求，因此跨轮复用不能只按行号对应。prepare_zos_inputs 根据序列标识建立 remap；已有请求可关联上一批的 GPU 输出，新请求走新输入路径。阅读时间线时，需要把“调度提前”和“输入对应关系修正”一起理解。
+    en: Batches gain new requests and lose completed ones, so reuse across iterations cannot assume that row positions remain stable. prepare_zos_inputs builds a remapping by sequence identity. Continuing requests can be associated with previous GPU outputs, while new requests use fresh inputs. Scheduling ahead and correcting input correspondence are complementary parts of the pipeline.
+  - id: eplb.strategy
+    source: qa_pdf
+    ref: "p.4 · 专家并行负载均衡"
+    status: confirmed
+    zh: Wide-EP 将专家分散到更大的设备组，减少每步每卡需要读取的专家权重。热门专家仍会造成慢卡；EPLB 在设备上预留冗余槽位，为热门专家放置副本，并依据近期负载周期性重排。逻辑专家没有变成新的模型参数种类，增加的是物理副本。网格中的卡数、专家编号与热度只用于解释布局。
+    en: Wide-EP distributes experts across a larger device group, reducing the expert-weight traffic each device handles per step. Popular experts can still create stragglers. EPLB reserves redundant slots, places replicas of heavily used experts, and periodically changes placement using recent load statistics. A physical replica is not a new kind of model parameter. Device counts, expert labels, and heat levels in the grid illustrate placement only.
+  - id: eplb.prefill
+    source: qa_pdf
+    ref: "p.4 · Prefill 的 EPLB 策略"
+    status: confirmed
+    values: { redundant: 4, window: 100, interval: 1000 }
+    zh: Prefill 从每卡 4 个冗余专家起步，并向上填充，使总专家数可被 ep_size 整除；统计最近 100 步，每 1000 步重排。Q&A 报告 EP4DP4 的 moe_lb 为 1.074，EP2DP2 为 1.045。它们是指定配置下的观测值，不能当成所有负载的保证。
+    en: Prefill starts with 4 redundant experts per device and rounds upward so the total expert count is divisible by ep_size. It uses a 100-step statistics window and rebalances every 1000 steps. The Q&A reports moe_lb of 1.074 for EP4DP4 and 1.045 for EP2DP2. These are observations under those configurations, not guarantees for arbitrary workloads.
+  - id: eplb.decode
+    source: qa_pdf
+    ref: "p.4 · Decode 的 EPLB 策略"
+    status: confirmed
+    values: { redundant: 1, window: 1000, interval: 10000 }
+    zh: Decode 从每卡 1 个冗余专家起步，统计窗为 1000 步，重排周期为 10000 步。Q&A 的 EP64 示例取整后每卡共有 7 个专家，不计共享专家，报告的 moe_lb 为 1.090。moe_lb 定义为最慢 rank 的负载除以平均负载，越接近 1 表示越均衡。
+    en: Decode starts with 1 redundant expert per device, uses a 1000-step window, and rebalances every 10000 steps. In the Q&A's EP64 example, rounding gives 7 experts per device excluding shared experts, with a reported moe_lb of 1.090. This metric divides the slowest rank's load by the average load; values closer to 1 indicate better balance.
+  - id: eplb.code
+    source: code
+    ref: deepinfer/model_executor/eplb/policy.py:73
+    status: confirmed
+    zh: 策略代码区分 logical expert 与 physical expert，输出逻辑到物理的映射。副本分配与物理放置都依据负载进行；权重搬运则在 shuffle 模块完成。读图时应把路由选择、专家副本和设备之间的权重迁移分开，它们分别回答“执行谁”“放在哪”“如何搬过去”。
+    en: The policy distinguishes logical experts from physical experts and produces their mapping. Load informs replica allocation and placement, while the shuffle module moves weights. Routing, replication, and movement answer different questions: which expert executes, where its copies live, and how weights reach that location.
+  - id: yoco.ced
+    source: qa_pdf
+    ref: "p.7 · KVCache 重算与命中 · Decoder SWA Bounded Replay"
+    status: confirmed
+    zh: CED 将因果 encoder 与 decoder 接起来。Encoder 处理完整的待计算输入；decoder 的 Block KV 来自 encoder 末层 hidden state 的投影，不需要让所有 decoder 层对整段 prompt 再做一次完整计算。但各层自己的 SWA 状态仍需恢复。图中 Block KV 的共享路径与 SWA 的回放路径因此分开表示。
+    en: CED connects a causal encoder to a decoder. The encoder processes the complete input that still needs computation. Decoder Block KV is projected from the final encoder hidden states, rather than requiring every decoder layer to recompute the whole prompt. Layer-local SWA state still needs reconstruction, so the diagram separates the shared Block KV path from the SWA replay path.
+  - id: yoco.replay
+    source: qa_pdf
+    ref: "p.7 · KVCache 重算与命中 · 重算方式"
+    status: confirmed
+    values: { window: 128, rollback: 6, margin: 134, block: 128 }
+    zh: Q&A 用最近 128 个 token 的有界回放近似重建 SWA 状态：从 s 开始回放，位置 i 只关注 [max(s, i−127), i]。Decoder 侧的精确重建原本需要 20 层处理末尾 2560 个 token；改用有界回放后，总 Prefill 计算量近乎减半。这是文档的计算量描述，不是网页测得的加速倍数。
+    en: The Q&A describes approximate SWA reconstruction by replaying the latest 128 tokens. Starting at s, query position i sees only [max(s, i−127), i]. Exact decoder reconstruction would require 20 layers to process the final 2560 tokens. With bounded replay, total prefill computation is nearly halved. This is a statement about computation in the document, not a speedup measured by this website.
+  - id: yoco.config
+    source: readme
+    ref: README.md:28
+    status: confirmed
+    values: { keepTokens: 140 }
+    zh: 锁定版本 README 的实际 compact 示例使用 KEEP_TOKENS=140，并要求保留后缀覆盖窗口及最大回退。Q&A 的回放窗口 128、命中安全余量 134 与示例配置 140 属于不同口径；不能把教学窗口直接复制成运行配置。此处并列保留来源中的数值，不推断配置额外余量的设计动机。
+    en: The pinned README's compact-mode example uses KEEP_TOKENS=140 and requires the retained suffix to cover the window and maximum backtracking. The Q&A's replay window of 128, cache-hit margin of 134, and example configuration of 140 describe different quantities. Do not copy the teaching window directly into a deployment configuration. We preserve these source values without inventing a rationale for the additional configuration margin.
+  - id: swa.hit
+    source: qa_pdf
+    ref: "p.7 · KVCache 重算与命中 · 命中策略"
+    status: confirmed
+    zh: 对输入长度 L，Block KV 命中长度 L1 不得超过 L−134，且按 128 对齐。若 L1−128 到 L1 范围内有可用 SWA 状态，则保持命中长度；否则回退到 L1−128 并重算末尾一块。回放用于恢复 SWA，已命中的 Block KV 继续复用，不重算也不覆写。短输入与零命中在演示中截断到非负范围。
+    en: For input length L, the Block KV hit length L1 is aligned to 128 and cannot exceed L−134. If usable SWA state exists between L1−128 and L1, the hit length is retained; otherwise execution falls back to L1−128 and replays the final block. Replay rebuilds SWA while reusing existing Block KV without recomputation or overwrite. The demonstration clamps short-input and zero-hit cases to nonnegative values.
+  - id: storage.block
+    source: qa_pdf
+    ref: "pp.5–6 · KVCache 存储 · Block KVCache"
+    status: confirmed
+    zh: Block KV 包含 Main KV 与 Indexer K，持久化到独立的 3FS 存储集群。所有 Prefill 机器都能查询前缀，因此路由不必为了命中缓存而固定到某台计算机器。计算节点故障与扩缩容也不再直接决定这些持久化缓存的存活。该架构来自官方 Q&A，相关服务没有包含在此次开源发布中。
+    en: Block KV contains Main KV and Indexer K and is persisted in an independent 3FS storage cluster. Prefill machines can access prefixes without routing every matching request back to one compute host. Compute failures and scaling decisions therefore do not directly determine the lifetime of that persistent cache. This architecture comes from the official Q&A; those services are outside this release.
+  - id: storage.ec
+    source: qa_pdf
+    ref: "pp.3–4 · 3FS 分布式文件系统"
+    status: confirmed
+    zh: 3FS 使用 10+2 纠删码保存数据。读取时向同组 11 个节点发请求，任意 10 个响应即可恢复数据，从而减少对某个慢响应的等待。冗余片段和读取请求数是不同概念；图中“发 11、取 10”表示一次读取策略，而不是把编码方案改成 11 个片段。
+    en: 3FS stores data with 10+2 erasure coding. A read issues requests to 11 nodes in the group and can reconstruct data from any 10 responses, reducing dependence on one slow response. Stored redundancy and read fan-out are different quantities: “request 11, use 10” describes the read policy, not an encoding scheme with 11 fragments.
+  - id: storage.pipeline
+    source: qa_pdf
+    ref: "p.6 · Cache 相关开销如何 overlap"
+    status: confirmed
+    zh: Entrypoint 先做哈希链前缀匹配，只读元数据，命中长度必须在路由前算出。取 KV 的独立进程把数据从 3FS 搬到宿主机共享内存 shm，engine 内的线程再通过 GDR 换入 HBM，目标是让逐层传输与前向计算重叠。前缀查询本身不能被这段后续流水线隐藏。
+    en: Entrypoint performs hash-chain prefix matching against metadata before routing, because the hit length is needed for that decision. A separate process fetches KV from 3FS into host shared memory, and a thread in the engine moves it into HBM using GDR. The goal is to overlap layer-wise transfer with forward computation. The earlier prefix lookup is not hidden by this later pipeline.
+  - id: storage.swa
+    source: qa_pdf
+    ref: "p.6 · SWA KVCache"
+    status: confirmed
+    zh: SWA KV 使用 state cache 中的定长 slot，不放进分页 Block KV。需要保存的窗口与可重建区域分开；SWA 留在产生它的机器内存中，由 Entrypoint 的分布式目录记录位置，命中后可以跨机取回。它没有随 Block KV 一起持久化到 SSD；两种缓存可共享 PD 传输链路，却有不同的保存与恢复策略。
+    en: SWA KV occupies fixed-size slots in the state cache rather than paged Block KV storage. Persisted window regions and reconstructible regions are separated. SWA remains in the originating machine's memory, with a distributed Entrypoint directory recording its location for remote retrieval. It is not persisted to SSD alongside Block KV. The two caches share a PD transfer path but have different retention and recovery policies.
+  - id: storage.ttl
+    source: qa_pdf
+    ref: "p.6 · 过期与 TTL"
+    status: confirmed
+    zh: Q&A 报告 agent 流量的 KVCache TTL 达到 3 天，chatbot 流量达到 7 天。回收由 3FS 的 GC 处理，而非 kvcache-store 自行判定过期。这些是特定生产存储规模和访问分布下的保留情况，不是开源库内置的服务承诺。
+    en: The Q&A reports KVCache TTLs of 3 days for agent traffic and 7 days for chatbot traffic. Reclamation is handled by 3FS garbage collection rather than expiration logic in kvcache-store. These retention figures describe a particular production storage capacity and access distribution; they are not built-in service guarantees of the open-source library.
+  - id: lb.prefill
+    source: qa_pdf
+    ref: "p.4 · 数据并行负载均衡 · Prefill"
+    status: confirmed
+    zh: Prefill 按上下文总长分成 4 档：小于 16K、16–64K、64–256K、至少 256K。各档资源依据上一轮 compute-quota 需求重新分配；组间按剩余预算拉取请求，组内交给预算负载最低的 rank。共享缓存使这里可以按计算负载路由，而不必维持前缀亲和。
+    en: Prefill divides requests into 4 context-length tiers: below 16K, 16–64K, 64–256K, and at least 256K. Resources are reassigned using the preceding round's compute-quota demand. Groups pull work according to remaining quota, and a group assigns requests to its least-loaded rank. Shared cache access allows routing by compute load without prefix affinity.
+  - id: lb.chunk
+    source: qa_pdf
+    ref: "p.4 · Prefill Load Balancer · 单卡内"
+    status: confirmed
+    zh: 单卡按 FIFO 取请求，但 chunk size 并不固定。调度器用拟合的二次模型 cost(q,c) 估计时间，再反解本轮能处理的 q，并同时受 32,768 token 上限与剩余时间预算约束。q 是本轮序列长度，c 是已计算前缀长度。不要把仓库中的 FLOPs 记账器当作这个未开源时间模型的完整实现。
+    en: A device dequeues requests in FIFO order, but chunk size is not fixed. The scheduler estimates time using a fitted quadratic cost(q,c), then solves for q under both a 32,768-token cap and the remaining time quota. Here q is the sequence's work for this iteration and c is its computed prefix length. The repository's FLOPs accounting utility is not the complete implementation of this unreleased timing model.
+  - id: lb.decode
+    source: qa_pdf
+    ref: "p.5 · Decode 与 Vision Encoder Load Balancer"
+    status: confirmed
+    zh: Decode 同时均衡请求数与 KV 总长度：前者影响批大小，后者影响 Attention 代价。短请求可补给并发较小而 KV 总长较大的卡，长请求则优先交给 KV 总长较小的卡。Vision Encoder 先选择机器，再按正在处理的图片 patch 数选择卡；图片张数相同并不意味着编码工作量相同。
+    en: Decode balances both request count and total KV length. The former affects batch size; the latter affects attention cost. Short requests can go to devices with lower concurrency but more existing KV, while long requests favor devices with less KV. Vision routing chooses a machine and then a device by outstanding image patch count. Equal image counts do not necessarily imply equal encoding work.
+  - id: recipe.encode
+    source: qa_pdf
+    ref: "p.10 · DeepSeek Recipe · API 与 Tokenizer"
+    status: confirmed
+    zh: Recipe 把不同 API 协议转成统一对话格式，再按模型模板编码。模板显式插入的 special token 直接映射为 token ID；用户文本中外观相同的字符串仍作为普通文本编码。普通文本可按 special token 的边界分段并行处理，最后按原顺序拼接，避免把用户内容误当成控制标记。
+    en: Recipe converts supported API protocols to a common conversation format and encodes it with the model template. Explicitly inserted special tokens map directly to token IDs, while visually identical strings in user content remain ordinary text. Ordinary spans can be encoded independently between special-token boundaries and then reassembled in order, without treating user text as a control marker.
+  - id: recipe.stream
+    source: qa_pdf
+    ref: "p.10 · DeepSeek Recipe · 流式输出解析"
+    status: confirmed
+    zh: 输出 chunk 不一定对应完整字符或完整标签。解析器缓冲不完整的 UTF-8 字符，维护正文、思考与工具参数状态，并用 KMP 延续跨 chunk 的分隔符匹配。已确认的内容可以立即输出，不必重新扫描先前文本，也不必等工具参数对象全部生成后再返回。
+    en: An output chunk need not contain a complete character or tag. The parser buffers incomplete UTF-8 characters, tracks text, reasoning, and tool-argument states, and continues delimiter matching across chunks using KMP. Confirmed content can be emitted immediately without rescanning earlier text or waiting for an entire tool-argument object to finish.
+  - id: so.pipeline
+    source: qa_pdf
+    ref: "pp.9–10 · 结构化输出"
+    status: confirmed
+    zh: 结构化输出先异步编译格式约束，请求进入 engine 前取回结果。运行时每轮更新语法自动机，找出合法 token，并把 mask 作用到采样上。它约束的是生成格式，例如 JSON schema、正则或 EBNF；格式符合要求并不自动证明内容的事实正确性。
+    en: Structured output compiles format constraints asynchronously and retrieves the result before the request enters the engine. Each decoding iteration updates a grammar automaton, determines legal tokens, and applies a mask during sampling. This constrains formats such as JSON schema, regex, or EBNF. Format validity alone does not establish the factual correctness of the generated content.
+  - id: dspark.method
+    source: qa_pdf
+    ref: "pp.8–9 · 投机解码"
+    status: confirmed
+    values: { drafts: 5 }
+    zh: DSpark 一次生成 5 个 draft token，用 Confidence Head 预测接受率。调度结合硬件 profile 曲线，把验证预算分配给预期边际收益较高的位置。网页用单请求前缀选择解释这个直觉；生产调度在批内跨请求分配总预算，不能把网页的局部最优直接当成生产决策。
+    en: DSpark generates 5 draft tokens and predicts acceptance using a Confidence Head. Scheduling combines those predictions with a hardware profile curve to allocate verification budget to positions with higher expected marginal value. This page explains the intuition through a single request's prefix. Production allocates a total budget across requests in a batch, so the local optimum here is not the production decision.
+  - id: dspark.cumulative
+    source: code
+    ref: deepinfer/model_executor/layers/tilelang_ops/cuda/schedule_mtp_varlen.py:26
+    status: confirmed
+    zh: GPU kernel 对逐位置 confidence 做累乘，再按累计概率进行全局排名并分配长度。教学公式取 E(k)=1+Σⱼ₌₁ᵏ∏ᵢ₌₁ʲpᵢ，再除以示意步耗时 T(k)，包含不验证 draft 的候选 k=0。置信度是估计值，不代表每次执行都接受相同数量的 token。
+    en: The GPU kernel multiplies position-wise confidence values cumulatively, ranks the resulting probabilities globally, and allocates lengths. The teaching model uses E(k)=1+Σⱼ₌₁ᵏ∏ᵢ₌₁ʲpᵢ divided by an illustrative step time T(k), including k=0 with no verified draft. Confidence values are estimates, not a promise that each execution accepts the same number of tokens.
+  - id: dspark.results
+    source: qa_pdf
+    ref: "p.9 · 相比 fixed-5"
+    status: confirmed
+    zh: Q&A 报告 fixed-5 与动态验证的每步验证数为 5.00 → 3.2–4.4，平均接受长度为 3.29 vs 3.20；按 EP64/DP64、每 rank 约 60 并发的生产运行点估算，吞吐收益为 +4–7%。这些是官方报告数字，与下面可调示意参数产生的结果分开呈现。
+    en: The Q&A reports verification counts of 5.00 → 3.2–4.4 and mean acceptance lengths of 3.29 versus 3.20 for fixed and dynamic verification. At the production operating point of EP64/DP64 and about 60 concurrent requests per rank, it estimates +4–7% throughput. These reported figures are separate from results generated by the adjustable illustrative parameters below.
+  - id: dspark.zos
+    source: qa_pdf
+    ref: "p.9 · 与 Asynchronous Scheduling 的配合"
+    status: confirmed
+    zh: 异步调度时，CPU 做下一轮调度尚拿不到当前轮 confidence，因此只确定总预算；GPU 上的 TileLang kernel 用最新可用结果重算每个请求的长度，进行累乘、全局排名与 remap scatter，再回写 pinned buffer。动态验证和异步调度必须共同处理这个信息时差。
+    en: With asynchronous scheduling, the CPU schedules ahead before the current confidence values have returned, so it chooses only the total budget. A TileLang kernel on the GPU uses the latest available results to recompute per-request lengths, perform cumulative multiplication and global ranking, and scatter through remapping before writing a pinned buffer. Dynamic verification and asynchronous execution must jointly handle this information lag.
+  - id: model.mhc
+    source: code
+    ref: deepinfer/model_executor/models/v4_modules/mhc_ops.py:95
+    status: inferred
+    zh: 代码导读：mHC 路径调用 Sinkhorn 归一化，配合多路 residual 的混合。这里仅描述调用与数据关系，不从实现反推训练稳定性结论。官方模型卡提到 Single-Pass mHC，但模型卡并不能替代对锁定推理代码每条分支的核实。
+    en: Code reading: the mHC path calls Sinkhorn normalization alongside mixing of multiple residual streams. This describes calls and data relationships, without inferring training-stability conclusions from inference code. The official model card mentions Single-Pass mHC, but that overview does not independently validate every branch in the pinned runtime.
+  - id: model.engram
+    source: code
+    ref: deepinfer/model_executor/models/v4_modules/engram.py:108
+    status: inferred
+    zh: 代码导读：Engram 根据 n-gram 的哈希获取分片 embedding，经过融合投影，再通过 gate 注入 hidden states。查表、投影与门控是不同步骤；图中不将它画成向外部文档发起检索，也不补充未经官方材料证实的能力解释。
+    en: Code reading: Engram fetches sharded embeddings by n-gram hash, applies a fused projection, and gates the result into hidden states. Lookup, projection, and gating are distinct operations. The diagram does not present this as retrieval from an external document collection or add capability claims unsupported by official material.
+  - id: model.index
+    source: code
+    ref: deepinfer/model_executor/models/v4_modules/index_attn.py:57
+    status: inferred
+    zh: 代码导读：稀疏 indexer 为 query 计算分数并选择 top-k 的压缩 KV；跨层拓扑分别管理 KV、indexer K 与索引的共享映射。消费者读取前面的来源层，部分路径还使用候选块缩小后续选择范围。图示只展开这些接口关系，具体配置仍以 checkpoint 与代码校验为准。
+    en: Code reading: the sparse indexer scores queries and selects top-k compressed KV entries. Cross-layer topology separately manages sharing of KV, indexer K, and selected indices. Consumers read from earlier source layers; some paths narrow later selection to candidate blocks. The illustration describes these interfaces, while concrete configuration remains subject to checkpoint values and code validation.
+  - id: model.precision
+    source: qa_pdf
+    ref: "p.8 · 低精度计算"
+    status: confirmed
+    zh: 低精度格式须按对象区分：Q&A 将 Main KV 的缩放描述为 per-16、e4m3；Indexer KV 与 MoE 路由专家权重使用 per-32、ue8m0、MXFP4。SWA KV 的存储格式在另一节标为 MXFP8。不能把所有权重、缓存与计算统称为同一种 FP4 格式。
+    en: Precision formats must be distinguished by object. The Q&A describes Main KV scaling as per-16 with e4m3; Indexer KV and routed-expert weights use per-32 ue8m0 MXFP4. A separate storage section describes SWA KV as MXFP8. We should not label all weights, caches, and computation as one uniform FP4 format.
+demo_defaults:
+  # Explicitly authored teaching values, never claimed to be production measurements.
+  source: illustration
+  ref: "Teaching scenarios for dspark.cumulative, swa.hit, zos.overlap"
+  dspark:
+    confidence: [0.95, 0.9, 0.8, 0.65, 0.45]
+    stepTime: [1, 1.12, 1.28, 1.48, 1.72, 2]
+    mode: dynamic
+  swa:
+    length: 1024
+    hit: 768
+    cached: false
+    min: 128
+    max: 4096
+  timeline:
+    async: true
+    cpuSchedule: 2
+    forward: 6
+    sample: 2
+    post: 2

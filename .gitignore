@@ -1,0 +1,7 @@
+node_modules/
+dist/
+vendor/
+research/*.txt
+research/*.pdf
+.DS_Store
+*.log
