@@ -11,8 +11,9 @@
   <div class:wide-figure={kind !== 'overview'} class="figure-viewport" tabindex={kind !== 'overview' ? 0 : undefined} role="region" aria-label={t.download}>
     <Diagram {kind} {locale}/>
   </div>
+  {#if kind !== 'overview'}<p class="figure-scroll-hint">{t.scrollFigure} ↔</p>{/if}
   <figcaption>
-    <span>{kind === 'overview' ? t.overviewSub : t.figures[kind as keyof typeof t.figures]?.at(-1)}</span>
+    <span>{kind === 'overview' ? t.overviewSub : t.figures[kind as keyof typeof t.figures]?.caption}</span>
     <span class="downloads">{t.download}
       <a download href={`${import.meta.env.BASE_URL}figures/${kind}-${locale}-${theme}.svg`}>SVG ↘</a>
       <a download href={`${import.meta.env.BASE_URL}figures/${kind}-${locale}-${theme}.png`}>PNG ↘</a>

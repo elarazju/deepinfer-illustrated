@@ -35,10 +35,21 @@ badges; longer reading sections in both locale dictionaries reference registered
 Simulation parameters live separately under `demo_defaults`, explicitly marked
 as authored teaching values. Source claims and demonstration results must not be conflated.
 
-With the dev server running, `npm run export` writes both languages and themes to
-`public/figures/`. It uses installed Chrome by default; set `BROWSER_CHANNEL` for
-another Playwright-supported Chromium channel. Each SVG is self-contained and
-includes source/attribution metadata. PNGs are rendered from those same SVGs.
+Every `npm run build` starts a temporary Vite server, regenerates all 72 SVG/PNG
+files from the current source, then bundles the site. Install Chrome locally, or run
+`npx playwright install chromium` and set `BROWSER_CHANNEL=chromium`. CI installs
+Chromium automatically. A failed export fails the build. The published
+`figures/manifest.json` binds each image hash to the GitHub commit that built it.
+Generated images are ignored by Git; run a build once to populate local downloads.
+
+For focused iteration with the dev server already running, `npm run export` updates
+`public/figures/`. `PREVIEW_URL` selects the server. PNG exports wait for the same
+web fonts as the live diagrams; standalone SVG text uses its declared fonts with
+system fallbacks when those fonts are unavailable.
+
+The nine diagram components have named translation fields and share SVG primitives.
+Chapter metadata is imported by both the app and validation scripts. Tutorial prose
+is shown by default; exact source statements remain in each chapter's evidence drawer.
 
 `npx tsx scripts/browser-qa.ts` checks Chrome and Playwright WebKit, keyboard
 interaction, reduced motion, responsive overflow, and captures sections at desktop
@@ -52,5 +63,8 @@ Enable Pages with GitHub Actions as its source in the repository settings.
 Static assets use a relative base so the project works under a repository subpath.
 Update the public project URL in SEO, source links, and export attribution if moving it.
 
-See REPORT.md and research/INDEPENDENT-AUDIT.md for verification and limitations.
+See [REPORT.md](REPORT.md) and [the tutorial review](research/TUTORIAL-REVIEW.md)
+for current verification and limits. These are agent checks, not human certification.
+Initial screenshots are preserved in the [v0.1.0 release](https://github.com/elarazju/deepinfer-illustrated/releases/tag/v0.1.0).
+New screenshots and generated diagrams are kept out of source commits; history is not rewritten.
 Code: MIT. Original content: CC BY 4.0. Upstream material retains its own licenses.

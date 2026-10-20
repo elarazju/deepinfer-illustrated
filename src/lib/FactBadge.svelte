@@ -12,5 +12,6 @@
     aria-label={`${t.source}: ${fact.ref} (${fact.status})`}>
     <span aria-hidden="true">↗</span>
     {fact.status === 'inferred' ? t.inferred : fact.source === 'qa_pdf' ? t.qa : t.code}
+    {#if fact.source === 'qa_pdf'}<span class="source-page">{fact.ref.match(/^pp?\.\d+(?:[–−-]\d+)?/)?.[0]}</span>{/if}
   </a>
 {/if}

@@ -1,82 +1,37 @@
-# DeepInfer Illustrated — 执行与核验报告
+# DeepInfer Illustrated — 教程改版与验收
 
-完成日期：2026-10-20（Asia/Shanghai）。锁定上游：`8b16149741a4935e1dec8cea27853f273b374c5b`。
+日期：2026-10-20。源码证据仍锁定 `8b16149741a4935e1dec8cea27853f273b374c5b`。
 
-## 交付结果
+[网站](https://elarazju.github.io/deepinfer-illustrated/) · [仓库](https://github.com/elarazju/deepinfer-illustrated) · [初版证据归档](https://github.com/elarazju/deepinfer-illustrated/releases/tag/v0.1.0)
 
-完整实现中英双语网站：8个章节、总览旅程、9张手绘SVG图、DSpark/SWA/异步调度3个交互演示，以及深浅主题、移动布局、键盘操作和减少动态效果支持。
+## 这次改了什么
 
-- 代码仓库：https://github.com/elarazju/deepinfer-illustrated
-- 线上地址：https://elarazju.github.io/deepinfer-illustrated/ （已发布并验证）
-- 事实库：35条，其中32条 confirmed、3条 inferred；每项保留锁定提交代码链接或官方Q&A/报告来源。
-- 导出：9图 × 中英 × 深浅 × SVG/PNG，共72个文件，位于 `public/figures/`。
-- 内容协议CC BY 4.0，网站代码MIT。页脚明确标注非官方项目。
+1. **阅读路径**：DSpark从专家负载均衡章移到异步调度之后的独立Decode Lab。侧栏、首页入口和总览Decode节点都能进入实验区。
+2. **正文**：C1–C7默认展示连贯叙述，每段关联具体来源。精确来源条目及适用范围集中在章末“来源与适用范围”。未开源服务提示仍在章首可见；C8仍为带推断标记的代码导读。
+3. **图示**：时间线采用同一时间标尺与相同GPU任务时长，CPU提交用事件点表示；YOCO画出token、K/V块和Decoder的两条准备路径；SWA实验分开显示Block KV与Encoder恢复区，并逐token展示注意力可见范围。
+4. **机制修正**：明确区分Encoder在前缀SWA缺失时恢复命中边界，与Decoder每次Prefill回放prompt尾部。时间线的CPU顺序保持调度、提交前向、后处理、提交采样。恢复与投影的连线避开标签。
+5. **维护**：9个图组件独立，共用Frame/Box/Edge；图示文案使用具名键，总览阶段次序独立于翻译对象；样式表已展开格式化。字数脚本直接导入共享章节元数据。
+6. **导出**：每次`npm run build`和GitHub Actions都启动隔离的导出服务，从当前源码生成36对SVG/PNG，再打包站点。生成失败则构建失败；`figures/manifest.json`记录提交号及每张图的SHA-256。线上验证会核对图片内容与构建清单。
+7. **细节**：首次访问跟随系统主题，手动选择会保存；Q&A改为PDF原文件直链，徽章直接显示页码，避免依赖GitHub预览识别页码锚点。PDF阅读器是否自动跳页仍取决于浏览器。
+8. **体积**：下载图、截图和拼图不再跟踪到当前源码树。初版截图及审查资料已归档到Release；历史提交没有重写，因此旧Git对象仍存在。
 
-## 阶段任务
+## 验收状态
 
-- [x] 阶段1：阅读锁定源代码、官方Q&A，建立并核验双语事实库。
-- [x] 阶段2：双语骨架、总览、主题与移动布局。
-- [x] 阶段3：8章正文、9张静态图与事实检查。
-- [x] 阶段4：三个交互演示与模型边界测试。
-- [x] 阶段5：模型代码与官方V4.1技术报告对照。
-- [x] 阶段6：SVG/PNG导出、SEO、分享图和无障碍修正。
-- [x] 阶段7：未参与制作的独立agent审核；详见文末。
-- [x] 发布验收：GitHub Actions成功及线上页面、资源验证。
+- 构建与来源检查通过：35条事实、双语结构、数字引用、锁定文件行号检查。
+- 算法测试：5项，覆盖DSpark累计概率和边界、SWA对齐与短输入、CPU瓶颈下的时间线。
+- 浏览器：Chrome/WebKit × 中英 × 深浅 × 1280/375共16组合。新增检查DSpark位置、默认正文可见、来源区默认折叠、跟随系统主题和保存手动选择。见[浏览器结果](research/browser-results.json)。
+- 自动无障碍四组合零违规：[axe结果](research/accessibility-results.json)。本轮新增的页码文字曾因透明度降低对比度，已修复并重新检查。
+- 独立复核：[教程审查记录](research/TUTORIAL-REVIEW.md)。这是未参与制作的agent进行的来源、机制和浏览器审查，不能代替人工内容评审。记录区分了自动几何检查、生成截图和实际查看的样本。
+- 发布与图片一致性：发布后由`scripts/verify-published.ts`验证正式子路径、交互位置、下载内容哈希和导出提交号；结果记录在[线上检查](research/published-results.json)。
 
-## 验证与证据
+## 篇幅统计口径
 
-- `npm run build`：Svelte/TypeScript零错误零警告，事实检查35条通过。
-- `npm test`：5项算法测试通过，包括DSpark零/全置信度、k=0选择和累积概率、SWA短输入与对齐边界、时间线CPU瓶颈。
-- `scripts/check-length.ts`：C1–C7中文960–1277字符、英文825–897词，详见 [字数结果](research/content-lengths.json)。C8按代码导读呈现。
-- Chrome/WebKit × 中英 × 深浅 × 1280/375宽度，16组合通过；无页面横向溢出或脚本错误，交互边界、键盘与减少动态效果通过。见 [浏览器结果](research/browser-results.json)。
-- axe在中英/深浅4组合的WCAG 2 A/AA、2.1 AA规则检查中零违规；22组文字语义色对比度全部≥4.5，最小4.71。见 [自动无障碍结果](research/accessibility-results.json)、[对比度结果](research/contrast-results.json)。自动检查仍有需要人工判断的项目，不构成完整WCAG认证。
-- 80张截图覆盖首页、总览与8章的双语/双主题/双宽度；独立审核检查全部截图，见下表。
-- 官方模型报告的章节页码、代码对照见 [模型来源记录](research/MODEL-SOURCES.md)。
+[篇幅结果](research/content-lengths.json)统计“默认讲解 + 章末来源条目”，保持初版的同一口径。C1–C7总篇幅为中文1190–1497非空字符、英文802–842词。默认英文讲解本身约500–660词；没有把折叠来源算成默认展示的教程正文。独立审查另外列出仅默认讲解的统计。
 
-## 发布验收
+## 证据归档与复查
 
-首次发布 [GitHub Actions运行](https://github.com/elarazju/deepinfer-illustrated/actions/runs/39413248367) 构建、测试和部署均成功。`scripts/verify-published.ts` 对正式子路径验证中文浅色桌面、英文深色手机：页面HTTP 200、8章完整、无页面溢出或脚本错误、DSpark键盘边界正确，36个实际下载链接返回有效SVG/PNG。见 [线上检查结果](research/published-results.json)。完整本地72文件和16浏览器组合覆盖见前述记录。
+初版80张页面截图和10张审核拼图见[v0.1.0证据压缩包](https://github.com/elarazju/deepinfer-illustrated/releases/download/v0.1.0/deepinfer-v0.1-evidence.zip)。本轮截图在本地`research/screenshots/`及`research/tutorial-audit/`生成，归档于[v0.2.0教程改版Release](https://github.com/elarazju/deepinfer-illustrated/releases/tag/v0.2.0)，不再增加源码提交体积。当前网站的下载图由对应Actions构建生成。
 
-## 来源口径与限制
+推荐人工抽查的关键点是：异步调度的批次依赖、Encoder/Decoder两种有界回放、DSpark教学收益与官方观测的区别。相关原始证据分别见facts.yaml的`zos.overlap`、`yoco.replay`/`swa.hit`、`dspark.cumulative`/`dspark.results`。本轮没有声称已获得人工抽查结论。
 
-- Q&A描述生产系统，README描述开源配置与能力；未发布的缓存和负载均衡服务使用虚线并明确标注。
-- SWA回放窗口128、代码命中余量134、README compact示例保留140分别列项，不互相替换，也不推断差值的设计原因。
-- `flops_estimator.hpp` 是FLOPs记账器，不作为未开源二次时间代价模型的实现证据。
-- DSpark为单请求教学模型；实际实现跨请求分配预算。可调置信度、耗时、时间线空闲比例均明确标注示意，与官方测量结果分开。
-- 模型章只解释可核查代码和官方描述，设计动机不足之处不补写推测；推断项显著标注。
-- 未运行DeepInfer模型或声称复现SM100/Ascend性能数据。WebKit测试不是Safari真机验收。375宽度下部分静态图允许图内横向滚动。
-- 原始PDF与提取文本仅供本地核对，不随网站发布。
-- 依据用户指定使用elarazju发布。此前创建的minghaochen同名仓库为空，未推送项目内容。
-
-## 截图
-
-每格含桌面1280和手机375宽度截图。章节截图隐藏固定顶栏以完整呈现图文，首页截图保留实际导航。
-
-| 页面 | 中文浅色 | 中文深色 | English light | English dark |
-| --- | --- | --- | --- | --- |
-| 首页 | [1280](research/screenshots/zh-light-1280-home.png) / [375](research/screenshots/zh-light-375-home.png) | [1280](research/screenshots/zh-dark-1280-home.png) / [375](research/screenshots/zh-dark-375-home.png) | [1280](research/screenshots/en-light-1280-home.png) / [375](research/screenshots/en-light-375-home.png) | [1280](research/screenshots/en-dark-1280-home.png) / [375](research/screenshots/en-dark-375-home.png) |
-| 总览 | [1280](research/screenshots/zh-light-1280-journey.png) / [375](research/screenshots/zh-light-375-journey.png) | [1280](research/screenshots/zh-dark-1280-journey.png) / [375](research/screenshots/zh-dark-375-journey.png) | [1280](research/screenshots/en-light-1280-journey.png) / [375](research/screenshots/en-light-375-journey.png) | [1280](research/screenshots/en-dark-1280-journey.png) / [375](research/screenshots/en-dark-375-journey.png) |
-| C1 系统 | [1280](research/screenshots/zh-light-1280-system.png) / [375](research/screenshots/zh-light-375-system.png) | [1280](research/screenshots/zh-dark-1280-system.png) / [375](research/screenshots/zh-dark-375-system.png) | [1280](research/screenshots/en-light-1280-system.png) / [375](research/screenshots/en-light-375-system.png) | [1280](research/screenshots/en-dark-1280-system.png) / [375](research/screenshots/en-dark-375-system.png) |
-| C2 异步调度 | [1280](research/screenshots/zh-light-1280-scheduling.png) / [375](research/screenshots/zh-light-375-scheduling.png) | [1280](research/screenshots/zh-dark-1280-scheduling.png) / [375](research/screenshots/zh-dark-375-scheduling.png) | [1280](research/screenshots/en-light-1280-scheduling.png) / [375](research/screenshots/en-light-375-scheduling.png) | [1280](research/screenshots/en-dark-1280-scheduling.png) / [375](research/screenshots/en-dark-375-scheduling.png) |
-| C3 专家 | [1280](research/screenshots/zh-light-1280-experts.png) / [375](research/screenshots/zh-light-375-experts.png) | [1280](research/screenshots/zh-dark-1280-experts.png) / [375](research/screenshots/zh-dark-375-experts.png) | [1280](research/screenshots/en-light-1280-experts.png) / [375](research/screenshots/en-light-375-experts.png) | [1280](research/screenshots/en-dark-1280-experts.png) / [375](research/screenshots/en-dark-375-experts.png) |
-| C4 YOCO | [1280](research/screenshots/zh-light-1280-yoco.png) / [375](research/screenshots/zh-light-375-yoco.png) | [1280](research/screenshots/zh-dark-1280-yoco.png) / [375](research/screenshots/zh-dark-375-yoco.png) | [1280](research/screenshots/en-light-1280-yoco.png) / [375](research/screenshots/en-light-375-yoco.png) | [1280](research/screenshots/en-dark-1280-yoco.png) / [375](research/screenshots/en-dark-375-yoco.png) |
-| C5 存储 | [1280](research/screenshots/zh-light-1280-storage.png) / [375](research/screenshots/zh-light-375-storage.png) | [1280](research/screenshots/zh-dark-1280-storage.png) / [375](research/screenshots/zh-dark-375-storage.png) | [1280](research/screenshots/en-light-1280-storage.png) / [375](research/screenshots/en-light-375-storage.png) | [1280](research/screenshots/en-dark-1280-storage.png) / [375](research/screenshots/en-dark-375-storage.png) |
-| C6 路由 | [1280](research/screenshots/zh-light-1280-routing.png) / [375](research/screenshots/zh-light-375-routing.png) | [1280](research/screenshots/zh-dark-1280-routing.png) / [375](research/screenshots/zh-dark-375-routing.png) | [1280](research/screenshots/en-light-1280-routing.png) / [375](research/screenshots/en-light-375-routing.png) | [1280](research/screenshots/en-dark-1280-routing.png) / [375](research/screenshots/en-dark-375-routing.png) |
-| C7 配方 | [1280](research/screenshots/zh-light-1280-recipe.png) / [375](research/screenshots/zh-light-375-recipe.png) | [1280](research/screenshots/zh-dark-1280-recipe.png) / [375](research/screenshots/zh-dark-375-recipe.png) | [1280](research/screenshots/en-light-1280-recipe.png) / [375](research/screenshots/en-light-375-recipe.png) | [1280](research/screenshots/en-dark-1280-recipe.png) / [375](research/screenshots/en-dark-375-recipe.png) |
-| C8 模型 | [1280](research/screenshots/zh-light-1280-model.png) / [375](research/screenshots/zh-light-375-model.png) | [1280](research/screenshots/zh-dark-1280-model.png) / [375](research/screenshots/zh-dark-375-model.png) | [1280](research/screenshots/en-light-1280-model.png) / [375](research/screenshots/en-light-375-model.png) | [1280](research/screenshots/en-dark-1280-model.png) / [375](research/screenshots/en-dark-375-model.png) |
-
-![中文浅色首页](research/screenshots/zh-light-1280-home.png)
-
-![英文深色手机总览](research/screenshots/en-dark-375-journey.png)
-
-## 独立审核
-
-由未参与制作的独立 agent 完成。详细逐条核验、初轮问题与修复轨迹见 [独立审核记录](research/INDEPENDENT-AUDIT.md)。
-
-- 全部35条事实完成独立来源审查：32条 confirmed、3条 inferred。README 锚点及PDF页码覆盖问题已修正；新增 YOCO 等价检查与原文一致。官方模型技术报告 §2.2–2.4.4 与本文对照未发现科学性矛盾。
-- C1–C7 事实正文加可展开讲解：中文960–1277字符、英文825–897词，均达到计划下限。C8 保持明确标记的代码导读。
-- 独立运行事实检查通过；原有代码链接全部 HTTP 200，锚点在锁定提交内。检查时上游默认分支 HEAD 仍与锁定提交一致。
-- 独立运行 Chrome/WebKit × 中英 × 深浅 × 1280/375 的16组合：无页面横向溢出和pageerror，展开阅读、键盘演示边界、减少动态效果检查通过；图像下载覆盖72个SVG/PNG文件。结果见 [独立浏览器记录](research/independent-browser-results.json)。
-- 通过10张对照拼图检查全部80张截图，并对问题位置查看原图。首次截图中的顶栏遮挡、时间线文字拥挤、移动总览站名贴边和C1文字穿线均已修复；C6/C7必画说明已补齐。最终再次查看 home/model/scheduling 共24张截图，确认C8与Timeline的GPU语义色已在源码、导出和截图中同步。
-- 本次来源、功能和视觉审查未发现阻断发布的问题。已阅读制作方自动axe四组合0违规和22组语义文字颜色对比度至少4.5（最小4.71）的结果；不将这些检查表述为全面无障碍认证。
-- 限制：WebKit测试不是Safari真机验收；自动无障碍检查不能替代完整人工与辅助技术评估；375宽度下非总览静态图在图内横向滚动。线上发布状态尚未由独立审核者验证。
+仍保留原有边界：没有运行DeepInfer推理或复现硬件性能数据；WebKit不是Safari真机验证；自动无障碍检查不是完整WCAG认证；原始PDF不随本站分发。模型官方资料的对照见[模型来源记录](research/MODEL-SOURCES.md)。

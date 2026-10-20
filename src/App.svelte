@@ -2,32 +2,37 @@
   import { onMount } from 'svelte';
   import { chapters, database, dictionaries, type Locale } from './lib/data';
   import Chapter from './chapters/Chapter.svelte';
+  import DecodeLab from './chapters/DecodeLab.svelte';
   import Figure from './figures/Figure.svelte';
   import Diagram from './figures/Diagram.svelte';
   import FactBadge from './lib/FactBadge.svelte';
-  let locale = $state<Locale>('zh');
-  let theme = $state('light');
+  const params = new URLSearchParams(location.search);
+  const storedTheme = localStorage.getItem('di-theme');
+  const systemTheme = matchMedia('(prefers-color-scheme: dark)');
+  let explicitTheme = $state(params.has('theme') || storedTheme !== null);
+  let locale = $state<Locale>(params.get('lang') === 'en' || (!params.has('lang') && localStorage.getItem('di-language') === 'en') ? 'en' : 'zh');
+  let theme = $state(params.get('theme') ?? storedTheme ?? (systemTheme.matches ? 'dark' : 'light'));
   let active = $state('journey');
   let t = $derived(dictionaries[locale]);
-  const params = new URLSearchParams(location.search);
   const exportKind = params.get('figure');
   const exportMode = !!exportKind;
   onMount(()=>{
     const requested = params.get('lang') ?? localStorage.getItem('di-language');
     locale = requested === 'en' ? 'en' : 'zh';
-    theme = params.get('theme') ?? localStorage.getItem('di-theme') ?? 'light';
+    const followSystem = () => { if (!explicitTheme) theme = systemTheme.matches ? 'dark' : 'light'; };
+    systemTheme.addEventListener('change', followSystem);
     const observer = new IntersectionObserver(entries=>{
       for(const entry of entries) if(entry.isIntersecting) active=entry.target.id;
     },{rootMargin:'-10% 0px -65% 0px'});
     document.querySelectorAll('main > section').forEach(node=>observer.observe(node));
-    return ()=>observer.disconnect();
+    return ()=>{ observer.disconnect(); systemTheme.removeEventListener('change', followSystem); };
   });
   $effect(()=>{
     document.documentElement.lang=locale==='zh'?'zh-CN':'en';
     document.documentElement.dataset.theme=theme;
     document.title=locale==='zh'?'图解 DeepInfer · 跟着一个请求走':'DeepInfer Illustrated · Follow a request';
     if(!exportMode){
-      localStorage.setItem('di-language',locale);localStorage.setItem('di-theme',theme);
+      localStorage.setItem('di-language',locale);
       const url=new URL(location.href);url.searchParams.set('lang',locale);history.replaceState(null,'',url);
     }
   });
@@ -42,7 +47,7 @@
     <div class="header-actions">
       <span class="edition mono">FIELDNOTES / 001</span>
       <button class="locale-toggle" onclick={()=>locale=locale==='zh'?'en':'zh'} aria-label={locale==='zh'?'Switch to English':'切换至中文'}>{locale==='zh'?'EN':'中文'}</button>
-      <button class="theme-toggle" onclick={()=>theme=theme==='light'?'dark':'light'} aria-label={theme==='light'?t.dark:t.light}>{theme==='light'?'◐':'◑'}</button>
+      <button class="theme-toggle" onclick={()=>{theme=theme==='light'?'dark':'light';explicitTheme=true;localStorage.setItem('di-theme',theme);}} aria-label={theme==='light'?t.dark:t.light}>{theme==='light'?'◐':'◑'}</button>
       <a href="https://github.com/elarazju/deepinfer-illustrated" target="_blank" rel="noreferrer" class="repo-link">{t.sourceRepo} ↗</a>
     </div>
   </header>
@@ -53,6 +58,7 @@
         <a href="#journey" class:current={active==='journey'}><span class="mono">00</span>{t.overview}</a>
         {#each chapters as chapter,i}
           <a href={`#${chapter.id}`} class:current={active===chapter.id}><span class="mono">{String(i+1).padStart(2,'0')}</span>{t.chapters[i].short}</a>
+          {#if chapter.id === 'scheduling'}<a class="lab-nav" class:current={active==='decode-lab'} href="#decode-lab"><span>↳</span> DSpark · Decode Lab</a>{/if}
         {/each}
       </nav>
       <a href="#dspark" class="sidebar-lab"><span class="lab-dot"></span> DSpark Lab <span>↗</span></a>
@@ -75,6 +81,7 @@
       </section>
       {#each chapters as chapter,index}
         <Chapter {index} {locale} {theme}/>
+        {#if chapter.id === 'scheduling'}<DecodeLab {locale}/>{/if}
       {/each}
       <footer>
         <p class="eyebrow">DEEPINFER ILLUSTRATED</p><h2>{t.about}</h2><p>{t.aboutText}</p>

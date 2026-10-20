@@ -53,7 +53,7 @@ assert.deepEqual(shape(zh),shape(en),'Translation keys and array sizes differ');
 // All factual prose lives in facts.yaml and renders beside a source badge. UI
 // dictionaries may contain mathematical labels; whitelist those exact labels.
 const uiEvidence: Record<string,string[]> = {
-  'figures.storage.1':['storage.block'],
+  'figures.storage.persistent':['storage.block'],
   'swa.blockHit':['swa.hit'],
   'swa.limit':['swa.hit'],
   'figureNotes.moeDefinition':['eplb.prefill'],
@@ -70,10 +70,10 @@ for(const [lang,dict] of Object.entries({zh,en})){
       if(/\d/.test(value)&&key!=='license'&&!key.startsWith('reading.'))checkNumeric(value,uiEvidence[key]??[],`${lang}.${key}`);
     }else if(value&&typeof value==='object')for(const [k,v] of Object.entries(value))walk(v,key?`${key}.${k}`:k);
   };walk(dict);
-  dict.reading.forEach((block:any,i:number)=>{
+  dict.reading.forEach((chapter:any,i:number)=>chapter.blocks.forEach((block:any)=>{
     for(const id of block.refs)if(!facts.has(id)||facts.get(id).status==='unverified')errors.push(`Invalid prose evidence: ${id}`);
     checkNumeric(block.text,block.refs,`${lang}.reading.${i}`);
-  });
+  }));
 }
 assert.equal(db.demo_defaults.dspark.confidence.length,facts.get('dspark.method').values.drafts);
 assert.equal(db.demo_defaults.dspark.stepTime.length,db.demo_defaults.dspark.confidence.length+1);

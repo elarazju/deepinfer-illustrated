@@ -109,9 +109,9 @@ facts:
     status: confirmed
     values: { window: 128, rollback: 6, margin: 134, block: 128 }
     zh: >-
-      Q&A 用最近 128 个 token 的有界回放近似重建 SWA 状态：从 s 开始回放，位置 i 只关注 [max(s, i−127), i]。Decoder 侧的精确重建原本需要 20 层处理末尾 2560 个 token；改用有界回放后，总 Prefill 计算量近乎减半。这是文档的计算量描述，不是网页测得的加速倍数。
+      Q&A 用最近 128 个 token 的有界回放近似重建 SWA 状态：从 s 开始回放，位置 i 只关注 [max(s, i−127), i]。Decoder 侧的精确重建原本需要 20 层处理末尾 2560 个 token；改用有界回放后，总 Prefill 计算量近乎减半。Encoder 在前缀 SWA 缺失时回放命中前缀末尾；Decoder 每次 Prefill 都回放 prompt 末尾，结果仅供 Decode，不进前缀缓存。
     en: >-
-      The Q&A describes approximate SWA reconstruction by replaying the latest 128 tokens. Starting at s, query position i sees only [max(s, i−127), i]. Exact decoder reconstruction would require 20 layers to process the final 2560 tokens. With bounded replay, total prefill computation is nearly halved. This is a statement about computation in the document, not a speedup measured by this website.
+      The Q&A describes approximate SWA reconstruction by replaying the latest 128 tokens. Starting at s, query position i sees only [max(s, i−127), i]. Exact decoder reconstruction would require 20 layers to process the final 2560 tokens. With bounded replay, total prefill computation is nearly halved. Encoder replay repairs the matched-prefix tail when prefix SWA is missing. Decoder replay handles the prompt tail on every prefill; its output serves decode and is excluded from the prefix cache.
   - id: yoco.config
     source: readme
     ref: README.md:25

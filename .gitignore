@@ -5,3 +5,7 @@ research/*.txt
 research/*.pdf
 .DS_Store
 *.log
+public/figures/
+research/screenshots/
+research/audit-montages/
+research/tutorial-audit/*.png

@@ -6,7 +6,8 @@ const base = process.env.PREVIEW_URL ?? 'http://127.0.0.1:5173';
 const db=parse(await fs.readFile('facts.yaml','utf8'));
 const requested=process.argv.slice(2);
 const kinds=requested.length?requested:['overview','system','timeline','experts','yoco','storage','routing','recipe','model'];
-const browser=await chromium.launch({channel:process.env.BROWSER_CHANNEL??'chrome',headless:true});
+const channel=process.env.BROWSER_CHANNEL??'chrome';
+const browser=await chromium.launch({channel:channel==='chromium'?undefined:channel,headless:true});
 const page=await browser.newPage({viewport:{width:1280,height:900},deviceScaleFactor:2});
 await fs.mkdir('public/figures',{recursive:true});
 try{
@@ -14,6 +15,7 @@ try{
     await page.goto(`${base}/?figure=${kind}&lang=${lang}&theme=${theme}`,{waitUntil:'networkidle'});
     await page.evaluate(()=>document.fonts.ready);
     await page.waitForFunction(({lang,theme})=>document.documentElement.lang===(lang==='zh'?'zh-CN':'en')&&document.documentElement.dataset.theme===theme,{lang,theme});
+    const fontLinks=await page.locator('link[href*="fonts.googleapis.com"]').evaluateAll(links=>links.map(link=>link.outerHTML).join(''));
     const svg=await page.locator('svg.diagram').evaluate((element,{commit,kind})=>{
       const clone=element.cloneNode(true) as SVGSVGElement;
       const props=['fill','stroke','stroke-width','stroke-dasharray','opacity','fill-opacity','font-family','font-size','font-weight','letter-spacing','text-anchor','paint-order'];
@@ -48,7 +50,8 @@ try{
     },{commit:db.commit,kind});
     const stem=`public/figures/${kind}-${lang}-${theme}`;
     await fs.writeFile(`${stem}.svg`,svg);
-    await page.setContent(`<style>body{margin:0;width:1200px}svg{display:block}</style>${svg}`);
+    await page.setContent(`${fontLinks}<style>body{margin:0;width:1200px}svg{display:block}</style>${svg}`);
+    await page.evaluate(()=>document.fonts.ready);
     await page.locator('svg').screenshot({path:`${stem}.png`});
   }
   console.log(`Exported ${kinds.length*4} SVG + PNG pairs.`);

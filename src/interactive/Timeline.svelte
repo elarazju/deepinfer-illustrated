@@ -36,19 +36,19 @@
     <rect x="70" y="30" width="560" height="45" rx="6" fill="var(--surface-alt)"/>
     <rect x="70" y="110" width="560" height="45" rx="6" fill="var(--surface-alt)"/>
     <rect x="70" y="30" width={scale*defaults.cpuSchedule/model.total} height="45" rx="6" fill="var(--cpu-soft)" stroke="var(--cpu)"/>
-    <text x="78" y="58" class="small">{t.figures.timeline[2]} ({async?'N+1':'N'})</text>
+    <text x="78" y="58" class="small">{t.figures.timeline.schedule} ({async?'N+1':'N'})</text>
     <rect x={70+scale*(async?defaults.cpuSchedule:defaults.cpuSchedule+model.gpu)/model.total} y="30" width={scale*defaults.post/model.total} height="45" rx="6" fill="var(--cpu-soft)" stroke="var(--cpu)"/>
-    <text x={78+scale*(async?defaults.cpuSchedule:defaults.cpuSchedule+model.gpu)/model.total} y="58" class="small">{t.figures.timeline[5]} ({async?'N−1':'N'})</text>
+    <text x={78+scale*(async?defaults.cpuSchedule:defaults.cpuSchedule+model.gpu)/model.total} y="58" class="small">{t.figures.timeline.post} ({async?'N−1':'N'})</text>
     {#if async}
       <path d={`M${70+scale*defaults.cpuSchedule/model.total} 24 V80`} stroke="var(--cpu)" stroke-dasharray="3 3"/>
-      <text x={70+scale*defaults.cpuSchedule/model.total} y="19" text-anchor="middle" class="small">{t.figures.timeline[7]} (N+1)</text>
+      <text x={70+scale*defaults.cpuSchedule/model.total} y="19" text-anchor="middle" class="small">{t.figures.timeline.launchForward} (N+1)</text>
       <path d={`M${70+scale*model.cpu/model.total} 24 V80`} stroke="var(--cpu)" stroke-dasharray="3 3"/>
-      <text x={70+scale*model.cpu/model.total} y="94" text-anchor="middle" class="small">{t.figures.timeline[9]} (N+1)</text>
+      <text x={70+scale*model.cpu/model.total} y="94" text-anchor="middle" class="small">{t.figures.timeline.launchSample} (N+1)</text>
     {/if}
     <rect x={70+scale*gpuStart/model.total} y="110" width={scale*defaults.forward/model.total} height="45" rx="6" fill="var(--gpu-soft)" stroke="var(--gpu)"/>
-    <text x={78+scale*gpuStart/model.total} y="138" class="small">{t.figures.timeline[3]} (N)</text>
+    <text x={78+scale*gpuStart/model.total} y="138" class="small">{t.figures.timeline.forward} (N)</text>
     <rect x={70+scale*(gpuStart+defaults.forward)/model.total} y="110" width={scale*defaults.sample/model.total} height="45" rx="6" fill="var(--gpu-soft)" stroke="var(--gpu)"/>
-    <text x={78+scale*(gpuStart+defaults.forward)/model.total} y="138" class="small">{t.figures.timeline[4]} (N)</text>
+    <text x={78+scale*(gpuStart+defaults.forward)/model.total} y="138" class="small">{t.figures.timeline.sample} (N)</text>
     <path d={`M${70+scale*progress/100} 15 V170`} stroke="var(--highlight)" stroke-width="2"/>
   </svg>
   <input type="range" min="0" max="100" step="1" bind:value={progress} aria-label={t.timeline.scrub}/>

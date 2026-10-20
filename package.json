@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "check": "svelte-check --tsconfig ./tsconfig.json && tsx scripts/check-facts.ts",
+    "check": "svelte-check --tsconfig ./tsconfig.json && tsx scripts/check-facts.ts && tsx scripts/check-length.ts",
     "test": "tsx --test scripts/models.test.ts",
-    "build": "npm run check && vite build",
+    "build": "npm run check && node scripts/build-site.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "export": "tsx scripts/export-svg.ts"
   },

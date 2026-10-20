@@ -2,85 +2,85 @@
   {
     "chapter": "system",
     "lang": "zh",
-    "count": 1181,
+    "count": 1428,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "scheduling",
     "lang": "zh",
-    "count": 982,
+    "count": 1213,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "experts",
     "lang": "zh",
-    "count": 1071,
+    "count": 1324,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "yoco",
     "lang": "zh",
-    "count": 1277,
+    "count": 1497,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "storage",
     "lang": "zh",
-    "count": 1201,
+    "count": 1432,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "routing",
     "lang": "zh",
-    "count": 1017,
+    "count": 1248,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "recipe",
     "lang": "zh",
-    "count": 960,
+    "count": 1190,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "system",
     "lang": "en",
-    "count": 888,
+    "count": 809,
     "unit": "words"
   },
   {
     "chapter": "scheduling",
     "lang": "en",
-    "count": 842,
+    "count": 806,
     "unit": "words"
   },
   {
     "chapter": "experts",
     "lang": "en",
-    "count": 829,
+    "count": 807,
     "unit": "words"
   },
   {
     "chapter": "yoco",
     "lang": "en",
-    "count": 897,
+    "count": 842,
     "unit": "words"
   },
   {
     "chapter": "storage",
     "lang": "en",
-    "count": 886,
+    "count": 831,
     "unit": "words"
   },
   {
     "chapter": "routing",
     "lang": "en",
-    "count": 833,
+    "count": 813,
     "unit": "words"
   },
   {
     "chapter": "recipe",
     "lang": "en",
-    "count": 825,
+    "count": 802,
     "unit": "words"
   }
 ]

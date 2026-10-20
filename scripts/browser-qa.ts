@@ -5,7 +5,7 @@ const base=process.env.PREVIEW_URL??'http://127.0.0.1:5173';
 const directory='research/screenshots';
 await fs.mkdir(directory,{recursive:true});
 const results:any[]=[];
-const sections=['journey','system','scheduling','experts','yoco','storage','routing','recipe','model'];
+const sections=['journey','system','scheduling','decode-lab','experts','yoco','storage','routing','recipe','model'];
 for(const engine of ['chrome','webkit']){
   const browser=engine==='chrome'?await chromium.launch({channel:'chrome'}):await webkit.launch();
   try{
@@ -18,6 +18,10 @@ for(const engine of ['chrome','webkit']){
       const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
       assert(!overflow,`${engine}/${lang}/${theme}/${width}: page overflow`);
       assert.equal(await page.locator('.chapter').count(),8);
+      assert.equal(await page.locator('#experts #dspark').count(),0);
+      assert.equal(await page.locator('#decode-lab #dspark').count(),1);
+      assert.equal(await page.locator('.chapter-evidence[open]').count(),0);
+      assert(await page.locator('#system .tutorial-body').isVisible());
       // Keyboard changes the modeled result, not just the slider appearance.
       const confidence=page.locator('#dspark input[type=range]').first();
       await confidence.focus();await page.keyboard.press('Home');
@@ -66,6 +70,15 @@ for(const engine of ['chrome','webkit']){
     await page.waitForTimeout(150);
     assert.equal(await page.locator('#scheduling .demo > input').inputValue(),paused);
     await page.close();
+    const systemPage=await browser.newPage({colorScheme:'dark'});
+    await systemPage.goto(`${base}/?lang=en`,{waitUntil:'networkidle'});
+    assert.equal(await systemPage.locator('html').getAttribute('data-theme'),'dark','fresh visit follows system');
+    await systemPage.emulateMedia({colorScheme:'light'});
+    await systemPage.waitForFunction(()=>document.documentElement.dataset.theme==='light');
+    await systemPage.locator('.theme-toggle').click();
+    await systemPage.reload({waitUntil:'networkidle'});
+    assert.equal(await systemPage.locator('html').getAttribute('data-theme'),'dark','explicit choice persists');
+    await systemPage.close();
   }finally{await browser.close();}
 }
 await fs.writeFile('research/browser-results.json',JSON.stringify({results,note:'WebKit is an engine check, not real Safari/macOS/iOS certification.'},null,2));
