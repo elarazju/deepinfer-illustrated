@@ -7,7 +7,7 @@
 完整实现中英双语网站：8个章节、总览旅程、9张手绘SVG图、DSpark/SWA/异步调度3个交互演示，以及深浅主题、移动布局、键盘操作和减少动态效果支持。
 
 - 代码仓库：https://github.com/elarazju/deepinfer-illustrated
-- 目标线上地址：https://elarazju.github.io/deepinfer-illustrated/ （部署验证中）
+- 线上地址：https://elarazju.github.io/deepinfer-illustrated/ （已发布并验证）
 - 事实库：35条，其中32条 confirmed、3条 inferred；每项保留锁定提交代码链接或官方Q&A/报告来源。
 - 导出：9图 × 中英 × 深浅 × SVG/PNG，共72个文件，位于 `public/figures/`。
 - 内容协议CC BY 4.0，网站代码MIT。页脚明确标注非官方项目。
@@ -21,7 +21,7 @@
 - [x] 阶段5：模型代码与官方V4.1技术报告对照。
 - [x] 阶段6：SVG/PNG导出、SEO、分享图和无障碍修正。
 - [x] 阶段7：未参与制作的独立agent审核；详见文末。
-- [ ] 发布验收：GitHub Actions成功及线上页面、资源验证。
+- [x] 发布验收：GitHub Actions成功及线上页面、资源验证。
 
 ## 验证与证据
 
@@ -32,6 +32,10 @@
 - axe在中英/深浅4组合的WCAG 2 A/AA、2.1 AA规则检查中零违规；22组文字语义色对比度全部≥4.5，最小4.71。见 [自动无障碍结果](research/accessibility-results.json)、[对比度结果](research/contrast-results.json)。自动检查仍有需要人工判断的项目，不构成完整WCAG认证。
 - 80张截图覆盖首页、总览与8章的双语/双主题/双宽度；独立审核检查全部截图，见下表。
 - 官方模型报告的章节页码、代码对照见 [模型来源记录](research/MODEL-SOURCES.md)。
+
+## 发布验收
+
+首次发布 [GitHub Actions运行](https://github.com/elarazju/deepinfer-illustrated/actions/runs/39413248367) 构建、测试和部署均成功。`scripts/verify-published.ts` 对正式子路径验证中文浅色桌面、英文深色手机：页面HTTP 200、8章完整、无页面溢出或脚本错误、DSpark键盘边界正确，36个实际下载链接返回有效SVG/PNG。见 [线上检查结果](research/published-results.json)。完整本地72文件和16浏览器组合覆盖见前述记录。
 
 ## 来源口径与限制
 
@@ -73,5 +77,6 @@
 - C1–C7 事实正文加可展开讲解：中文960–1277字符、英文825–897词，均达到计划下限。C8 保持明确标记的代码导读。
 - 独立运行事实检查通过；原有代码链接全部 HTTP 200，锚点在锁定提交内。检查时上游默认分支 HEAD 仍与锁定提交一致。
 - 独立运行 Chrome/WebKit × 中英 × 深浅 × 1280/375 的16组合：无页面横向溢出和pageerror，展开阅读、键盘演示边界、减少动态效果检查通过；图像下载覆盖72个SVG/PNG文件。结果见 [独立浏览器记录](research/independent-browser-results.json)。
-- 通过10张对照拼图检查全部80张截图，并对问题位置查看原图。首次截图中的顶栏遮挡、时间线文字拥挤、移动总览站名贴边和C1文字穿线均已修复；C6/C7必画说明已补齐。C8的GPU语义配色已修源码，需同步最后一轮该章导出与截图。
+- 通过10张对照拼图检查全部80张截图，并对问题位置查看原图。首次截图中的顶栏遮挡、时间线文字拥挤、移动总览站名贴边和C1文字穿线均已修复；C6/C7必画说明已补齐。最终再次查看 home/model/scheduling 共24张截图，确认C8与Timeline的GPU语义色已在源码、导出和截图中同步。
+- 本次来源、功能和视觉审查未发现阻断发布的问题。已阅读制作方自动axe四组合0违规和22组语义文字颜色对比度至少4.5（最小4.71）的结果；不将这些检查表述为全面无障碍认证。
 - 限制：WebKit测试不是Safari真机验收；自动无障碍检查不能替代完整人工与辅助技术评估；375宽度下非总览静态图在图内横向滚动。线上发布状态尚未由独立审核者验证。

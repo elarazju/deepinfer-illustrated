@@ -1,0 +1,22 @@
+{
+  "base": "https://elarazju.github.io/deepinfer-illustrated/",
+  "checkedAt": "2026-10-20T11:13:06.113Z",
+  "results": [
+    {
+      "lang": "zh",
+      "theme": "light",
+      "width": 1280,
+      "status": "passed",
+      "downloads": 18,
+      "errors": []
+    },
+    {
+      "lang": "en",
+      "theme": "dark",
+      "width": 375,
+      "status": "passed",
+      "downloads": 18,
+      "errors": []
+    }
+  ]
+}

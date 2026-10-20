@@ -3,6 +3,8 @@
 An unofficial, bilingual visual guide to a request's journey through DeepInfer.
 Svelte + TypeScript + Vite, hand-authored SVG, and D3-powered teaching models.
 
+[Open the website](https://elarazju.github.io/deepinfer-illustrated/) · [Verification report](REPORT.md)
+
 Upstream evidence is pinned to `8b16149741a4935e1dec8cea27853f273b374c5b`.
 Production-only cache and routing services are explicitly distinguished from released code.
 No model inference or accelerator benchmark is performed by this project.
