@@ -13,6 +13,13 @@
   let reading = $derived(t.reading[index]);
 </script>
 
+{#snippet paragraph(text: string, refs: string[])}
+  <p class:inference={refs.some(id=>facts[id].status==='inferred')}>
+    {#if refs.some(id=>facts[id].status==='inferred')}<strong class="inference-label">{t.inferred} — </strong>{/if}
+    {text} {#each refs as id}<FactBadge {id} {locale}/>{/each}
+  </p>
+{/snippet}
+
 <section id={chapter.id} class="chapter">
   <header class="chapter-heading">
     <div class="chapter-index">{String(index+1).padStart(2,'0')}</div>
@@ -26,7 +33,7 @@
   {#if reading}
     <div class="prose tutorial-opening">
       {#each reading.blocks.slice(0,2) as block}
-        <p class:inference={block.refs.some(id=>facts[id].status==='inferred')}>{#if block.refs.some(id=>facts[id].status==='inferred')}<strong class="inference-label">{t.inferred} — </strong>{/if}{block.text} {#each block.refs as id}<FactBadge {id} {locale}/>{/each}</p>
+        {@render paragraph(block.text, block.refs)}
       {/each}
     </div>
   {/if}
@@ -35,16 +42,13 @@
     <div class="prose tutorial-body">
       {#each reading.blocks.slice(2) as block}
         <h3>{block.title}</h3>
-        <p class:inference={block.refs.some(id=>facts[id].status==='inferred')}>{#if block.refs.some(id=>facts[id].status==='inferred')}<strong class="inference-label">{t.inferred} — </strong>{/if}{block.text} {#each block.refs as id}<FactBadge {id} {locale}/>{/each}</p>
+        {@render paragraph(block.text, block.refs)}
       {/each}
     </div>
   {:else}
     <div class="prose">
       {#each chapter.facts as id}
-        <p class:inference={facts[id].status === 'inferred'} data-fact={id}>
-          {#if facts[id].status === 'inferred'}<strong class="inference-label">{t.inferred} — </strong>{/if}
-          {facts[id][locale]} <FactBadge {id} {locale}/>
-        </p>
+        {@render paragraph(facts[id][locale], [id])}
       {/each}
     </div>
   {/if}
@@ -55,10 +59,7 @@
     {#if reading}
       <p>{reading.scope}</p>
       {#each chapter.facts as id}
-        <p class:inference={facts[id].status === 'inferred'} data-fact={id}>
-          {#if facts[id].status === 'inferred'}<strong class="inference-label">{t.inferred} — </strong>{/if}
-          {facts[id][locale]} <FactBadge {id} {locale}/>
-        </p>
+        {@render paragraph(facts[id][locale], [id])}
       {/each}
     {/if}
     {#if chapter.code}<CodeRef path={chapter.code} line={chapter.line!}/>{/if}

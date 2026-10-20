@@ -7,32 +7,33 @@
   import Diagram from './figures/Diagram.svelte';
   import FactBadge from './lib/FactBadge.svelte';
   const params = new URLSearchParams(location.search);
-  const storedTheme = localStorage.getItem('di-theme');
-  const systemTheme = matchMedia('(prefers-color-scheme: dark)');
+  function readStored(key: string) { try { return localStorage.getItem(key); } catch { return null; } }
+  function saveStored(key: string, value: string) { try { localStorage.setItem(key,value); } catch {} }
+  function getSystemTheme() { try { return matchMedia('(prefers-color-scheme: dark)'); } catch { return null; } }
+  const storedTheme = readStored('di-theme');
+  const systemTheme = getSystemTheme();
   let explicitTheme = $state(params.has('theme') || storedTheme !== null);
-  let locale = $state<Locale>(params.get('lang') === 'en' || (!params.has('lang') && localStorage.getItem('di-language') === 'en') ? 'en' : 'zh');
-  let theme = $state(params.get('theme') ?? storedTheme ?? (systemTheme.matches ? 'dark' : 'light'));
+  let locale = $state<Locale>(params.get('lang') === 'en' || (!params.has('lang') && readStored('di-language') === 'en') ? 'en' : 'zh');
+  let theme = $state(params.get('theme') ?? storedTheme ?? (systemTheme?.matches ? 'dark' : 'light'));
   let active = $state('journey');
   let t = $derived(dictionaries[locale]);
   const exportKind = params.get('figure');
   const exportMode = !!exportKind;
   onMount(()=>{
-    const requested = params.get('lang') ?? localStorage.getItem('di-language');
-    locale = requested === 'en' ? 'en' : 'zh';
-    const followSystem = () => { if (!explicitTheme) theme = systemTheme.matches ? 'dark' : 'light'; };
-    systemTheme.addEventListener('change', followSystem);
+    const followSystem = () => { if (!explicitTheme) theme = systemTheme?.matches ? 'dark' : 'light'; };
+    try { systemTheme?.addEventListener('change', followSystem); } catch {}
     const observer = new IntersectionObserver(entries=>{
       for(const entry of entries) if(entry.isIntersecting) active=entry.target.id;
     },{rootMargin:'-10% 0px -65% 0px'});
     document.querySelectorAll('main > section').forEach(node=>observer.observe(node));
-    return ()=>{ observer.disconnect(); systemTheme.removeEventListener('change', followSystem); };
+    return ()=>{ observer.disconnect(); try { systemTheme?.removeEventListener('change', followSystem); } catch {} };
   });
   $effect(()=>{
     document.documentElement.lang=locale==='zh'?'zh-CN':'en';
     document.documentElement.dataset.theme=theme;
     document.title=locale==='zh'?'图解 DeepInfer · 跟着一个请求走':'DeepInfer Illustrated · Follow a request';
     if(!exportMode){
-      localStorage.setItem('di-language',locale);
+      saveStored('di-language',locale);
       const url=new URL(location.href);url.searchParams.set('lang',locale);history.replaceState(null,'',url);
     }
   });
@@ -47,7 +48,7 @@
     <div class="header-actions">
       <span class="edition mono">FIELDNOTES / 001</span>
       <button class="locale-toggle" onclick={()=>locale=locale==='zh'?'en':'zh'} aria-label={locale==='zh'?'Switch to English':'切换至中文'}>{locale==='zh'?'EN':'中文'}</button>
-      <button class="theme-toggle" onclick={()=>{theme=theme==='light'?'dark':'light';explicitTheme=true;localStorage.setItem('di-theme',theme);}} aria-label={theme==='light'?t.dark:t.light}>{theme==='light'?'◐':'◑'}</button>
+      <button class="theme-toggle" onclick={()=>{theme=theme==='light'?'dark':'light';explicitTheme=true;saveStored('di-theme',theme);}} aria-label={theme==='light'?t.dark:t.light}>{theme==='light'?'◐':'◑'}</button>
       <a href="https://github.com/elarazju/deepinfer-illustrated" target="_blank" rel="noreferrer" class="repo-link">{t.sourceRepo} ↗</a>
     </div>
   </header>
@@ -61,7 +62,6 @@
           {#if chapter.id === 'scheduling'}<a class="lab-nav" class:current={active==='decode-lab'} href="#decode-lab"><span>↳</span> DSpark · Decode Lab</a>{/if}
         {/each}
       </nav>
-      <a href="#dspark" class="sidebar-lab"><span class="lab-dot"></span> DSpark Lab <span>↗</span></a>
       <div class="sidebar-foot"><p>{t.version}</p><a class="mono" href={`${database.repository}/tree/${database.commit}`} target="_blank" rel="noreferrer">{database.commit.slice(0,7)} ↗</a><small>{t.about}</small></div>
     </aside>
     <main id="main">

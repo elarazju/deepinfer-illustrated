@@ -50,7 +50,8 @@
   <path d="M 574 440 V 450 H 778 V 440" class="edge gpu"/>
   <text x="677" y="473" text-anchor="middle" class="small">{labels.replayLength}: {replay.window}</text>
   <Box x={230} y={496} w={250} h={54} label={labels.replay}/>
-  <path d="M 570 443 H 355 V 489 M 486 523 H 554" class="edge gpu" marker-end="url(#arrow-yoco)"/>
+  <path d="M 570 443 H 355 V 489" class="edge gpu" marker-end="url(#arrow-yoco)"/>
+  <path d="M 486 523 H 554" class="edge gpu" marker-end="url(#arrow-yoco)"/>
   <Box x={562} y={496} w={218} h={54} label={labels.decoder}/>
   <text x="420" y="582" text-anchor="middle" class="small">{labels.reuse} + {labels.replay}</text>
 </Frame>

@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "check": "svelte-check --tsconfig ./tsconfig.json && tsx scripts/check-facts.ts && tsx scripts/check-length.ts",
+    "check": "svelte-check --tsconfig ./tsconfig.json && tsx scripts/check-facts.ts",
     "test": "tsx --test scripts/models.test.ts",
-    "build": "npm run check && node scripts/build-site.mjs",
+    "build": "npm run check && node scripts/build-local.mjs",
     "preview": "vite preview --host 127.0.0.1",
-    "export": "tsx scripts/export-svg.ts"
+    "export": "tsx scripts/export-svg.ts",
+    "length": "tsx scripts/check-length.ts",
+    "build:full": "npm run check && node scripts/build-site.mjs"
   },
   "dependencies": {
     "d3": "^7.9.0",

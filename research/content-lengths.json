@@ -2,85 +2,113 @@
   {
     "chapter": "system",
     "lang": "zh",
-    "count": 1428,
+    "visible": 862,
+    "withDetails": 1428,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "scheduling",
     "lang": "zh",
-    "count": 1213,
+    "visible": 787,
+    "withDetails": 1213,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "experts",
     "lang": "zh",
-    "count": 1324,
+    "visible": 816,
+    "withDetails": 1324,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "yoco",
     "lang": "zh",
-    "count": 1497,
+    "visible": 779,
+    "withDetails": 1497,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "storage",
     "lang": "zh",
-    "count": 1432,
+    "visible": 797,
+    "withDetails": 1432,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "routing",
     "lang": "zh",
-    "count": 1248,
+    "visible": 840,
+    "withDetails": 1248,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "recipe",
     "lang": "zh",
-    "count": 1190,
+    "visible": 815,
+    "withDetails": 1190,
+    "unit": "non-whitespace characters"
+  },
+  {
+    "chapter": "model",
+    "lang": "zh",
+    "visible": 529,
+    "withDetails": 1016,
     "unit": "non-whitespace characters"
   },
   {
     "chapter": "system",
     "lang": "en",
-    "count": 809,
+    "visible": 574,
+    "withDetails": 809,
     "unit": "words"
   },
   {
     "chapter": "scheduling",
     "lang": "en",
-    "count": 806,
+    "visible": 657,
+    "withDetails": 806,
     "unit": "words"
   },
   {
     "chapter": "experts",
     "lang": "en",
-    "count": 807,
+    "visible": 589,
+    "withDetails": 807,
     "unit": "words"
   },
   {
     "chapter": "yoco",
     "lang": "en",
-    "count": 842,
+    "visible": 541,
+    "withDetails": 842,
     "unit": "words"
   },
   {
     "chapter": "storage",
     "lang": "en",
-    "count": 831,
+    "visible": 537,
+    "withDetails": 831,
     "unit": "words"
   },
   {
     "chapter": "routing",
     "lang": "en",
-    "count": 813,
+    "visible": 631,
+    "withDetails": 813,
     "unit": "words"
   },
   {
     "chapter": "recipe",
     "lang": "en",
-    "count": 802,
+    "visible": 639,
+    "withDetails": 802,
+    "unit": "words"
+  },
+  {
+    "chapter": "model",
+    "lang": "en",
+    "visible": 263,
+    "withDetails": 462,
     "unit": "words"
   }
 ]

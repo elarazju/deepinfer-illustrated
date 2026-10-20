@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { safeMedia } from '../lib/browser';
   import { database, dictionaries, type Locale } from '../lib/data';
   import { timelineModel } from '../lib/models';
   import FactBadge from '../lib/FactBadge.svelte';
@@ -12,7 +13,7 @@
   let reduced = $state(false);
   let model = $derived(timelineModel(async, defaults));
   onMount(()=>{
-    const mq = matchMedia('(prefers-reduced-motion: reduce)');
+    const mq = safeMedia('(prefers-reduced-motion: reduce)');
     const update=()=>{reduced=mq.matches;if(reduced)playing=false;};
     update();mq.addEventListener('change',update);
     let handle: number; let last=0;

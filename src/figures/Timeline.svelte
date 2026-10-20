@@ -47,7 +47,8 @@
           <text x={x(task.start+task.span/2)-2} y={y+28} text-anchor="middle">{task.text}</text>
         </g>
       {/each}
-      <path d={`M${x(1.4)-5} ${panel.top+110} V${panel.top+134} M${x(6.3)+10} ${panel.top+140} V${panel.top+115}`} class="edge network" marker-end="url(#arrow-timeline)"/>
+      <path d={`M${x(1.4)-5} ${panel.top+110} V${panel.top+134}`} class="edge network" marker-end="url(#arrow-timeline)"/>
+      <path d={`M${x(6.3)+10} ${panel.top+140} V${panel.top+115}`} class="edge network" marker-end="url(#arrow-timeline)"/>
     {:else}
       {#each parallel as task}
         <g class="node cpu">

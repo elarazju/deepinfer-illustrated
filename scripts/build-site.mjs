@@ -1,3 +1,4 @@
+import { figureKinds } from '../src/lib/figure-kinds.mjs';
 import { spawn } from 'node:child_process';
 import { setTimeout } from 'node:timers/promises';
 import { readdir, readFile, writeFile } from 'node:fs/promises';
@@ -30,7 +31,8 @@ try {
   if (!ready || serverExited) throw new Error('Export server could not start on its reserved port.');
   await run(['--import', 'tsx', 'scripts/export-svg.ts'], { PREVIEW_URL: base });
   const filenames = (await readdir('public/figures')).filter(name => /\.(svg|png)$/.test(name)).sort();
-  if (filenames.length !== 72) throw new Error(`Expected 72 figure files, found ${filenames.length}`);
+  const expected = figureKinds.length * 2 * 2 * 2;
+  if (filenames.length !== expected) throw new Error(`Expected ${expected} figure files, found ${filenames.length}`);
   const files = Object.fromEntries(await Promise.all(filenames.map(async name => [
     name, createHash('sha256').update(await readFile(`public/figures/${name}`)).digest('hex'),
   ])));

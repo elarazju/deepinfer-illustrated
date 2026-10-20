@@ -22,7 +22,7 @@ export const database = parse(raw) as {
 };
 export const facts = Object.fromEntries(database.facts.map(f => [f.id, f]));
 export function sourceUrl(fact: Fact) {
-  if (fact.source === 'qa_pdf') return `${database.repository.replace('https://github.com/','https://raw.githubusercontent.com/')}/${database.commit}/${encodeURI(database.qa_path)}#page=${fact.ref.match(/\d+/)?.[0] ?? '1'}`;
+  if (fact.source === 'qa_pdf') return `${database.repository}/blob/${database.commit}/${encodeURI(database.qa_path)}#page=${fact.ref.match(/\d+/)?.[0] ?? '1'}`;
   const [path, line] = fact.ref.split(':');
   return `${database.repository}/blob/${database.commit}/${path}${line ? `#L${line}` : ''}`;
 }

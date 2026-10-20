@@ -1,11 +1,12 @@
 import fs from 'node:fs/promises';
+import { figureKinds } from '../src/lib/figure-kinds.mjs';
 import { chromium } from '@playwright/test';
 import { parse } from 'yaml';
 
 const base = process.env.PREVIEW_URL ?? 'http://127.0.0.1:5173';
 const db=parse(await fs.readFile('facts.yaml','utf8'));
 const requested=process.argv.slice(2);
-const kinds=requested.length?requested:['overview','system','timeline','experts','yoco','storage','routing','recipe','model'];
+const kinds=requested.length?requested:figureKinds;
 const channel=process.env.BROWSER_CHANNEL??'chrome';
 const browser=await chromium.launch({channel:channel==='chromium'?undefined:channel,headless:true});
 const page=await browser.newPage({viewport:{width:1280,height:900},deviceScaleFactor:2});

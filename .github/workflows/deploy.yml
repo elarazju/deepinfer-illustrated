@@ -22,7 +22,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm test
-      - run: npm run build
+      - run: npm run build:full
         env:
           BROWSER_CHANNEL: chromium
       - uses: actions/configure-pages@v5

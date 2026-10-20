@@ -8,7 +8,7 @@
 {#if fact && fact.status !== 'unverified'}
   <a class:inferred={fact.status === 'inferred'} class="fact-badge"
     href={sourceUrl(fact)} target="_blank" rel="noreferrer"
-    title={`${fact.ref} · ${fact.status} · ${id}`}
+    title={`${fact.source === 'qa_pdf' ? (locale === 'zh' ? '第 ' : 'Page ') + (fact.ref.match(/\d+(?:[–−-]\d+)?/)?.[0] ?? '') + (locale === 'zh' ? ' 页 · ' : ' · ') : ''}${fact.ref} · ${fact.status} · ${id}`}
     aria-label={`${t.source}: ${fact.ref} (${fact.status})`}>
     <span aria-hidden="true">↗</span>
     {fact.status === 'inferred' ? t.inferred : fact.source === 'qa_pdf' ? t.qa : t.code}

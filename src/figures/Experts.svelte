@@ -1,8 +1,6 @@
 <script lang="ts">
   import { dictionaries, facts, type Locale } from '../lib/data';
   import Frame from './Frame.svelte';
-  import Box from './Box.svelte';
-  import Edge from './Edge.svelte';
   let { locale }: { locale: Locale } = $props();
   const kind = 'experts';
   let t = $derived(dictionaries[locale]);

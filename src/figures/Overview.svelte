@@ -1,12 +1,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { safeMedia } from '../lib/browser';
   import { dictionaries, type Locale } from '../lib/data';
   let { locale, exportMode = false }: { locale: Locale; exportMode?: boolean } = $props();
   const kind = 'overview';
   let t = $derived(dictionaries[locale]);
   let narrow = $state(false);
   onMount(() => {
-    const mq = matchMedia('(max-width: 600px)');
+    const mq = safeMedia('(max-width: 600px)');
     const update = () => narrow = mq.matches && !exportMode;
     update(); mq.addEventListener('change', update);
     return () => mq.removeEventListener('change', update);
