@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { chapters, database, dictionaries, type Locale } from './lib/data';
+  import Basics from './chapters/Basics.svelte';
   import Glossary from './chapters/Glossary.svelte';
   import Chapter from './chapters/Chapter.svelte';
   import DecodeLab from './chapters/DecodeLab.svelte';
@@ -57,6 +58,7 @@
     <aside class="sidebar">
       <p class="eyebrow">{t.contents}</p>
       <nav aria-label={t.contents}>
+        <a href="#basics" class:current={active==='basics'}><span class="mono">{String(0).padStart(2,'0')}</span>{t.glossaryUi.basics}</a>
         <a href="#journey" class:current={active==='journey'}><span class="mono">00</span>{t.overview}</a>
         {#each chapters as chapter,i}
           <a href={`#${chapter.id}`} class:current={active===chapter.id}><span class="mono">{String(i+1).padStart(2,'0')}</span>{t.chapters[i].short}</a>
@@ -71,9 +73,10 @@
         <p class="eyebrow"><span class="live-dot"></span>{t.eyebrow}</p>
         <h1 id="hero-title">{t.heroTitle}</h1>
         <p class="hero-description">{t.heroText}</p>
-        <div class="hero-actions"><a class="primary-button" href="#journey">{t.start}<span>↓</span></a><a class="secondary-link" href="#dspark">{t.try} ↗</a></div>
+        <div class="hero-actions"><a class="primary-button" href="#basics">{t.start}<span>↓</span></a><a class="secondary-link" href="#dspark">{t.try} ↗</a></div>
         <div class="hero-meta"><span class="mono">DEEPINFER / {database.commit.slice(0,7)}</span><FactBadge id="release.scope" {locale}/><span>{locale==='zh'?'中文 / EN':'EN / 中文'}</span></div>
       </section>
+      <Basics {locale} {theme}/>
       <section id="journey" class="journey">
         <div class="section-title"><div><p class="eyebrow">THE BIG PICTURE</p><h2>{t.overview}</h2></div><span class="section-arrow" aria-hidden="true">↘</span></div>
         <Figure kind="overview" {locale} number="00" source="system.disaggregation" {theme}/>

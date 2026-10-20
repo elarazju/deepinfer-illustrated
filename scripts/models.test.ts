@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { evaluateDrafts, cacheReplay, timelineModel } from '../src/lib/models';
+import { evaluateDrafts, cacheReplay, timelineModel, kvSize, generationFrame } from '../src/lib/models';
 
 test('zero confidence allows zero verified drafts; unity accepts every candidate',()=>{
   const zero=evaluateDrafts([0,0,0,0,0],[1,1.1,1.2,1.3,1.4,1.5]);
@@ -28,4 +28,17 @@ test('timeline idle includes CPU bottleneck even in async mode',()=>{
   assert.equal(timelineModel(false,{cpuSchedule:2,forward:6,sample:2,post:2}).idle,1/3);
   assert.equal(timelineModel(true,{cpuSchedule:2,forward:6,sample:2,post:2}).idle,0);
   assert.equal(timelineModel(true,{cpuSchedule:10,forward:6,sample:2,post:6}).idle,.5);
+});
+
+test('KV bytes scale independently with context and layers, with zero and max teaching bounds',()=>{
+ assert.equal(kvSize(1024,16,8,64,2).bytes,33554432);
+ assert.equal(kvSize(0,16,8,64,2).bytes,0);
+ assert.equal(kvSize(32768,96,8,256,2).bytes,25769803776);
+ assert.equal(kvSize(2048,16,8,64,2).bytes,2*kvSize(1024,16,8,64,2).bytes);
+ assert.throws(()=>kvSize(-1,16,8,64,2),RangeError);
+});
+test('sampled output is pending until the next forward pass and playback clamps at end',()=>{
+ assert.deepEqual(generationFrame(0,3,3),{generated:0,visible:3,cached:0,done:false});
+ assert.deepEqual(generationFrame(1,3,3),{generated:1,visible:4,cached:3,done:false});
+ assert.deepEqual(generationFrame(99,3,3),{generated:3,visible:6,cached:5,done:true});
 });

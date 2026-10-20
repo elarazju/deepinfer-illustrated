@@ -322,6 +322,18 @@ facts:
   - {"id": "bg.utilization", "source": "background", "ref": "NVIDIA System Management Interface, Utilization", "url": "https://docs.nvidia.com/deploy/nvidia-smi/index.html", "status": "confirmed", "zh": "nvidia-smi 的 GPU 利用率统计采样期间有内核运行的时间占比，不代表计算单元已发挥全部峰值算力。", "en": "nvidia-smi GPU utilization reports the fraction of a sampling period with active kernels, not the fraction of peak arithmetic capacity achieved."}
   - {"id": "bg.utf", "source": "background", "ref": "WHATWG Encoding Standard, §8.1", "url": "https://encoding.spec.whatwg.org/#utf-8-decoder", "status": "confirmed", "zh": "UTF-8 字符可能由多个字节组成。流式解码器保留未完成字符的状态，收到足够字节后才输出该字符。", "en": "UTF-8 characters may span multiple bytes. A streaming decoder retains incomplete character state until enough bytes arrive."}
 demo_defaults:
+  basics:
+    length: 1024
+    layers: 16
+    heads: 8
+    dimension: 64
+    bytes: 2
+    maxLength: 32768
+    maxLayers: 96
+    maxDimension: 256
+    promptTokens: 3
+    outputTokens: 3
+    intervalMs: 1200
   # Explicitly authored teaching values, never claimed to be production measurements.
   source: illustration
   ref: "Teaching scenarios for dspark.cumulative, swa.hit, zos.overlap"

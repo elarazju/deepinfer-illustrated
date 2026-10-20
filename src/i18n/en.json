@@ -206,6 +206,46 @@
       "indexer": "Indexer top-k",
       "reuse": "Cross-layer reuse",
       "caption": "Code relationship schematic"
+    },
+    "basics-autoregressive": {
+      "caption": "Output grows step by step; KV follows processed positions",
+      "prompt": "Known prompt",
+      "later": "Generate onward",
+      "tokens": "Token sequence",
+      "cache": "Computed K / V",
+      "pending": "Sampled; KV pending",
+      "howToRead": "Orange marks the prompt, green the output and purple cached positions. A dashed cell is newly sampled: its KV is computed in the next pass."
+    },
+    "basics-prefill-decode": {
+      "caption": "One model, two work shapes",
+      "prefill": "Prefill: known input",
+      "decode": "Decode: new position",
+      "many": "Known positions together",
+      "single": "Depends on the last step",
+      "compute": "Long prompts: often compute-bound",
+      "memory": "Small batches: often bandwidth-bound",
+      "weights": "Weight reads reused within a batch",
+      "kv": "Read relevant historical KV",
+      "howToRead": "Green cells are current work; purple cells are cached history. Arrows show dependencies, not timing ratios. Bottleneck labels depend on workload."
+    },
+    "basics-moe": {
+      "caption": "Route to experts, then combine results",
+      "token": "Token vector",
+      "gate": "Gate scores",
+      "experts": "Routed experts",
+      "combine": "Combine",
+      "selected": "Selected routes",
+      "howToRead": "Green experts and solid lines are selected for this token. Gray cells are unselected. Identifiers and selection counts are illustrative."
+    },
+    "basics-parallel": {
+      "caption": "DP partitions data; EP distributes experts",
+      "dp": "DP: same weights, different data",
+      "ep": "EP: different experts",
+      "request": "Request",
+      "copy": "Matching model replica",
+      "dispatch": "Dispatch tokens to experts",
+      "combine": "Combine expert outputs",
+      "howToRead": "Left: identical weights handle different requests. Right: distributed experts exchange tokens. Device counts are illustrative."
     }
   },
   "dspark": {
@@ -754,5 +794,126 @@
     "appears": "Appears in:",
     "related": "Related:",
     "basics": "Before you start"
+  },
+  "basics": {
+    "title": "Before you start: from text to computation",
+    "intro": "Build a few small mental models before following a request into DeepInfer. Hover, click or focus a dotted-underlined term to open its definition.",
+    "selfTest": "Check your understanding",
+    "questions": [
+      {
+        "q": "What work does a KV cache save?",
+        "a": "It saves recomputing old keys and values. Ordinary full attention still reads relevant historical [[kv-cache|KV]]."
+      },
+      {
+        "q": "Why allocate separate resources to prompt processing and generation?",
+        "a": "[[prefill-decode|Prefill and decode]] have different work shapes and typical bottlenecks. Separate resources reduce interference but require state transfer."
+      },
+      {
+        "q": "Can any idle expert replace a busy expert?",
+        "a": "No. Different logical experts have different weights. An [[expert-replica]] provides another location for the same expert."
+      }
+    ],
+    "kvTitle": "Try it: how much KV does context need?",
+    "kvScope": "Illustrative values · Uncompressed full attention, one sequence, uniform layers; not a DeepInfer estimator. Read volume assumes one complete historical KV read per step, excluding weights, output writes and repeated kernel accesses.",
+    "length": "Context tokens",
+    "layers": "Layers",
+    "dimension": "Head dimension",
+    "heads": "KV heads",
+    "bytes": "Bytes per element",
+    "size": "Total KV",
+    "read": "Ideal KV read per step",
+    "formula": "K and V × tokens × layers × KV heads × head dimension × bytes per element",
+    "playTitle": "Try it: the autoregressive loop",
+    "play": "Play",
+    "pause": "Pause",
+    "step": "Step",
+    "reset": "Reset",
+    "tokens": [
+      "I",
+      "like",
+      "learning",
+      "inference",
+      "systems",
+      "〈end〉"
+    ],
+    "prompt": "Known prompt",
+    "processed": "Processed and cached",
+    "pending": "Sampled; pending the next pass",
+    "stage": "Stage",
+    "stages": [
+      "Tokenized; awaiting prefill",
+      "Prefill complete and sampled",
+      "Process last output, then sample",
+      "End marker reached"
+    ],
+    "scope": "Illustrative playback · Text is prewritten, not an actual tokenizer split or model prediction.",
+    "minute": "minutes",
+    "sections": [
+      {
+        "id": "generation",
+        "title": "What happens inside a conversation",
+        "text": "Text first passes through a [[tokenizer]] to become [[token]] IDs, then an [[embedding]] turns them into vectors. A forward pass moves those vectors through the model layers; their intermediate representation is called a [[hidden-state]]. The final scores describe candidates for the next position. [[sampling|Sampling]] selects a token and appends it to the sequence, providing input for the next iteration. This [[autoregressive|autoregressive generation]] loop continues until an end marker or length limit. The player below illustrates the loop without running a language model.",
+        "refs": [
+          "bg.token",
+          "bg.representation",
+          "bg.sampling",
+          "bg.autoregressive"
+        ],
+        "figure": "basics-autoregressive"
+      },
+      {
+        "id": "cache",
+        "title": "Why each step need not start again",
+        "text": "[[attention|Attention]] reads context through [[qkv|queries Q, keys K and values V]]: a query matches historical keys and combines the corresponding values. The [[kv-cache]] stores keys and values of processed positions. The next iteration adds new state while ordinary full attention still reads relevant historical KV. Continuing a conversation therefore need not recompute every old key and value. When compatible state survives between requests, a [[prefix-cache]] can reuse the same beginning. Matching means the same token prefix, not merely similar meaning.",
+        "refs": [
+          "bg.representation",
+          "bg.kv_cache",
+          "bg.prefix"
+        ],
+        "figure": ""
+      },
+      {
+        "id": "phases",
+        "title": "Process the prompt, then generate",
+        "text": "[[prefill-decode|Prefill and decode]] have different work shapes. Prompt positions are already known, so prefill processes many positions together. Ordinary decode handles 1 new position per request per step, with later positions depending on sampling. A sufficiently long prefill tends to occupy the arithmetic units; a small decode batch can instead spend much of its time reading weights and historical KV, making [[bandwidth]] important. This is a tendency, not a universal rule: batch size, attention design and hardware change the bottleneck. In MoE, only relevant activated expert weights are read, rather than every expert in the model.",
+        "refs": [
+          "bg.prefill_decode",
+          "bg.moe"
+        ],
+        "figure": "basics-prefill-decode"
+      },
+      {
+        "id": "experts",
+        "title": "Experts are modules inside the model",
+        "text": "[[moe|Mixture of experts]] distributes part of the model computation among neural modules. [[expert-routing|Expert routing]] scores a token representation, selects top-k routed experts and combines their outputs; some architectures also use a [[shared-expert]]. Imagine several tokens all choosing one popular expert. Idle experts cannot simply substitute for it because they have different weights. The EPLB chapter explains how physical copies of the same expert help distribute that work. Expert identifiers and the number of connections in this drawing are illustrative.",
+        "refs": [
+          "bg.moe",
+          "eplb.strategy"
+        ],
+        "figure": "basics-moe"
+      },
+      {
+        "id": "parallel",
+        "title": "Split the data, or split the model",
+        "text": "[[dp|Data parallelism]] gives different inputs to matching model replicas. [[tp|Tensor parallelism]] partitions a layer computation, while [[ep|expert parallelism]] distributes experts across devices. EP sends token representations to the selected experts and returns the results using dispatch and combine [[all-to-all]] exchanges. These choices can be combined: the DeepInfer Q&A describes attention DP together with MoE EP. The drawing compares the main DP and EP distinction; its device and expert counts are illustrative.",
+        "refs": [
+          "bg.parallel",
+          "bg.ep",
+          "system.parallelism"
+        ],
+        "figure": "basics-parallel"
+      },
+      {
+        "id": "metrics",
+        "title": "Decide what kind of fast you need",
+        "text": "[[ttft|TTFT]] asks how soon a reply starts; [[tpot|TPOT]] asks how quickly it continues; [[throughput]] counts total completed work. [[goodput]] also requires meeting latency objectives. High [[gpu-utilization]] only means kernels were active during much of the sampling period; it does not prove all arithmetic units were saturated. To read a performance plot, first check the axis directions and workload, then inspect the [[pareto|Pareto front]]. Points on the front represent tradeoffs. Decide whether responsiveness or capacity matters more before choosing one.",
+        "refs": [
+          "bg.metrics",
+          "bg.utilization",
+          "bg.pareto"
+        ],
+        "figure": ""
+      }
+    ]
   }
 }

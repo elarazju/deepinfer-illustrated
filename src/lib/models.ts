@@ -25,3 +25,14 @@ export function timelineModel(async: boolean, durations: { cpuSchedule: number; 
   const total = async ? Math.max(gpu, cpu) : gpu + cpu;
   return { total, idle: (total - gpu) / total, gpu, cpu };
 }
+
+export function kvSize(tokens: number, layers: number, heads: number, dimension: number, bytes: number) {
+  const values=[tokens,layers,heads,dimension,bytes];
+  if(values.some(n=>!Number.isFinite(n)||n<0)) throw new RangeError('KV dimensions must be finite and nonnegative');
+  const size=2*values.reduce((a,b)=>a*b,1);
+  return {bytes:size,readBytes:size};
+}
+export function generationFrame(step: number, promptTokens: number, outputTokens: number) {
+  const generated=Math.max(0,Math.min(outputTokens,Math.floor(step)));
+  return {generated,visible:promptTokens+generated,cached:generated===0?0:promptTokens+generated-1,done:generated===outputTokens};
+}

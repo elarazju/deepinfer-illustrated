@@ -206,6 +206,46 @@
       "indexer": "Indexer top-k",
       "reuse": "跨层复用",
       "caption": "代码关系示意"
+    },
+    "basics-autoregressive": {
+      "caption": "每步增加一个输出；缓存只追上已处理的位置",
+      "prompt": "已知输入",
+      "later": "继续生成",
+      "tokens": "token 序列",
+      "cache": "已计算的 K / V",
+      "pending": "刚采样，尚未入缓存",
+      "howToRead": "橙色是输入，绿色是后续输出，紫色格子是已计算的缓存。虚线格表示刚采样的位置，要到下一轮才生成它的 KV。"
+    },
+    "basics-prefill-decode": {
+      "caption": "同一个模型，两种工作形态",
+      "prefill": "Prefill：处理已知输入",
+      "decode": "Decode：处理新位置",
+      "many": "许多已知位置并行",
+      "single": "新位置依赖上一步",
+      "compute": "长输入常受算力限制",
+      "memory": "小批量常受带宽限制",
+      "weights": "权重读取可在批内复用",
+      "kv": "还需读取相关历史 KV",
+      "howToRead": "绿色格表示参与当前计算的位置，紫色格表示已有缓存。箭头表示数据依赖，不是耗时比例；瓶颈描述有负载条件。"
+    },
+    "basics-moe": {
+      "caption": "路由选择专家，再合并结果",
+      "token": "token 表示",
+      "gate": "门控评分",
+      "experts": "路由专家",
+      "combine": "合并结果",
+      "selected": "被选中的路径",
+      "howToRead": "绿色专家与实线是本次选中路径；灰色格不参与本次路由计算。编号和选择数量为示意，不是官方配置。"
+    },
+    "basics-parallel": {
+      "caption": "DP 分数据，EP 分专家",
+      "dp": "DP：相同权重，不同数据",
+      "ep": "EP：不同专家，共同处理",
+      "request": "请求",
+      "copy": "同一模型副本",
+      "dispatch": "分发 token → 专家",
+      "combine": "合并专家输出",
+      "howToRead": "左侧设备有相同权重，各处理不同请求；右侧设备持有不同专家，需要互相传送 token。设备数量为示意。"
     }
   },
   "dspark": {
@@ -754,5 +794,126 @@
     "appears": "出现在：",
     "related": "相关术语：",
     "basics": "读前须知"
+  },
+  "basics": {
+    "title": "读前须知：从文字到计算",
+    "intro": "先建立几个小模型，再跟着请求进入 DeepInfer。术语的虚线下划线可以悬停、点击或用键盘打开。",
+    "selfTest": "自测三问",
+    "questions": [
+      {
+        "q": "KV 缓存省掉的是什么？",
+        "a": "省掉重复生成旧位置键和值的计算；普通全注意力仍要读取相关历史 [[kv-cache]]。"
+      },
+      {
+        "q": "为什么输入处理与生成可以分开部署？",
+        "a": "[[prefill-decode]]的工作形态与常见瓶颈不同；分开配置资源可以减少相互干扰，也要考虑状态传输成本。"
+      },
+      {
+        "q": "热门专家拥堵，换成任意空闲专家可以吗？",
+        "a": "不可以直接替代，不同逻辑专家的权重不同。[[expert-replica]]才是相同专家的另一个执行位置。"
+      }
+    ],
+    "kvTitle": "动手：上下文越长，KV 多大？",
+    "kvScope": "示意值 · 普通未压缩全注意力、单序列、每层相同布局；不估算 DeepInfer。读取量是每步完整读取历史 KV 一次的理想值，不含权重、输出写入和实际内核重复访存。",
+    "length": "上下文 token 数",
+    "layers": "层数",
+    "dimension": "每头维度",
+    "heads": "KV 头数",
+    "bytes": "每元素字节数",
+    "size": "KV 总量",
+    "read": "每步理想 KV 读取量",
+    "formula": "K 与 V × token 数 × 层数 × KV 头数 × 每头维度 × 每元素字节数",
+    "playTitle": "动手：自回归生成循环",
+    "play": "播放",
+    "pause": "暂停",
+    "step": "单步",
+    "reset": "重置",
+    "tokens": [
+      "我",
+      "喜欢",
+      "学习",
+      "推理",
+      "系统",
+      "〈结束〉"
+    ],
+    "prompt": "已知输入",
+    "processed": "已计算并缓存",
+    "pending": "已采样，等待下一轮处理",
+    "stage": "当前阶段",
+    "stages": [
+      "分词完成，等待 Prefill",
+      "Prefill 完成并采样",
+      "处理上一输出，再采样",
+      "遇到结束标记"
+    ],
+    "scope": "示意播放 · 文本预先写定，不代表真实 tokenizer 切分或模型预测。",
+    "minute": "分钟",
+    "sections": [
+      {
+        "id": "generation",
+        "title": "一次对话在模型里发生了什么",
+        "text": "你输入的文字先经过[[tokenizer]]变成[[token]]编号，再通过[[embedding]]成为向量。模型的一次前向计算，就是让这些向量依次经过各层；层间传递的内部表示叫[[hidden-state]]。最后得到下一位置的候选概率，[[sampling]]从中选出输出。选中的内容追加到已有序列，成为下一轮输入；这个循环就是[[autoregressive]]，直到结束标记或长度限制。下面的播放只演示这个循环，不运行语言模型。",
+        "refs": [
+          "bg.token",
+          "bg.representation",
+          "bg.sampling",
+          "bg.autoregressive"
+        ],
+        "figure": "basics-autoregressive"
+      },
+      {
+        "id": "cache",
+        "title": "为什么不用每步从头计算",
+        "text": "[[attention]]用[[qkv|查询 Q、键 K 和值 V]]读取上下文：当前查询与历史键匹配，再汇总相应的值。已经处理的位置，其键和值可以保存在[[kv-cache]]里。下一轮只补充新位置的状态，普通全注意力仍会读取相关历史 KV。比如同一段对话继续追问时，已有内容不必全部重新生成键和值；如果服务保留了兼容状态，还能通过[[prefix-cache]]跨请求复用相同开头。这里的“相同”指 token 前缀相同，不是两段话含义相似。",
+        "refs": [
+          "bg.representation",
+          "bg.kv_cache",
+          "bg.prefix"
+        ],
+        "figure": ""
+      },
+      {
+        "id": "phases",
+        "title": "先处理输入，再逐步输出",
+        "text": "[[prefill-decode|预填充（Prefill）与解码（Decode）]]处理的是不同形态的工作。输入中的位置已经知道，所以 Prefill 能把许多位置一起送入计算；普通 Decode 每请求每步处理 1 个新位置，后续位置要等待采样结果。较长输入通常能让计算单元忙起来，小批量 Decode 则容易花大量时间搬运权重和历史 KV，受到[[bandwidth]]限制。这里是常见趋势，批量、注意力结构和硬件都会改变瓶颈；MoE 也只读取被激活专家的相应权重，不能理解为每步总要读取模型的所有专家。",
+        "refs": [
+          "bg.prefill_decode",
+          "bg.moe"
+        ],
+        "figure": "basics-prefill-decode"
+      },
+      {
+        "id": "experts",
+        "title": "专家不是一群独立聊天机器人",
+        "text": "[[moe]]把部分计算分给多个神经网络模块。[[expert-routing]]根据当前 token 的表示评分，选出 top-k 路由专家并组合结果；有些架构另设[[shared-expert]]。想象几个 token 恰好都被分配给同一个热门专家：其他专家有空也不能直接代替它，因为权重不同。后面的 EPLB 章会解释，如何用同一专家的物理副本分担这类热点。专家编号和连线数量仅为示意。",
+        "refs": [
+          "bg.moe",
+          "eplb.strategy"
+        ],
+        "figure": "basics-moe"
+      },
+      {
+        "id": "parallel",
+        "title": "把请求分开，还是把模型分开",
+        "text": "[[dp]]让模型副本处理不同输入；[[tp]]把同一层的矩阵计算分到多个设备；[[ep]]则把不同专家分布到设备。EP 需要把 token 送到相应专家，再收回结果，这就是 dispatch 与 combine 所做的[[all-to-all]]交换。它们不是只能三选一：DeepInfer 的 Q&A 描述 attention 使用 DP、MoE 使用 EP 的组合。下面只画 DP 与 EP 的主要区别；图中的设备和专家个数都是示意值。",
+        "refs": [
+          "bg.parallel",
+          "bg.ep",
+          "system.parallelism"
+        ],
+        "figure": "basics-parallel"
+      },
+      {
+        "id": "metrics",
+        "title": "快，要先说清楚是哪一种快",
+        "text": "[[ttft]]回答“多久开始回复”，[[tpot]]回答“开始后输出多快”，[[throughput]]回答“系统总共完成多少工作”。[[goodput]]还要求服务满足约定的延迟目标。[[gpu-utilization]]高只说明采样期间常有内核在运行，并不能证明算术单元全部吃满。比较性能图时先确认横纵轴方向与工作负载，再找[[pareto]]：前沿上的点通常各有取舍，没有同时在所有指标上更优的单个方案。先确定自己更在意响应等待还是总体容量，才能决定看哪个点。",
+        "refs": [
+          "bg.metrics",
+          "bg.utilization",
+          "bg.pareto"
+        ],
+        "figure": ""
+      }
+    ]
   }
 }
