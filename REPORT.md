@@ -22,7 +22,7 @@
 - 浏览器：Chrome/WebKit × 中英 × 深浅 × 1280/375共16组合。新增检查DSpark位置、默认正文可见、来源区默认折叠、跟随系统主题和保存手动选择。见[浏览器结果](research/browser-results.json)。
 - 自动无障碍四组合零违规：[axe结果](research/accessibility-results.json)。本轮新增的页码文字曾因透明度降低对比度，已修复并重新检查。
 - 独立复核：[教程审查记录](research/TUTORIAL-REVIEW.md)。这是未参与制作的agent进行的来源、机制和浏览器审查，不能代替人工内容评审。记录区分了自动几何检查、生成截图和实际查看的样本。
-- 发布与图片一致性：[本轮Actions](https://github.com/elarazju/deepinfer-illustrated/actions/runs/39417747395)构建和部署成功，教程主体初次部署提交为`499f96d55a1e190ee9515ceab68d6d91fd6fba86`。线上检查通过中文浅色桌面、英文深色手机，验证独立Decode Lab、36个可见下载链接的内容哈希及清单提交号，见[线上检查](research/published-results.json)。清单包含本轮全部72个导出文件；模型章补充后的最新线上提交号见线上检查结果。
+- 发布与图片一致性：[本轮Actions](https://github.com/elarazju/deepinfer-illustrated/actions/runs/39418507455)构建和部署成功，包含模型章补充的最新部署提交为`47780c777929d563904a7e015389c28eb2f4b73a`。线上检查通过中文浅色桌面、英文深色手机，验证独立Decode Lab、36个可见下载链接的内容哈希及清单提交号，见[线上检查](research/published-results.json)。清单包含本轮全部72个导出文件；模型章默认讲解及4处可见推断标记也通过线上检查。
 
 ## 篇幅统计口径
 

@@ -16,6 +16,8 @@ try {
     assert.equal(await page.locator('.chapter').count(), 8);
     assert.equal(await page.locator('#decode-lab #dspark').count(), 1);
     assert.equal(await page.locator('#experts #dspark').count(), 0);
+    assert(await page.locator('#model .tutorial-opening').isVisible());
+    assert.equal(await page.locator('#model .tutorial-opening .inference-label, #model .tutorial-body .inference-label').count(),4);
     const manifestResponse=await page.request.get(`${base}figures/manifest.json`);
     assert.equal(manifestResponse.status(),200);
     const manifest=await manifestResponse.json();
