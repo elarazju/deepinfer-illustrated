@@ -1,0 +1,30 @@
+{
+  "name": "deepinfer-illustrated",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "check": "svelte-check --tsconfig ./tsconfig.json && tsx scripts/check-facts.ts",
+    "test": "tsx --test scripts/models.test.ts",
+    "build": "npm run check && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "export": "tsx scripts/export-svg.ts"
+  },
+  "dependencies": {
+    "d3": "^7.9.0",
+    "svelte": "^5.0.0",
+    "yaml": "^2.8.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.56.0",
+    "@sveltejs/vite-plugin-svelte": "^6.2.0",
+    "@types/d3": "^7.4.3",
+    "@types/node": "^24.0.0",
+    "svelte-check": "^4.3.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.1.0"
+  }
+}

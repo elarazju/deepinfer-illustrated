@@ -1,0 +1,51 @@
+:root {
+  color-scheme: light;
+  --paper: #f7f6f2;
+  --surface: #fffefa;
+  --surface-alt: #f0f0e8;
+  --ink: #202d29;
+  --muted: #5b6861;
+  --line: #d8ded5;
+  --accent: #286b4c;
+  --accent-soft: #e3eddb;
+  --cpu: #85622a;
+  --cpu-soft: #f8ebcf;
+  --gpu: #286b4c;
+  --gpu-soft: #e1eedf;
+  --storage: #6d5393;
+  --storage-soft: #ede6f4;
+  --network: #2b668b;
+  --network-soft: #dfeef5;
+  --closed: #68716d;
+  --closed-soft: #edf0ec;
+  --highlight: #ab491e;
+  --highlight-soft: #fae7da;
+  --on-accent: #ffffff;
+  --shadow: 0 12px 35px #233b2810;
+  font-family: Inter, "Noto Sans SC", sans-serif;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #141c19;
+  --surface: #1b2520;
+  --surface-alt: #243028;
+  --ink: #eaf0e7;
+  --muted: #b1beb3;
+  --line: #3b4b40;
+  --accent: #a8d39a;
+  --accent-soft: #30452c;
+  --cpu: #eac284;
+  --cpu-soft: #463921;
+  --gpu: #a8d39a;
+  --gpu-soft: #30452c;
+  --storage: #ccb3ed;
+  --storage-soft: #3d304e;
+  --network: #a1d1ec;
+  --network-soft: #233f50;
+  --closed: #bdc8c0;
+  --closed-soft: #303b33;
+  --highlight: #ffb18a;
+  --highlight-soft: #4c3025;
+  --on-accent: #172216;
+  --shadow: 0 12px 35px #00000020;
+}
