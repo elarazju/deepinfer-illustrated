@@ -680,6 +680,46 @@
         }
       ],
       "scope": "The source statements below retain their exact scope. Diagram layouts and demo parameters are teaching aids; use the linked source context when interpreting deployment settings."
+    },
+    {
+      "blocks": [
+        {
+          "title": "Start with the residual streams",
+          "text": "Finally, zoom into the model. This chapter follows interfaces in the pinned code: start with the residual streams entering mHC, then inspect how a side branch contributes to hidden states. The main path gives a reading order, while the branches identify modules to open as you trace the relationships.",
+          "refs": [
+            "model.mhc"
+          ]
+        },
+        {
+          "title": "Follow a side branch back",
+          "text": "Take the Engram branch next. An n-gram hash obtains embeddings, which pass through projection and a gate before entering hidden states. Lookup, transformation, and injection are adjacent steps with distinct inputs and outputs. Following them separately turns the branch into a concrete sequence of operations in the implementation.",
+          "refs": [
+            "model.engram"
+          ]
+        },
+        {
+          "title": "Trace one mixing operation",
+          "text": "The mHC path connects a Sinkhorn call with mixing across residual streams. Identify the incoming streams, then follow where the mixed result goes. This reading method attaches the main-path arrows to inspectable call relationships and gives you an entry point for continuing into the attention and MoE modules shown in the schematic.",
+          "refs": [
+            "model.mhc"
+          ]
+        },
+        {
+          "title": "Trace selection and reuse",
+          "text": "Follow compressed KV and the indexer as separate inputs to attention. Query scoring produces selected KV indices. Cross-layer topology maintains separate sharing mappings for KV, indexer K, and selected indices; consumers use these relationships to read from earlier source layers. Pick a consumer, find its source layer, then return to the diagram to identify the corresponding reuse path.",
+          "refs": [
+            "model.index"
+          ]
+        },
+        {
+          "title": "Check the representation being used",
+          "text": "While tracing data, keep track of the particular weight or cache object you are reading. The official description assigns different format conventions to Main KV, Indexer KV, routed-expert weights, and SWA KV. Identify the object before reading its format and scaling rule. This connects interface relationships with the representation used by the data moving through them.",
+          "refs": [
+            "model.precision"
+          ]
+        }
+      ],
+      "scope": "This remains a code guide. Paragraphs marked inferred describe calls and data relationships; training motivations and effects are outside what these inference interfaces establish."
     }
   ],
   "figureNotes": {

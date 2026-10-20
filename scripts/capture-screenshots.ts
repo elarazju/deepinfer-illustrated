@@ -1,7 +1,7 @@
 import { chromium } from '@playwright/test';
 const browser=await chromium.launch({channel:'chrome'});
 const requested=process.argv.slice(2);
-const sections=requested.length?requested:['journey','system','scheduling','experts','yoco','storage','routing','recipe','model'];
+const sections=requested.length?requested:['journey','system','scheduling','decode-lab','experts','yoco','storage','routing','recipe','model'];
 try{
   for(const lang of ['zh','en'])for(const theme of ['light','dark'])for(const width of [1280,375]){
     const page=await browser.newPage({viewport:{width,height:900},reducedMotion:'reduce'});

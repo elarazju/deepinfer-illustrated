@@ -26,7 +26,7 @@
   {#if reading}
     <div class="prose tutorial-opening">
       {#each reading.blocks.slice(0,2) as block}
-        <p>{block.text} {#each block.refs as id}<FactBadge {id} {locale}/>{/each}</p>
+        <p class:inference={block.refs.some(id=>facts[id].status==='inferred')}>{#if block.refs.some(id=>facts[id].status==='inferred')}<strong class="inference-label">{t.inferred} — </strong>{/if}{block.text} {#each block.refs as id}<FactBadge {id} {locale}/>{/each}</p>
       {/each}
     </div>
   {/if}
@@ -35,7 +35,7 @@
     <div class="prose tutorial-body">
       {#each reading.blocks.slice(2) as block}
         <h3>{block.title}</h3>
-        <p>{block.text} {#each block.refs as id}<FactBadge {id} {locale}/>{/each}</p>
+        <p class:inference={block.refs.some(id=>facts[id].status==='inferred')}>{#if block.refs.some(id=>facts[id].status==='inferred')}<strong class="inference-label">{t.inferred} — </strong>{/if}{block.text} {#each block.refs as id}<FactBadge {id} {locale}/>{/each}</p>
       {/each}
     </div>
   {:else}
