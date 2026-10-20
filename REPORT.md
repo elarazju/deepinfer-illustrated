@@ -2,7 +2,7 @@
 
 日期：2026-10-20。上游证据锁定 `8b16149741a4935e1dec8cea27853f273b374c5b`。
 
-**当前状态：本地验收完成后等待委托人确认发布。此报告的 v2 内容尚未推送到 main；下方历史报告中的线上成功记录仅适用于旧版。**
+**当前状态：委托人已于 2026-10-20 授权推送部署；v2 已上线并通过线上验证。部署源码为 `90df09cd96502e6504a909a2f648f21e16a15e73`。**
 
 ## v2 完成项
 
@@ -80,8 +80,9 @@
 
 ## 发布与遗留事项
 
-- **待委托人确认后才能推送 main。** v2 计划 §3 将“准备推送到 main（即公开部署）之前”列为必须确认的节点，§9 再次要求“先停下向委托人确认”。确认后由 Actions 全量生成导出并部署，再执行更新后的 `scripts/verify-published.ts`；届时补记线上提交号与结果。
-- 当前 `research/published-results.json` 仍保留旧版线上记录，没有把本地结果冒充线上验证。
+- 委托人明确回复“推送部署”，已满足 v2 计划 §3 / §9 的确认要求。源码 `90df09cd96502e6504a909a2f648f21e16a15e73` 已推送， [Actions 构建与部署](https://github.com/elarazju/deepinfer-illustrated/actions/runs/39429823336)成功。云端执行单元测试、全量导出和构建后发布到 GitHub Pages。
+- [v2 线上验证](research/published-results.json)通过：中文浅色桌面、英文深色手机均显示基础章、术语表、独立 Decode Lab 与推断标识；新手路线、术语键盘开关和 DSpark 滑块工作正常，无页面横向溢出或 JS 异常。清单包含 112 个文件且提交号与部署一致；每组 28 个下载链接逐个核对 HTTP 状态、格式和 SHA-256，共检查 56 个文件。旧版记录保留于 [v0.2 线上验证](research/v02-published-results.json)。
+- 发布后只补充 README、报告、进度与验证记录，以 `[skip ci]` 文档提交保存，不改变已部署页面，也不重复触发同一份站点构建。
 - 未改写 Git 历史。旧截图与导出图约 30MB 的历史对象仍在，由委托人另行决定是否清理。
 - 未开源的存储/路由服务仍以虚线和明确提示标注；C8 仍为带推断标记的代码导读。Q&A 的 blob 预览是否识别页码锚点取决于 GitHub，徽章页码始终可读。
 
@@ -113,7 +114,7 @@
 - 浏览器：Chrome/WebKit × 中英 × 深浅 × 1280/375共16组合。新增检查DSpark位置、默认正文可见、来源区默认折叠、跟随系统主题和保存手动选择。见[浏览器结果](research/browser-results.json)。
 - 自动无障碍四组合零违规：[axe结果](research/accessibility-results.json)。本轮新增的页码文字曾因透明度降低对比度，已修复并重新检查。
 - 独立复核：[教程审查记录](research/TUTORIAL-REVIEW.md)。这是未参与制作的agent进行的来源、机制和浏览器审查，不能代替人工内容评审。记录区分了自动几何检查、生成截图和实际查看的样本。
-- 发布与图片一致性：[本轮Actions](https://github.com/elarazju/deepinfer-illustrated/actions/runs/39418507455)构建和部署成功，包含模型章补充的最新部署提交为`47780c777929d563904a7e015389c28eb2f4b73a`。线上检查通过中文浅色桌面、英文深色手机，验证独立Decode Lab、36个可见下载链接的内容哈希及清单提交号，见[线上检查](research/published-results.json)。清单包含本轮全部72个导出文件；模型章默认讲解及4处可见推断标记也通过线上检查。
+- 发布与图片一致性：[本轮Actions](https://github.com/elarazju/deepinfer-illustrated/actions/runs/39418507455)构建和部署成功，包含模型章补充的最新部署提交为`47780c777929d563904a7e015389c28eb2f4b73a`。线上检查通过中文浅色桌面、英文深色手机，验证独立Decode Lab、36个可见下载链接的内容哈希及清单提交号，见[线上检查](research/v02-published-results.json)。清单包含本轮全部72个导出文件；模型章默认讲解及4处可见推断标记也通过线上检查。
 
 ## 篇幅统计口径
 

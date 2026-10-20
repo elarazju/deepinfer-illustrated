@@ -88,8 +88,9 @@ dev server on port 5173. Full matrix screenshots are in `research/screenshots/`.
 
 ## Publish
 
-**The v2 plan requires owner confirmation before pushing to main.** Local acceptance
-does not imply publication. After approval, the GitHub Actions workflow builds and deploys `main` to GitHub Pages.
+The owner authorized the v2 release on 2026-10-20; deployed source is
+`90df09cd96502e6504a909a2f648f21e16a15e73`. The GitHub Actions workflow builds and
+deploys `main` to GitHub Pages. Deployment verification is recorded in REPORT.md.
 Enable Pages with GitHub Actions as its source in the repository settings.
 Static assets use a relative base so the project works under a repository subpath.
 Update the public project URL in SEO, source links, and export attribution if moving it.

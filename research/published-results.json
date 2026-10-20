@@ -1,14 +1,14 @@
 {
   "base": "https://elarazju.github.io/deepinfer-illustrated/",
-  "checkedAt": "2026-10-20T11:58:39.291Z",
+  "checkedAt": "2026-10-20T13:24:44.631Z",
   "results": [
     {
       "lang": "zh",
       "theme": "light",
       "width": 1280,
       "status": "passed",
-      "downloads": 18,
-      "exportCommit": "47780c777929d563904a7e015389c28eb2f4b73a",
+      "downloads": 28,
+      "exportCommit": "90df09cd96502e6504a909a2f648f21e16a15e73",
       "errors": []
     },
     {
@@ -16,8 +16,8 @@
       "theme": "dark",
       "width": 375,
       "status": "passed",
-      "downloads": 18,
-      "exportCommit": "47780c777929d563904a7e015389c28eb2f4b73a",
+      "downloads": 28,
+      "exportCommit": "90df09cd96502e6504a909a2f648f21e16a15e73",
       "errors": []
     }
   ]
