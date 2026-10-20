@@ -276,7 +276,8 @@
         "yoco.ced",
         "yoco.replay",
         "swa.hit",
-        "yoco.config"
+        "yoco.config",
+        "yoco.equivalence"
       ]
     },
     {
@@ -311,6 +312,10 @@
     "eplbColumns": "Redundancy per device / window (steps) / rebalance interval (steps)",
     "moeDefinition": "moe_lb = slowest rank / mean load; Prefill values: EP4DP4 / EP2DP2",
     "fanout": "Requests → responses needed",
-    "days": "days"
+    "days": "days",
+    "tiers": "<16K / 16–64K / 64–256K / ≥256K",
+    "cost": "Quadratic cost(q,c) → solve chunk q",
+    "encoding": "Special-token boundaries → parallel spans",
+    "stream": "UTF-8 buffer + KMP matching across chunks"
   }
 }

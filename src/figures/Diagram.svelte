@@ -45,7 +45,7 @@
 
 <svg xmlns="http://www.w3.org/2000/svg" class="diagram" data-figure={kind}
   viewBox={kind === 'overview' ? `0 0 ${overviewWidth} ${overviewHeight}` : '0 0 840 410'}
-  role="img" aria-label={kind === 'overview' ? t.overview : labels.join(' → ')}>
+  role={kind === 'overview' ? 'group' : 'img'} aria-label={kind === 'overview' ? t.overview : labels.join(' → ')}>
   <title>{kind === 'overview' ? t.overview : labels.join(' → ')}</title>
   <defs>
     <marker id={`arrow-${kind}`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -103,7 +103,7 @@
     <text class="small" x="557" y="68" text-anchor="middle">P → D</text>
     <text class="mono" x="415" y="166" text-anchor="middle">EP {parallel.prefillMin}–{parallel.prefillMax}</text>
     <text class="mono" x="705" y="166" text-anchor="middle">EP {parallel.decodeMin}–{parallel.decodeMax}</text>
-    <text class="small" x="420" y="224" text-anchor="middle">{t.figureNotes.efficient}: {minimum.prefill}P + {minimum.decode}D</text>
+    <text class="small" x="230" y="224" text-anchor="middle">{t.figureNotes.efficient}: {minimum.prefill}P + {minimum.decode}D</text>
     {@render box(220,260,400,80,labels[3],'storage',true)}
     {@render arrow(415,255,415,180,'storage')}
     <path d="M 705 185 V 300 H 630" class="edge storage" marker-end={`url(#arrow-${kind})`} />
@@ -186,12 +186,14 @@
       {@render arrow(580,75+i*120,640,75+i*120)}
       {@render box(650,40+i*120,165,70,labels[[3,5,7][i]])}
     {/each}
-    <text x="430" y="135" text-anchor="middle" class="small">{labels[2]}</text>
+    <text x="430" y="103" text-anchor="middle" class="small" style="font-size:12px">{t.figureNotes.tiers}</text>
+    <text x="430" y="135" text-anchor="middle" class="small">{t.figureNotes.cost}</text>
   {:else if kind === 'recipe'}
     {#each [0,1,2] as label, i}
       {@render box(25+i*275,35,240,65,labels[label],i===2?'gpu':'cpu')}
       {#if i<2}{@render arrow(265+i*275,68,292+i*275,68)}{/if}
     {/each}
+    <text x="285" y="130" text-anchor="middle" class="small">{t.figureNotes.encoding}</text>
     {@render box(25,170,240,65,labels[5],'cpu')}
     {@render box(300,170,240,65,labels[6],'cpu',true)}
     {@render box(575,170,240,65,labels[7],'gpu')}
@@ -202,10 +204,10 @@
     {@render box(300,300,240,65,labels[4],'cpu')}
     <path d="M 820 70 H 832 V 332 H 820" class="edge network" />
     {@render arrow(575,332,548,332)}
-    <text x="420" y="398" text-anchor="middle" class="small">{labels[9]}</text>
+    <text x="420" y="398" text-anchor="middle" class="small">{t.figureNotes.stream}</text>
   {:else if kind === 'model'}
-    {@render box(25,45,210,65,labels[0],'cpu')}
-    {@render box(310,45,210,65,labels[1],'cpu')}
+    {@render box(25,45,210,65,labels[0],'gpu')}
+    {@render box(310,45,210,65,labels[1],'gpu')}
     {@render box(600,45,210,65,labels[4],'storage')}
     {@render arrow(235,78,302,78)}
     {@render arrow(600,78,528,78)}

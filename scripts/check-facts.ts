@@ -57,6 +57,8 @@ const uiEvidence: Record<string,string[]> = {
   'swa.blockHit':['swa.hit'],
   'swa.limit':['swa.hit'],
   'figureNotes.moeDefinition':['eplb.prefill'],
+  'figureNotes.tiers':['lb.prefill'],
+  'figureNotes.stream':['recipe.stream'],
 };
 function checkNumeric(value:string,ids:string[],label:string) {
   const allowed = new Set(ids.flatMap(id=>[...(facts.get(id)?.zh??'').matchAll(/\d+(?:\.\d+)?/g)].map(m=>m[0])));

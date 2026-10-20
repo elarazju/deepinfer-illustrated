@@ -32,7 +32,7 @@ try{
       clone.style.background=getComputedStyle(document.documentElement).getPropertyValue('--surface');
       for(const a of clone.querySelectorAll('a')){
         const href=a.getAttribute('href');
-        if(href?.startsWith('#'))a.setAttribute('href',`https://minghaochen.github.io/deepinfer-illustrated/${href}`);
+        if(href?.startsWith('#'))a.setAttribute('href',`https://elarazju.github.io/deepinfer-illustrated/${href}`);
       }
       const ns='http://www.w3.org/2000/svg';
       const source=document.createElementNS(ns,'text');
@@ -42,7 +42,7 @@ try{
       source.textContent=`DeepInfer Illustrated · ${kind} · source ${commit.slice(0,7)} · CC BY 4.0 · unofficial`;
       clone.appendChild(source);
       const metadata=document.createElementNS(ns,'metadata');
-      metadata.textContent=`Evidence: https://github.com/deepseek-ai/DeepInfer/tree/${commit}; facts.yaml in https://github.com/minghaochen/deepinfer-illustrated.`;
+      metadata.textContent=`Evidence: https://github.com/deepseek-ai/DeepInfer/tree/${commit}; facts.yaml in https://github.com/elarazju/deepinfer-illustrated.`;
       clone.appendChild(metadata);
       return new XMLSerializer().serializeToString(clone);
     },{commit:db.commit,kind});

@@ -276,7 +276,8 @@
         "yoco.ced",
         "yoco.replay",
         "swa.hit",
-        "yoco.config"
+        "yoco.config",
+        "yoco.equivalence"
       ]
     },
     {
@@ -311,6 +312,10 @@
     "eplbColumns": "每卡冗余 / 统计窗（步）/ 重排周期（步）",
     "moeDefinition": "moe_lb = 最慢 rank / 平均负载；Prefill 数值依次对应 EP4DP4 / EP2DP2",
     "fanout": "发出请求 → 所需响应",
-    "days": "天"
+    "days": "天",
+    "tiers": "<16K / 16–64K / 64–256K / ≥256K",
+    "cost": "二次 cost(q,c) → 反解 chunk q",
+    "encoding": "special token 边界 → 分段并行编码",
+    "stream": "UTF-8 字符缓冲 + KMP 跨 chunk 匹配"
   }
 }

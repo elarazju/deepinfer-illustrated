@@ -43,7 +43,7 @@
       <span class="edition mono">FIELDNOTES / 001</span>
       <button class="locale-toggle" onclick={()=>locale=locale==='zh'?'en':'zh'} aria-label={locale==='zh'?'Switch to English':'切换至中文'}>{locale==='zh'?'EN':'中文'}</button>
       <button class="theme-toggle" onclick={()=>theme=theme==='light'?'dark':'light'} aria-label={theme==='light'?t.dark:t.light}>{theme==='light'?'◐':'◑'}</button>
-      <a href="https://github.com/minghaochen/deepinfer-illustrated" target="_blank" rel="noreferrer" class="repo-link">{t.sourceRepo} ↗</a>
+      <a href="https://github.com/elarazju/deepinfer-illustrated" target="_blank" rel="noreferrer" class="repo-link">{t.sourceRepo} ↗</a>
     </div>
   </header>
   <div id="top" class="page-layout">

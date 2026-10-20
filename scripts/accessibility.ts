@@ -5,12 +5,13 @@ const browser=await chromium.launch({channel:'chrome'});
 const results=[];
 try{
   for(const lang of ['zh','en'])for(const theme of ['light','dark']){
-    const page=await browser.newPage({viewport:{width:1280,height:900},reducedMotion:'reduce'});
+    const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});
+    const page=await context.newPage();
     await page.goto(`http://127.0.0.1:5173/?lang=${lang}&theme=${theme}`,{waitUntil:'networkidle'});
     await page.evaluate(()=>document.querySelectorAll('details').forEach(d=>d.open=true));
     const audit=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
     results.push({lang,theme,violations:audit.violations,incomplete:audit.incomplete.map(i=>({id:i.id,description:i.description}))});
-    await page.close();
+    await context.close();
   }
 }finally{await browser.close();}
 await fs.writeFile('research/accessibility-results.json',JSON.stringify(results,null,2));
