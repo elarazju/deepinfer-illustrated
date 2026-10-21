@@ -802,9 +802,17 @@ output {
   display: block;
   margin-top: 12px;
 }
-.query-range {
+.query-range,
+.timeline-cpu {
   display: block;
   font-size: 12px;
+}
+.timeline-cpu {
+  margin-top: 20px;
+}
+.timeline-cpu input {
+  display: block;
+  margin-top: 12px;
 }
 .attention-window {
   display: flex;

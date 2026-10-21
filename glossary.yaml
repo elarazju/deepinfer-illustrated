@@ -229,7 +229,7 @@
   zh:
     term: 混合专家（MoE）
     short: 按 token 选择部分专家参与计算
-    long: 门控根据当前表示选择路由专家。专家不是分别扮演人类职业的独立聊天机器人。
+    long: 门控根据当前表示选择路由专家。专家是模型内部的子网络，不是各自独立的模型。
   en:
     term: Mixture of experts
     short: Selects a subset of expert networks for a token.
@@ -379,12 +379,12 @@
 - id: block-kv
   zh:
     term: 块式 KV（Block KV）
-    short: 本项目中可复用的全局 KV 块
-    long: 它与局部窗口所需的 SWA 状态分开讨论。名称相近不意味着生命周期和持久化路径相同。
+    short: DeepInfer 中可跨请求复用的全局 KV 块
+    long: 包含 Main KV 与 Indexer K，持久化到独立存储。它与局部窗口所需的 SWA 状态分开保存，生命周期和恢复路径都不同。
   en:
     term: Block KV
-    short: Reusable global KV blocks in this project.
-    long: They are discussed separately from local SWA state. Their lifetime and storage path differ.
+    short: Global KV blocks in DeepInfer, reusable across requests.
+    long: They hold Main KV and Indexer K and are persisted to independent storage. They are kept separately from local SWA state, with a different lifetime and recovery path.
   refs:
     - storage.block
   first_chapter: system
@@ -685,11 +685,11 @@
 - id: gpu-utilization
   zh:
     term: GPU 利用率（GPU utilization）
-    short: 采样时间内设备有计算在运行的占比
-    long: 这里采用 nvidia-smi 的时间口径。数值高不等于所有算术单元都已饱和。
+    short: 统计时间窗内有内核在运行的时间占比
+    long: 这里采用 nvidia-smi 按时间统计的定义。数值高不等于所有算术单元都已饱和。
   en:
     term: GPU utilization
-    short: The fraction of sampled time with active kernels.
+    short: The share of a measurement window with a kernel running.
     long: This uses the nvidia-smi time-based definition. A high value does not imply peak arithmetic throughput.
   refs:
     - bg.utilization

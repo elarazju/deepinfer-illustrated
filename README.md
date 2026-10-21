@@ -6,9 +6,9 @@
 
 ## 为什么做这个
 
-DeepInfer 开源的时候，官方的讲解材料很少：README 里有两张性能图，另外就是一份中文的部署 Q&A PDF。代码本身写得很扎实，但要搞清楚"一个请求进来之后到底发生了什么"，得在 C++、Python 和 TileLang kernel 之间来回翻。
+DeepInfer 开源时，官方材料主要是 README（含两张性能图）、一份中文部署 Q&A PDF、一篇介绍整体架构的知乎 Blog，以及模型卡和技术报告。它们讲清了设计思路，但要搞清楚"一个请求进来之后到底发生了什么"，还得在 C++、Python 和 TileLang kernel 之间来回翻代码。
 
-这个网站是读代码时画的图整理出来的。它按请求经过的顺序展开：协议编码 → 前缀匹配 → Prefill 路由 → 图像编码 → Prefill → PD 传输 → Decode → 流式返回。每一站对应一章，讲它解决什么问题，以及 DeepInfer 是怎么做的。
+这个网站是读代码时画的图整理出来的。首页的总览图按请求经过的顺序画出 8 站：协议编码 → 前缀匹配 → Prefill 路由 → 图像编码 → Prefill → PD 传输 → Decode → 流式返回，点击任一站会跳到相关章节。各章则按主题展开：系统与部署、异步调度、Decode 实验室（DSpark）、Wide-EP 与 EPLB、Recipe 与结构化输出、负载均衡、YOCO / CED、KVCache 存储，最后是模型代码导读。每章讲一个机制解决什么问题，以及 DeepInfer 是怎么做的。
 
 ## 怎么读
 
@@ -31,7 +31,8 @@ DeepInfer 开源的时候，官方的讲解材料很少：README 里有两张性
 另外几点需要说明：
 
 - 内容基于 DeepInfer 的 commit [`8b16149`](https://github.com/deepseek-ai/DeepInfer/tree/8b16149741a4935e1dec8cea27853f273b374c5b)（0.1.0 版本）。之后仓库更新了，部分细节可能会对不上。
-- KVCache 存储和各类负载均衡服务**没有开源**。这些章节只能依据官方 Q&A 来写，图里用灰色虚线框标出来。
+- 这次开源的是离线推理引擎。KVCache 存储、Vision Encoder / Prefill / Decode 分离部署，以及 Prefill / Decode 的数据并行负载均衡**没有开源**。这些部分只能依据官方 Q&A 来写，图里用灰色虚线框标出来。专家并行负载均衡（EPLB）是开源的，相关章节引用了代码。
+- Recipe（协议转换与 tokenizer）作为独立组件 deepseek-recipe 开源，不在 DeepInfer 仓库里。Recipe 章依据官方 Q&A 写成，没有逐行核对 deepseek-recipe 的代码。
 - 演示里可以拖动的数字都是示意值。我们没有在 SM100 或 Ascend 上跑过模型，也不声称复现了任何性能数据。
 - 这是一个非官方项目，和 DeepSeek 没有关系。
 
@@ -97,6 +98,6 @@ npx tsx scripts/accessibility.ts   # axe 无障碍检查
 
 **DeepInfer Illustrated** is an unofficial, bilingual visual guide to [DeepInfer](https://github.com/deepseek-ai/DeepInfer), the inference framework DeepSeek open-sourced. It follows a single request from protocol encoding to the streamed response, with one chapter per stop, a beginner's primer, a searchable glossary and a few interactive demos. [Read it online](https://elarazju.github.io/deepinfer-illustrated/).
 
-Every claim carries a small source label: a line in the pinned source code, a page in the official Q&A, our own reading of the code, or a public paper for general background. The cache store and load balancers were not open-sourced, so those chapters rely on the Q&A alone and appear as gray dashed boxes in the diagrams. Numbers you can drag in the demos are illustrative, not measurements.
+Every claim carries a small source label: a line in the pinned source code, a page in the official Q&A, our own reading of the code, or a public paper for general background. The cache store, E/P/D disaggregation and the data-parallel load balancers were not open-sourced, so those parts rely on the Q&A alone and appear as gray dashed boxes in the diagrams; expert-parallel load balancing (EPLB) is open source and cited from code. Numbers you can drag in the demos are illustrative, not measurements.
 
 Run `npm ci && npm run dev` to preview locally. Corrections are very welcome. Please open an issue, ideally with the code line or Q&A page.

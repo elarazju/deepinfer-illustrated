@@ -21,7 +21,7 @@
     <text class="small" x="557" y="68" text-anchor="middle">P → D</text>
     <text class="mono" x="415" y="166" text-anchor="middle">EP {parallel.prefillMin}–{parallel.prefillMax}</text>
     <text class="mono" x="705" y="166" text-anchor="middle">EP {parallel.decodeMin}–{parallel.decodeMax}</text>
-    <text class="small" x="230" y="224" text-anchor="middle">{t.figureNotes.efficient}: {minimum.prefill}P + {minimum.decode}D</text>
+    <text class="small" x="230" y="224" text-anchor="middle">{t.figureNotes.efficient}: {t.figureNotes.efficientUnit.replace('{p}',String(minimum.prefill)).replace('{d}',String(minimum.decode))}</text>
     <Box x={220} y={260} w={400} h={80} label={labels.cache} color={'storage'} closed={true}/>
     <Edge kind="system" x1={415} y1={255} x2={415} y2={180} color={'storage'}/>
     <path d="M 705 185 V 300 H 630" class="edge storage" marker-end={`url(#arrow-${kind})`} />

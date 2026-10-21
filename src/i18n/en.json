@@ -116,7 +116,7 @@
       "transfer": "KV transfer",
       "reuse": "Prefix reuse",
       "caption": "E / P / D disaggregation",
-      "howToRead": "Requests flow from the Vision Encoder into Prefill, which hands state to Decode. Green boxes are compute roles in the open-source engine; the gray dashed box is the unreleased cache store, and purple arrows are cache reads and writes. Numbers beside EP are expert-parallel sizes; E, P and D stand for vision encoding, Prefill and Decode."
+      "howToRead": "Requests with images first pass through the Vision Encoder to produce embeddings, then enter Prefill, which hands state to Decode. Green boxes are compute roles in the open-source engine; the gray dashed box is the unreleased cache store, and purple arrows are cache reads and writes. Numbers beside EP are expert-parallel sizes; E, P and D stand for vision encoding, Prefill and Decode."
     },
     "timeline": {
       "sync": "Synchronous",
@@ -178,12 +178,12 @@
       "host": "Host shared memory",
       "device": "Device HBM",
       "swa": "SWA KV",
-      "memory": "Compute-host memory",
+      "memory": "Host memory",
       "directory": "Entrypoint directory",
       "restore": "Remote fetch / replay",
       "overlap": "Overlap layer transfer and forward",
       "caption": "Overlap layer transfer and forward",
-      "howToRead": "The two rows are the Block KV and SWA KV paths. Gray dashed boxes are unreleased storage and directory services; the green box is device memory on the compute node. Blue arrows show data movement. Read fan-out and the number of encoded fragments are different quantities."
+      "howToRead": "The two rows are the Block KV and SWA KV paths. Gray dashed boxes are unreleased storage and directory services; the green box is device memory on the compute node. Blue arrows show data movement. The “requests → responses needed” note below is a read policy, separate from the encoding scheme."
     },
     "routing": {
       "request": "Incoming request",
@@ -276,7 +276,7 @@
       "howToRead": "Each dashed column is one device; the layer runs top to bottom. In attention both devices hold the same weights and process their own requests (DP). In the MoE stage each device holds only some experts (EP), so tokens travel to the device holding their selected experts and the results travel back."
     },
     "overview": {
-      "howToRead": "Arrows follow the order of processing. Brown boxes are CPU-side protocol work and green boxes are GPU compute; gray dashed boxes are unreleased services, including prefix matching, routing and PD transfer. Select any stop to open its chapter.",
+      "howToRead": "Arrows follow the order of processing. Brown boxes are CPU-side protocol work and green boxes are GPU compute; gray dashed boxes are services not open-sourced, including prefix matching, routing and PD transfer. Select any stop to open the related chapter.",
       "caption": "Choose a stop to follow the data into its chapter."
     },
     "swa-window": {
@@ -307,7 +307,7 @@
     "reset": "Reset illustration",
     "best": "Best prefix",
     "explanation": {
-      "text": "Read slider pᵢ as the chance that this position passes given that all earlier drafts passed. Later positions count only when their entire prefix survives, so multiply probabilities along each prefix before adding them. The leading unit in the formula represents one base output token from the step. Expected output divided by illustrative step time gives this demo’s effective throughput; it compares candidate lengths rather than predicting production speed. In the reported results, a rank identifies a process in the distributed execution group, commonly associated here with a participating device.",
+      "text": "Read slider pᵢ as the chance that this position passes given that all earlier drafts passed. Later positions count only when their whole prefix survives, so multiply along each prefix before adding the survival probabilities. The leading 1 in the formula is the base output token every step produces regardless. Expected output divided by illustrative step time gives this demo’s effective throughput; it compares candidate lengths and does not predict production speed. In the reported results, a rank is one process in the distributed execution group, here usually one participating device.",
       "refs": [
         "dspark.cumulative",
         "dspark.results"
@@ -341,7 +341,7 @@
   },
   "timeline": {
     "title": "Fill the gaps in the timeline.",
-    "intro": "Compare serial execution with an ideal overlapped steady state using the same illustrative durations.",
+    "intro": "Compare serial execution with an ideal overlapped steady state using the same illustrative durations. Switching does not change model work; raise the CPU workload to see where overlap stops helping.",
     "on": "Async on",
     "off": "Async off",
     "play": "Play",
@@ -349,7 +349,8 @@
     "idle": "Illustrative GPU idle share",
     "reduced": "Reduced motion is enabled. Animation is disabled.",
     "scrub": "Timeline progress",
-    "note": "Excludes pipeline warm-up, drain, communication, and variable workloads. Not measured utilization."
+    "note": "Excludes pipeline warm-up, drain, communication, and variable workloads. Not measured utilization.",
+    "cpuLoad": "CPU work (schedule + post-process)"
   },
   "about": "About this guide",
   "aboutText": "An unofficial illustrated project, grounded in pinned source code and the official Q&A. Diagrams support understanding; production configuration and measurement remain separate.",
@@ -371,7 +372,7 @@
       "blocks": [
         {
           "title": "Why separate the stages",
-          "text": "A long prompt and a reply that has just started compete for the same device, but ask for different work. In [[prefill-decode|prefill and decode]], a long prompt exposes many known positions at once, whereas small-batch generation is often limited by [[bandwidth]]. [[pd-separation|Disaggregation]] allows the service to size input processing and generation separately and reduces interference from long prompts. Separation also creates a state-transfer boundary. Its benefit depends on both the compute saved and the queueing and communication introduced.",
+          "text": "A long prompt and a reply that has just started compete for the same device, yet need different resources. In [[prefill-decode|prefill and decode]], prefill computes the whole prompt at once and is often compute-bound; small-batch decode computes one new position per step and is often limited by [[bandwidth]]. [[pd-separation|Disaggregation]] gives each stage its own devices and its own scaling, and keeps long prompts from interrupting replies in progress. The cost is that state must move between the two groups.",
           "refs": [
             "bg.prefill_decode"
           ],
@@ -379,7 +380,7 @@
         },
         {
           "title": "How DeepInfer applies the separation",
-          "text": "The DeepInfer Q&A separates the vision encoder, prefill, decode and cache storage. Image encoding supplies [[embedding|embeddings]] for later computation. A separate vision pool can scale independently of text-only traffic. The Q&A recommends EP2–8 / DP2–8 for prefill and EP64–128 / DP64–128 for decode, keeping prefill groups small when memory permits and widening expert parallelism for decode when hardware permits. These ranges are deployment recommendations from the Q&A. A general compute-versus-bandwidth explanation alone cannot derive those particular numbers.",
+          "text": "The DeepInfer Q&A deploys the vision encoder, prefill, decode and cache storage separately. The vision encoder turns images into [[embedding|embeddings]] for later computation; it usually runs on a single device and can scale with image traffic alone. For parallelism, the Q&A recommends EP2–8 / DP2–8 for prefill, as small as memory allows, and EP64–128 / DP64–128 for decode, as large as hardware allows. These ranges come from deployment experience; they do not follow from the compute-bound versus bandwidth-bound distinction.",
           "refs": [
             "system.disaggregation",
             "system.parallelism"
@@ -388,7 +389,7 @@
         },
         {
           "title": "Scenario: a follow-up about an image",
-          "text": "A user uploads an image, asks for a description and then asks about one detail. Image representations, the existing prefix and the new question are different inputs. A compatible [[prefix-cache]] can reuse prior state, leaving only new work to compute; a newly added image still needs its own encoding. Prepared state then reaches the generation stage and the response returns incrementally. This scenario separates two questions: which old computation can be reused, and which resource should process the remaining work? It does not require every request to traverse every stage identically.",
+          "text": "A user uploads an image, asks for a description, then asks about one detail. By the second request, the image and the first turn have already been computed; as long as the [[prefix-cache]] survives, prefill reuses that prefix's KV and computes only the new question. If the follow-up attaches a new image, that image still goes through the vision encoder first. The resulting state moves to decode and the answer streams back. Which parts of the overview a request actually visits depends on what is new in it.",
           "refs": [
             "system.disaggregation",
             "storage.block",
@@ -397,16 +398,8 @@
           "kind": "example"
         },
         {
-          "title": "Content and state",
-          "text": "Content and state arrive at prefill by different paths. A new image first becomes an embedding, while a repeated conversation prefix may already have reusable KV. Trace a first question through the image and input-computation path. Then trace a follow-up through the cache path as well. This exercise gives the shared-storage box a concrete role: it supplies state associated with earlier computation, which can join the input work that the current request still needs to perform.",
-          "refs": [
-            "system.disaggregation"
-          ],
-          "kind": "explanation"
-        },
-        {
-          "title": "Allocate each pool",
-          "text": "Prefill processes remaining input; decode serves requests that are already generating. Separate pools let the system allocate resources by stage. The expert-parallel recommendations in the Q&A also differ by stage, reflecting the different work being handled. At each boundary, ask what the previous pool produces and what the next pool consumes. This way of reading turns a deployment drawing into a sequence of explicit handoffs, with the cache and vision paths joining the main language-model path at the points where their data is needed.",
+          "title": "Deployable versus efficient",
+          "text": "Running at all and running efficiently are different bars. The Q&A says a 1P + 1D deployment works, but in practice prefill and decode need roughly 1:1 device counts and decode is recommended at EP64 or above, so the efficient minimum unit is 64 prefill devices plus 64 decode devices. That number follows from decode's expert-parallel size; it is not the hardware floor for running the examples.",
           "refs": [
             "system.parallelism",
             "system.minimum"
@@ -415,7 +408,7 @@
         },
         {
           "title": "How reuse affects routing",
-          "text": "Shared storage makes prefix reuse available beyond the original compute host. A prefill instance can retrieve the required [[block-kv|Block KV]] and continue processing input. This connects routing decisions with both compute load and the availability of reusable state. It also separates scaling storage from scaling computation. The storage box therefore represents a capability assembled from locating state, retrieving it, and making it available to the engine. Follow those operations separately when the storage chapter expands this part of the overview.",
+          "text": "The cache lives in an independent storage cluster, so every prefill machine can look up [[block-kv|Block KV]] for any prefix. Routing therefore need not send a conversation back to the machine that served it before and can choose by load alone; compute failures and scaling no longer take the cache with them. The storage chapter covers how prefixes are looked up and how KV reaches device memory.",
           "refs": [
             "storage.block"
           ],
@@ -423,7 +416,7 @@
         },
         {
           "title": "From generation to the client",
-          "text": "At decode, the initial input work gives way to a repeated generation cycle. Each generated token still has to pass through protocol parsing before it becomes text or an event for the client. The request therefore includes both device-to-device handoffs and transformations between application representations and model representations. The next chapter places the repeating compute cycle on a timeline. Later chapters zoom in on expert placement, cache recovery, and the protocol path that returns a usable answer to the caller.",
+          "text": "In decode, the system repeats forward then sample, producing new tokens for each request every round. Those tokens still pass through Recipe's stream parser before they become text, reasoning or tool-call events for the client. The next chapter puts this loop on a timeline to show where the CPU and GPU wait for each other.",
           "refs": [
             "system.disaggregation",
             "recipe.stream"
@@ -431,7 +424,7 @@
           "kind": "explanation"
         }
       ],
-      "scope": "The source statements below retain their exact scope. Diagram layouts and demo parameters are teaching aids; use the linked source context when interpreting deployment settings.",
+      "scope": "Below are the source statements this chapter relies on. Diagram layouts and demo parameters are for explanation; take deployment settings from the sources.",
       "takeaways": [
         "Stage separation permits independent resource allocation.",
         "Parallel group sizes are deployment recommendations, not consequences of a generic formula.",
@@ -443,8 +436,9 @@
       "blocks": [
         {
           "title": "Why the GPU waits for the CPU",
-          "text": "The GPU performs computation while the CPU prepares requests, submits work and processes results. A [[kernel-launch]] submits an operation rather than waiting for its completion. A [[cuda-stream]] orders the device work. Small decode batches often have short compute steps, making repeated submission and post-processing gaps more visible. Distinguishing submission, execution and completion is essential: calling a function earlier does not mean its result becomes available earlier. The useful opportunity is to perform independent host work while already submitted device work is running.",
+          "text": "A decode round has four steps: schedule(N) → forward(N) → sample(N) → post-process(N). Scheduling and post-processing are pure CPU work, and post-processing must wait for the GPU to sync the sampled result back. So while the CPU post-processes and schedules the next round, the GPU has nothing to do. Small decode batches have short compute steps, which makes that gap a large share of the time. Note that a [[kernel-launch]] only queues work on a [[cuda-stream]]; the call returning does not mean the GPU has finished.",
           "refs": [
+            "zos.serial",
             "bg.cuda",
             "bg.prefill_decode"
           ],
@@ -452,7 +446,7 @@
         },
         {
           "title": "Move waiting out of the critical path",
-          "text": "DeepInfer staggers batches: the GPU runs the current batch while the CPU prepares later work and handles older completed results. This changes scheduling without removing the dependency of sampling on forward computation. With [[continuous-batching]], requests may enter and leave between iterations. Scheduling ahead therefore also requires preserving the correspondence between request identities and previous device outputs. Overlap and correct mapping are complementary: the first reduces exposed waiting, while the second ensures that reuse belongs to the right request.",
+          "text": "DeepInfer's asynchronous scheduling staggers neighbouring rounds: while the GPU runs forward(N) → sample(N), the CPU runs schedule(N+1), launches forward(N+1), post-processes the older round N−1, then launches sample(N+1). The amount of work is unchanged and sampling still depends on the forward pass; the CPU work is simply hidden inside GPU execution time. The hard part comes from [[continuous-batching]]: requests leave and join every round, so a round prepared ahead of time must know which previous output belongs to whom.",
           "refs": [
             "zos.overlap",
             "zos.remap",
@@ -462,31 +456,22 @@
         },
         {
           "title": "Scenario: one request leaves and another joins",
-          "text": "Suppose a batch contains requests A and B, then B finishes and C joins. A can continue from its own previous result; C has no previous result. Reusing the second old row as the second new row would incorrectly attach B’s state to C. The snippet checks sequence identities before reusing row positions. The timeline shows an illustrative steady state, not a guarantee of uninterrupted device activity. When host work becomes the limiting stage, overlap cannot manufacture missing inputs. This is why a remap is necessary even when the visible timeline looks simple.",
+          "text": "Suppose the previous batch was [A, B]; B has finished and this round is [A, C]. A can continue from its own previous output; C is new and has none. Matching by row position alone would attach B's output to C. The snippet below first compares request IDs row by row: if every row matches, row positions are reused as-is; if any differs, it builds a remap by looking up request IDs, and new requests with no match are marked as having no previous row and take the fresh-input path.",
           "refs": [
-            "zos.remap",
-            "zos.overlap"
+            "zos.remap"
           ],
           "kind": "example"
         },
         {
-          "title": "Keep sequence identity",
-          "text": "Batch membership changes as requests finish, arrive, or continue. A sequence that occupied one tensor row can occupy a different row in the next prepared batch. Remapping uses sequence identity to connect those rows so that an existing result reaches the correct continuing request. Pick a continuing sequence and follow its identity across batches before following its data. That small exercise explains the bookkeeping underneath the clean timeline and connects the high-level overlap to the implementation that maintains request-to-row correspondence.",
-          "refs": [
-            "zos.remap"
-          ],
-          "kind": "explanation"
-        },
-        {
           "title": "The limits of overlap",
-          "text": "Overlap can hide host work only within the available device interval. If CPU preparation takes longer, the GPU still waits for input. Increase CPU scheduling time in the interaction below: execution remains asynchronous, but idle time reappears. Real pipelines also start and drain, so the illustrative steady-state idle share is not an end-to-end latency measurement.",
+          "text": "Overlap can only hide CPU work that fits within GPU execution time. Once the CPU side is slower, the GPU still waits for its next input. Raise the CPU workload in the demo below: even with async on, idle time reappears. The demo shows an ideal steady state without warm-up, drain or communication, so its idle share is not a measured device utilization.",
           "refs": [
             "zos.overlap"
           ],
           "kind": "explanation"
         }
       ],
-      "scope": "The source statements below retain their exact scope. Diagram layouts and demo parameters are teaching aids; use the linked source context when interpreting deployment settings.",
+      "scope": "Below are the source statements this chapter relies on. Diagram layouts and demo parameters are for explanation; take deployment settings from the sources.",
       "takeaways": [
         "Submission is not completion.",
         "Staggered batches overlap independent work.",
@@ -498,7 +483,7 @@
       "blocks": [
         {
           "title": "Why some experts become busy",
-          "text": "EPLB means Expert Parallel Load Balancing: balancing expert work across devices. [[moe|MoE]] uses [[expert-routing]] to choose experts from token representations, rather than choosing whichever device is idle. Even with [[ep]], a batch may concentrate on a few experts. Dispatch and combine use [[all-to-all]] communication and must obtain the required results; slow devices can extend the iteration. A large number of experts therefore does not imply equal device workloads. Routing answers which computation the model needs, while placement answers where that computation runs. Load balancing works on the latter without inventing different expert weights.",
+          "text": "EPLB stands for Expert Parallel Load Balancing. In [[moe|MoE]], [[expert-routing]] picks experts by token content, not by which device is idle. Even after [[ep]] spreads experts across devices, a batch can concentrate on a few experts, and the devices holding them become stragglers. Because the [[all-to-all]] dispatch and combine wait for every device, one slow device stretches the whole round. A large number of experts therefore does not mean equal work per device.",
           "refs": [
             "bg.moe",
             "bg.ep",
@@ -508,7 +493,7 @@
         },
         {
           "title": "Logical experts and physical locations",
-          "text": "DeepInfer assigns [[expert-replica|physical replicas]] to busy logical experts and rearranges placement from recent token statistics. Multiple locations can execute the same logical expert weights. This differs from a [[shared-expert]], which is a role in the model architecture rather than a deployment copy. The location mapping and the actual weight movement must agree. Updating only the mapping would point execution at the wrong contents. Conversely, moving weights without updating dispatch information would leave tokens headed for outdated locations.",
+          "text": "DeepInfer's answer is to give busy experts extra [[expert-replica|physical replicas]]: each device reserves some redundant slots, recent per-expert load decides which experts to copy into them, and placement is rebalanced periodically. One logical expert can have several physical instances with identical weights, so it does not matter which copy a token reaches. This is different from a [[shared-expert]], which is part of the model architecture; a replica is only a deployment copy.",
           "refs": [
             "eplb.strategy",
             "eplb.code",
@@ -518,7 +503,7 @@
         },
         {
           "title": "Scenario: similar prompts arrive together",
-          "text": "Imagine a batch of similar prompts repeatedly selecting the same expert. With a single physical instance, its device accumulates more work. Additional replicas let several locations process that expert’s inputs. E3′ in the drawing is a copy of E3, not a newly trained expert. The before-and-after illustration keeps total work fixed and shows its redistribution with load bars. Actual placement uses a statistical window and does not guarantee equal load in every individual iteration. A changed workload can make yesterday’s useful placement less suitable today.",
+          "text": "Imagine a batch of similar prompts that keep selecting E3. With only one copy, E3's device carries most of the work; add two replicas, E3′ and E3″, in other devices' redundant slots and those inputs split three ways. E3′ is a copy of E3, not a newly trained expert. Total work in the before-and-after drawing is unchanged; only its distribution moves. The real policy places experts from a statistics window and does not guarantee equal load in every round.",
           "refs": [
             "eplb.strategy",
             "eplb.code"
@@ -528,7 +513,7 @@
         },
         {
           "title": "Observe and rebalance",
-          "text": "Observation, placement, and movement happen in sequence. The statistics window determines which recent loads inform the decision. The rebalance interval determines when placement is reconsidered. Redundant capacity provides room for additional physical copies. Prefill and decode have separately listed official settings, so compare the columns with their roles in mind. Each parameter changes a different part of the process: the history being observed, the opportunity to adjust, or the physical capacity available to the resulting arrangement.",
+          "text": "The mechanism has three knobs: the statistics window sets how much history is observed, the rebalance interval sets how often placement changes, and the redundant slot count sets how many replicas fit. Prefill starts at 4 redundant experts per device, observes the last 100 steps and rebalances every 1000 steps; decode starts at 1 per device with a 1000-step window and a 10000-step interval, an order of magnitude longer than prefill. The table under the figure lists both sets.",
           "refs": [
             "eplb.prefill",
             "eplb.decode"
@@ -537,7 +522,7 @@
         },
         {
           "title": "Move weights with mappings",
-          "text": "The policy outputs logical-to-physical and physical-to-logical mappings. Weight shuffle moves expert data to those locations. These changes must take effect together: apparently even loads are useless if a token reaches mismatched weights. The snippet below shows how replica counts enter a load-sharing estimate; the linked source provides the full policy and movement path.",
+          "text": "The policy code outputs a mapping from logical experts to physical slots, and the shuffle module moves the matching expert weights to their new locations. Mapping and weights must change together, or tokens reach slots holding the wrong weights. The snippet below is the policy's first step: divide each logical expert's windowed load by its replica count, then sort replicas by that per-copy load.",
           "refs": [
             "eplb.code"
           ],
@@ -545,7 +530,7 @@
         },
         {
           "title": "From placement to balance",
-          "text": "The moe_lb ratio compares the busiest device load with the average. With fixed total work, it approaches unity as placement becomes more even. The bars use the same scale: check whether the busiest device does less while other devices take more. Official observations are listed separately below the grid and cannot be derived from its illustrative loads.",
+          "text": "The metric is moe_lb: the slowest rank's load divided by the mean load, equal to 1 when perfectly balanced. The Q&A reports 1.074 for prefill at EP4DP4, 1.045 at EP2DP2, and 1.090 for decode. In the figure, first check whether the busiest device dropped, then whether the others absorbed the extra work.",
           "refs": [
             "eplb.prefill",
             "eplb.decode"
@@ -553,7 +538,7 @@
           "kind": "explanation"
         }
       ],
-      "scope": "The source statements below retain their exact scope. Diagram layouts and demo parameters are teaching aids; use the linked source context when interpreting deployment settings.",
+      "scope": "Below are the source statements this chapter relies on. Diagram layouts and demo parameters are for explanation; take deployment settings from the sources.",
       "takeaways": [
         "Logical experts differ from physical replicas.",
         "Routing and placement together determine hotspots.",
@@ -565,7 +550,7 @@
       "blocks": [
         {
           "title": "Which history must remain available",
-          "text": "With long context, storing and recomputing state across all layers becomes expensive. Start with [[swa]], where a query directly reads a local window and local state can be bounded. Then consider [[yoco]], where later layers reuse global KV generated earlier. These reduce different dimensions of work. YOCO’s self-decoder and cross-decoder are both causal layer groups. Their names should not be interpreted as the input encoder and output decoder of a translation model. The entire system still generates autoregressively.",
+          "text": "With long context, storing or recomputing every layer's state is expensive. Two ideas reduce the work. [[swa]] lets each position look only at a recent window, so that state has a fixed upper size. [[yoco]] lets later layers reuse the global KV produced by earlier layers instead of recomputing the whole input in every layer. Both of YOCO's layer groups are causal; this is not the translation-model split where an encoder reads the source and a decoder writes the target.",
           "refs": [
             "bg.swa",
             "bg.yoco"
@@ -573,8 +558,8 @@
           "kind": "explanation"
         },
         {
-          "title": "Then follow DeepInfer’s CED",
-          "text": "This site uses the Q&A’s names for [[ced|CED]] layer groups. The encoder processes input; decoder global KV is projected from a boundary [[hidden-state]], while local SWA state has a separate preparation path. Distinguish [[block-kv|global Block KV]] from window state before considering replay. Decoder replay prepares the prompt tail on every prefill. Encoder replay instead restores state around a matched-prefix boundary when its SWA state is missing. Their triggers and starting points differ, even though both involve bounded local work.",
+          "title": "Then follow DeepInfer's CED",
+          "text": "DeepInfer calls this structure [[ced|CED]], and this site keeps the Q&A's names: the earlier layer group is the encoder, the later one the decoder. The encoder computes all uncached input; the decoder's global KV, the [[block-kv|Block KV]], is projected directly from the encoder's final [[hidden-state]]. Each decoder layer also has its own SWA state, which cannot be projected and must be rebuilt by replaying recent tokens. There are two replays with different triggers and positions: the decoder replays the prompt tail on every prefill; the encoder replays one block before the matched boundary only when a prefix hit lacks SWA state.",
           "refs": [
             "yoco.ced",
             "yoco.replay",
@@ -584,7 +569,7 @@
         },
         {
           "title": "Scenario: the prefix survives but window state does not",
-          "text": "When continuing a long conversation, the service may retain global prefix KV but no matching encoder SWA state. It can keep that global hit and restore a bounded region before the matched boundary, rather than discarding all prior computation. Separately, the decoder still prepares its own SWA state at the current prompt tail. The interactive cache-hit switch changes only the encoder recovery path. It is not a control for turning decoder replay on or off. Keeping the two boundaries distinct makes the cache diagram much easier to interpret.",
+          "text": "A user returns to a long conversation after a pause. Entrypoint finds Block KV for the prefix but no matching encoder SWA state. The hit need not be thrown away: keep the Block KV, move the hit boundary back one block, and recompute that block to restore SWA. Meanwhile the decoder replays the current prompt tail as usual. The SWA hit/miss switch in the lab below affects only the encoder side.",
           "refs": [
             "swa.hit",
             "yoco.replay"
@@ -592,40 +577,33 @@
           "kind": "example"
         },
         {
-          "title": "Where decoder Block KV comes from",
-          "text": "After encoder computation, the final hidden representation supplies the projection that produces Block KV for decoder consumption. The purple K/V blocks follow their own path into the decoder. Start at the full input sequence, follow it to the encoder result, then turn down the projection arrow. This makes the origin of the reusable state explicit. The arrow along the outside of the drawing carries that state toward its consumer while leaving room to examine the separate local-window preparation below.",
-          "refs": [
-            "yoco.ced"
-          ],
-          "kind": "explanation"
-        },
-        {
           "title": "Decoder: replay the tail on every prefill",
-          "text": "The decoder must prepare its layer-local window state. It replays a short prompt suffix on every prefill, whether or not prefix SWA was found. Starting partway through the prompt bounds key visibility by both the sliding window and the replay start, producing approximate SWA state. The faded tokens sit outside this decoder tail replay. Its output is used for decode and is not placed in the prefix cache; the highlighted suffix shows where this preparation work occurs.",
+          "text": "Top half of the main figure: input passes through the encoder, and the final hidden states are projected into purple Block KV that the decoder uses directly. Bottom half: on every prefill the decoder replays only the last 128 prompt tokens, with attention confined to that segment, so position i sees [max(s, i−127), i]. The result is an approximate SWA state used only for this decode and never stored in the prefix cache. Exact reconstruction would need 20 decoder layers over the final 2560 tokens; bounded replay nearly halves total prefill compute.",
           "refs": [
+            "yoco.ced",
             "yoco.replay"
           ],
           "kind": "explanation"
         },
         {
           "title": "Encoder: recover at the prefix boundary",
-          "text": "The lab below changes the consumer to the encoder. Block KV determines the prefix hit. Only when prefix SWA is missing does the encoder replay the final block of that matched prefix, alongside the uncached suffix, while preserving existing Block KV. Here the reconstruction interval ends at the matched-prefix boundary. In the main diagram, decoder replay ends at the prompt tail and happens on every prefill. Track those endpoints explicitly when moving between the diagram and the lab.",
+          "text": "The lab below switches to the encoder. For an input of length L, the Block KV hit length L1 is at most L−134 (the 128-token window plus up to 6 tokens of speculative backtracking) and aligned to 128. If usable SWA state exists between L1−128 and L1, the hit stays at L1; otherwise it falls back to L1−128 and the last block is computed together with the uncached suffix. That block is recomputed only to rebuild SWA; its Block KV is reused, neither recomputed nor overwritten.",
           "refs": [
-            "yoco.replay",
-            "swa.hit"
+            "swa.hit",
+            "yoco.replay"
           ],
           "kind": "explanation"
         },
         {
           "title": "Which tokens can the query see?",
-          "text": "Next, move the query within the replay interval. Each cell represents a token and the highlighted cells show keys visible to that query. At the beginning, the replay start limits the left edge. As the query advances, its local window develops within the available suffix. The upper block rows answer where computation starts; the lower token view answers which positions the current computation can see. Reading them together connects a cache decision to the attention region used during bounded replay.",
+          "text": "In the lower part of the lab each cell is a token, and highlighted cells are the keys the current query can see. At the start of replay, the left edge is clipped by the start position s and few positions are visible; as the query moves right, the window grows until it reaches full size. The bar above answers where computation starts; this row answers what each step can see.",
           "refs": [
             "yoco.replay"
           ],
           "kind": "explanation"
         }
       ],
-      "scope": "The source statements below retain their exact scope. Diagram layouts and demo parameters are teaching aids; use the linked source context when interpreting deployment settings.",
+      "scope": "Below are the source statements this chapter relies on. Diagram layouts and demo parameters are for explanation; take deployment settings from the sources.",
       "takeaways": [
         "Separate global KV from local SWA state.",
         "Encoder recovery differs from decoder tail replay.",
@@ -637,7 +615,7 @@
       "blocks": [
         {
           "title": "Why cache state has multiple homes",
-          "text": "A [[prefix-cache]] avoids repeated prompt computation, but keeping all state in GPU memory competes with active requests. Global KV can be reused across calls, while local [[swa]] state is bounded by a window. This creates different choices for retaining, transferring and reconstructing state. [[erasure-code|Erasure coding]] adds recoverable redundancy and [[gpudirect-rdma]] provides a supported device-to-device data path. These definitions explain the design vocabulary; they do not themselves establish how a particular storage service is deployed.",
+          "text": "A [[prefix-cache]] saves recomputing repeated input, but if all state stayed in GPU memory, running requests would have no room, so the cache must be kept elsewhere. The two kinds of state behave differently: global KV can be reused across requests and grows with context; local [[swa]] state is bounded by its window, has a fixed size, and can be rebuilt by replay if lost. Two background concepts appear in this chapter: [[erasure-code|erasure coding]] adds encoded blocks so data survives some node failures, and [[gpudirect-rdma]] moves data directly between the NIC and the GPU, avoiding a detour through CPU memory.",
           "refs": [
             "bg.prefix",
             "bg.swa",
@@ -648,17 +626,16 @@
         },
         {
           "title": "Two paths for different state",
-          "text": "DeepInfer’s storage service is not open source, so the deployment mechanism here comes from its Q&A. [[block-kv|Block KV]] enters persistent storage. SWA state follows a different path: use an available memory cache, otherwise reconstruct it with bounded replay. A bounded window helps explain that choice, while the actual policy remains a Q&A claim. The transfer diagram distinguishes storage reads, shared host memory and device memory. The term GDR should not collapse those stages into an imaginary path with no intermediate state.",
+          "text": "DeepInfer's storage service is not open source, so every deployment mechanism in this chapter comes from the official Q&A. The two caches take two paths: [[block-kv|Block KV]] (Main KV and Indexer K) is persisted to an independent 3FS storage cluster; SWA state is not written to disk but stays in the memory of the machine that produced it, with an Entrypoint directory recording where. It is fetched across machines when needed and rebuilt by replay when it cannot be found.",
           "refs": [
             "storage.block",
-            "storage.swa",
-            "storage.pipeline"
+            "storage.swa"
           ],
           "kind": "explanation"
         },
         {
           "title": "Scenario: resume a conversation later",
-          "text": "When a user pauses a conversation, active GPU memory can serve other requests. On return, the entrypoint locates reusable prefix state. Global KV is retrieved from its retained location, while local state is recovered from memory or reconstructed. The public snippet below only shows selecting a window from a local circular state cache; it is not the persistent storage service. It explains why a logical token position differs from a physical buffer slot, without exposing or proving remote erasure-code scheduling.",
+          "text": "When a user pauses, the GPU memory held by that conversation can go to other requests. When the user returns, Entrypoint first finds the reusable prefix; Block KV comes back from 3FS, while SWA state is fetched if some machine still holds it in memory and rebuilt if not. The snippet below is a local function in the open-source engine that only shows how a window is read from a ring buffer: the logical position modulo the slot count gives the physical slot. It is not storage-service code.",
           "refs": [
             "storage.block",
             "storage.swa",
@@ -668,7 +645,7 @@
         },
         {
           "title": "From directory to device",
-          "text": "Before routing, Entrypoint needs the usable prefix length to arrange subsequent work. Data movement follows: KV is fetched into host shared memory and then made available in device memory. Layer-wise movement can overlap forward execution. This separates knowing where state can be found from having it ready for the device to consume. At each arrow, ask which of those conditions has become true. The distinction makes the host-memory stage and the engine-side swap-in stage visible parts of the request journey.",
+          "text": "The prefix lookup happens before routing: Entrypoint matches the prefix along a hash chain using metadata only, but routing needs the hit length first, so this step cannot overlap with compute. The actual data movement has two legs: a separate process copies KV from 3FS into host shared memory, then a thread inside the engine swaps it into device HBM via GDR. The second leg runs layer by layer and can overlap forward computation. GDR is used because the CUDA copy engine handles fine-grained KV blocks poorly; an RDMA NIC can saturate PCIe bandwidth without using any of the GPU's SMs.",
           "refs": [
             "storage.pipeline"
           ],
@@ -676,7 +653,7 @@
         },
         {
           "title": "Understand a read",
-          "text": "Erasure coding describes how data and redundancy are distributed. The read policy describes the responses required to continue. Sending reads to additional nodes and proceeding once enough responses arrive can reduce dependence on a particular slow response. Read the accompanying parameters in that order: identify the stored fragments, the issued reads, and the completion threshold. Each belongs to a different step of the process. Together they explain a read operation in terms of its layout and its condition for making progress.",
+          "text": "3FS stores data with 10+2 erasure coding: 10 data blocks plus 2 parity blocks per group, tolerating 2 simultaneous node failures. A read sends requests to 11 nodes in the group and decodes as soon as any 10 respond, without waiting for the slowest. “Request 11, use 10” is a read policy and is separate from the 10+2 encoding.",
           "refs": [
             "storage.ec"
           ],
@@ -684,7 +661,7 @@
         },
         {
           "title": "Fetch or rebuild SWA",
-          "text": "For SWA, the directory records the compute machine holding the state. A later request can use that information to retrieve the still-available state remotely. If it is missing, bounded replay provides a reconstruction route. Think of the branch as the result of a lookup: finding available state leads to retrieval; missing state leads to recovery through computation. Both paths serve the same consumer, which needs a usable local window before continuing the model work that depends on it.",
+          "text": "The SWA path depends on Entrypoint's in-memory directory: logically one table, physically spread across Entrypoint hosts, it records which machine holds each SWA state. On a hit, state missing locally is fetched from another machine; if no machine has it, the system falls back to the bounded replay from the previous chapter. Either way, the goal is a usable local window for the computation that follows.",
           "refs": [
             "storage.swa",
             "swa.hit"
@@ -693,14 +670,14 @@
         },
         {
           "title": "Keep state for later",
-          "text": "Availability changes as state is accessed, retained, and reclaimed. The retention figures in the Q&A describe its production capacity and access patterns. For the current request, the relevant question is what can be recovered now. For a future follow-up, it is what this execution leaves available. Connect those two requests across time and the roles of persistence, location tracking, and reconstruction become clear. They cooperate to preserve useful earlier computation while accommodating state that may disappear between visits.",
+          "text": "Caches expire. The Q&A reports KVCache retention of 3 days for agent traffic and 7 days for chatbot traffic; reclamation is done by 3FS's own garbage collection, and kvcache-store has no expiry logic. These figures depend on DeepSeek's own storage capacity and access patterns and are not guarantees built into the open-source code.",
           "refs": [
             "storage.ttl"
           ],
           "kind": "explanation"
         }
       ],
-      "scope": "The source statements below retain their exact scope. Diagram layouts and demo parameters are teaching aids; use the linked source context when interpreting deployment settings.",
+      "scope": "Below are the source statements this chapter relies on. Diagram layouts and demo parameters are for explanation; take deployment settings from the sources.",
       "takeaways": [
         "Block KV and SWA have different lifetimes.",
         "Retrieval and reconstruction are distinct recovery paths.",
@@ -712,7 +689,7 @@
       "blocks": [
         {
           "title": "Why request counts are insufficient",
-          "text": "Every request may be called a conversation, yet its work can differ greatly. A long prefill has more positions to process; [[chunked-prefill]] breaks that work into schedulable pieces. Decode must consider not just active request count but historical [[kv-cache]] length. Scheduling therefore asks how much work is pending, rather than merely counting records in a queue. Chunking changes the granularity at which the scheduler can intervene, while keeping the prompt’s context dependency intact.",
+          "text": "Every request counts as one conversation, yet their work can differ by orders of magnitude. Prefill work depends on input length, and long inputs are split by [[chunked-prefill]] into schedulable pieces; decode depends not only on how many requests are running but also on how long their [[kv-cache]] history is. Load balancing must therefore measure work, not count requests.",
           "refs": [
             "bg.chunk",
             "bg.kv_cache",
@@ -723,7 +700,7 @@
         },
         {
           "title": "Illustration: equal counts, unequal work",
-          "text": "Suppose queue A has prompts of 100 and 100 tokens, while queue B has 1000 and 1000. These are illustrative values. Request counts are equal, but pending positions total 200 and 2000 respectively. Even before accounting for attention context, equal request counts have not equalized prompt work. Real routing also considers cache hits, execution stage and compute budgets. The length ratio in this example must not be presented as a measured latency ratio: hardware and the shape of the operations still matter.",
+          "text": "For example, queue A holds two 100-token requests and queue B two 1000-token requests (illustrative values). The request counts match, but the positions to process are 200 versus 2000, so splitting by count does not split the input work. Real routing also considers cache hits and compute budgets, and this length ratio is not a latency ratio.",
           "refs": [
             "lb.prefill",
             "lb.decode"
@@ -733,7 +710,7 @@
         },
         {
           "title": "What the public estimator actually shows",
-          "text": "The Q&A describes prefill workload buckets and a cost model for chunk selection, while decode uses request counts together with total KV length. The public FLOPs estimator separately computes attention, non-attention and output-projection work. It is a useful example of decomposing a compute budget, not the implementation of the online quadratic latency model or bucket routing. Its return value exposes attention separately while also including it in the total. A caller must not add the separate attention value to that total again.",
+          "text": "The open-source repository has no load-balancing service, but it has a related component: a FLOPs estimator. It estimates attention, non-attention and logits work separately, which illustrates that a compute budget has to be broken down. It is only operation accounting, though, not the Q&A's fitted quadratic latency model, and it does no tier routing. Note that the snippet below returns (attention, total), where total already includes attention; callers must not add attention again.",
           "refs": [
             "lb.prefill",
             "lb.chunk",
@@ -742,17 +719,8 @@
           "kind": "example"
         },
         {
-          "title": "Pick a load signal",
-          "text": "Request count is a natural starting point, but equal counts can hide different context lengths and different work. Expand each branch of the diagram and identify the quantity being observed. Then ask what destination the scheduler chooses and what decision remains for the receiving engine. This turns the branches into a sequence of specific decisions. A request may pass through several of them during its journey, each informed by the part of the workload visible at that stage.",
-          "refs": [
-            "lb.prefill",
-            "lb.decode"
-          ],
-          "kind": "explanation"
-        },
-        {
-          "title": "From quota to chunk",
-          "text": "Prefill organizes contexts into length tiers and allocates resources according to compute-quota demand. Inside the engine, a further decision determines how much new input fits in the current iteration. The documented time-cost model relates the computed prefix to the additional work; inversion against the remaining budget determines the chunk that can fit. Tiering therefore organizes incoming requests, while the chunk decision sizes concrete work for an available allowance. Follow that progression from the outer branch to the work executed by the device.",
+          "title": "Prefill: from tiers to chunks",
+          "text": "Prefill assignment has three levels. First, requests fall into 4 tiers by total context: <16K, 16–64K, 64–256K and ≥256K, and each tier's share of machines is readjusted from its compute-quota demand in the previous round. Second, DP groups pull requests according to their remaining quota; since any machine can hit any prefix, there is no prefix affinity. Third, within a group each request goes to the rank with the lowest quota load. On a device, requests leave a FIFO queue, but the tokens processed per step are not fixed: the scheduler estimates time with a fitted quadratic cost(q, c), where q is this step's token count and c the already computed prefix, and solves for the largest q that stays within 32,768 tokens and exactly fills the remaining time budget.",
           "refs": [
             "lb.prefill",
             "lb.chunk"
@@ -761,7 +729,7 @@
         },
         {
           "title": "Two decode dimensions",
-          "text": "Decode considers concurrent request count alongside total KV length. Imagine devices serving similar numbers of requests while one holds much longer contexts. Counting requests would miss that difference in accumulated attention work. Carry both dimensions into the decode branch to understand why the official heuristic treats the placement of short and long requests separately. The branch is easier to read when you track the batch dimension and the context dimension together, rather than compressing them into a single queue count.",
+          "text": "Decode balances two quantities at once: request count sets the batch size of each step, and total KV length sets attention cost. When two devices hold similar numbers of requests but one has much longer contexts, counting requests misses the difference. The Q&A's heuristic sends short requests to devices with lower concurrency but more KV, and long requests to devices with less KV.",
           "refs": [
             "lb.decode"
           ],
@@ -769,14 +737,14 @@
         },
         {
           "title": "Image work",
-          "text": "Vision encoding changes the scale again. The same number of images can produce different patch workloads when image sizes differ. Follow the patch-count label back to the encoder work introduced in the system chapter. Each resource pool observes a signal related to its own processing task. The request consequently encounters different allocation decisions as image preparation, input processing, and ongoing generation take place. Keeping the unit of each signal visible makes the reason for those separate branches concrete.",
+          "text": "The vision encoder uses yet another scale. The prefill machine picks a vision-encoder machine at random, and that machine hands the image to the device currently processing the fewest patches. Patch count follows directly from image width and height, so one image can cost more or less than another depending on its size.",
           "refs": [
             "lb.decode"
           ],
           "kind": "explanation"
         }
       ],
-      "scope": "The source statements below retain their exact scope. Diagram layouts and demo parameters are teaching aids; use the linked source context when interpreting deployment settings.",
+      "scope": "Below are the source statements this chapter relies on. Diagram layouts and demo parameters are for explanation; take deployment settings from the sources.",
       "takeaways": [
         "Equal request counts do not imply equal work.",
         "Chunks provide scheduling opportunities.",
@@ -788,7 +756,7 @@
       "blocks": [
         {
           "title": "Why output protocol belongs in the inference path",
-          "text": "Users see text, tool calls or structured fields, while a model operates on [[token]] IDs. A [[tokenizer]] and [[special-token|special tokens]] preserve boundaries and control information. The output side must reconstruct a usable protocol from incremental results. [[constrained-decoding|Constrained decoding]] restricts candidates while generating, rather than relying only on repairing a completed string afterward. The application boundary is therefore part of the inference path: incorrect encoding or incremental parsing can invalidate otherwise valid model computation.",
+          "text": "Users see text, tool calls or structured fields, while the model works on [[token]] IDs. On the way in, a [[tokenizer]] turns the conversation into tokens and [[special-token|special tokens]] mark roles and boundaries; on the way out, tokens produced one by one must be turned back into a valid protocol. When the output must follow a structure, [[constrained-decoding|constrained decoding]] restricts candidate tokens during generation instead of repairing the string afterwards.",
           "refs": [
             "bg.token",
             "bg.special_token",
@@ -797,17 +765,18 @@
           "kind": "explanation"
         },
         {
-          "title": "From grammar state to allowed candidates",
-          "text": "A [[automaton|grammar automaton]] tracks the structure generated so far, while a [[token-mask]] excludes currently invalid candidates. DeepInfer’s Q&A describes asynchronous grammar compilation and incremental state updates; its public matcher connects grammar matching to the masks used during sampling. A format constraint does not decide whether the content is true or useful. A syntactically valid tool argument can still be inappropriate for a task. Keep the grammar’s acceptance condition separate from application-level validation.",
+          "title": "Two components",
+          "text": "Two components handle this part of the path. Protocol conversion and encoding belong to DeepSeek Recipe: it turns Chat Completions, Responses, Messages and other API requests into one conversation format before encoding, and parses output back into each protocol's streaming response. Recipe is open-sourced separately as deepseek-recipe, written in Rust with Python bindings, and its code is not in the DeepInfer repository. Structured output lives inside the DeepInfer engine: format constraints are compiled into a [[automaton|grammar automaton]] whose state advances at every step, and a [[token-mask]] blocks invalid candidates. A format constraint governs only form, not whether the content is true.",
           "refs": [
-            "bg.constraints",
-            "so.pipeline"
+            "recipe.encode",
+            "so.pipeline",
+            "bg.constraints"
           ],
           "kind": "explanation"
         },
         {
           "title": "Scenario: a character and a marker span chunks",
-          "text": "Here a chunk means a piece of data delivered by the network; its boundary need not align with a whole character or delimiter. As an illustration, split the [[utf|UTF-8]] bytes for the character 中 across two network reads. The first part is not a complete character and must be retained until the rest arrives. [[sse|SSE]] event boundaries likewise do not coincide with arbitrary network chunks. If an end marker begins in an old chunk and finishes in a new one, incremental matching must retain progress. [[kmp|KMP]] uses a failure table to fall back to a prefix that can still match, avoiding a fresh scan of all previous output on each chunk.",
+          "text": "When streaming, the inference backend sends chunks at token granularity, and their boundaries need not fall on whole characters or tags. The character 中 takes 3 bytes in [[utf|UTF-8]]; the first two may arrive in one chunk and the last in the next. The parser must not emit garbage for the partial character, so it buffers until the bytes are complete. [[sse|SSE]] event boundaries likewise differ from network read boundaries. Tags can be split too: if the first half of the end-of-reasoning marker sits in an old chunk and the second half in a new one, incremental matching must remember how far it got. [[kmp|KMP]] uses a failure table to fall back to a prefix that can still match, instead of rescanning all earlier output on every chunk.",
           "refs": [
             "bg.utf",
             "bg.sse",
@@ -817,7 +786,7 @@
         },
         {
           "title": "Keep the input structure",
-          "text": "Explicit special tokens inserted by the template retain their identity during encoding. Recording those boundaries lets control markers map directly to their intended IDs while ordinary spans follow text encoding. The spans can be processed separately and their results assembled in the original order. That final ordering carries the conversation structure into the inference engine. Trace a template boundary through the encoding path and it becomes clear how the system preserves the difference between application control structure and ordinary message content.",
+          "text": "Encoding must tell apart two things that look the same. Special tokens inserted by the template, such as role markers, map directly to their token IDs; the same string typed by a user or returned by a tool, for example <｜User｜> inside a message, is encoded as ordinary text tokens, so text cannot inject control markers. And because special-token positions are known while the prompt is built, the plain-text spans between them can be encoded in parallel and joined in order, cutting tokenization time for very long contexts.",
           "refs": [
             "recipe.encode"
           ],
@@ -825,7 +794,7 @@
         },
         {
           "title": "Constrain sampling",
-          "text": "Format constraints first pass through asynchronous compilation to produce a structure usable at runtime. During generation, the matcher advances its state with the output and produces a sampling mask. The arrow joining the sampling stage shows where the constraint participates in selecting the next token. Follow this branch from the requested format to the mask: preparation happens before use, while the runtime state evolves as generation proceeds. This connects the compiler and matcher to a visible decision made during each generation step.",
+          "text": "Structured-output compilation is decoupled from inference: format constraints (JSON schema, regex or EBNF) are compiled into grammar automata asynchronously on dedicated SO machines, and the result is retrieved before the request enters the engine. During generation the matcher advances the automaton with each output token, computes the set of legal tokens and applies a mask to sampling. The snippet below comes from this matcher: the constraint takes effect only after a trigger token sequence appears in the output, and the matcher recognizes that sequence token by token with a KMP failure table. The idea is the same as cross-chunk matching in stream parsing, but this is not Recipe's parser code.",
           "refs": [
             "so.pipeline"
           ],
@@ -833,14 +802,14 @@
         },
         {
           "title": "Continue across chunks",
-          "text": "A streaming chunk can end inside a character or a delimiter. The parser retains the unfinished portion: UTF-8 buffering handles incomplete characters, incremental matching keeps delimiter progress, and the state machine tracks whether confirmed content belongs to text, reasoning, or tool-related output. When another chunk arrives, parsing continues from that saved state. Mark the boundary between confirmed content and the fragment still awaiting input, then follow how that boundary advances as more of the response becomes available.",
+          "text": "Put together, the stream parser is a state machine that keeps its progress: a UTF-8 buffer handles incomplete characters, KMP keeps the delimiter-matching progress, and state records whether the current content is text, reasoning or tool arguments. Confirmed content is emitted at once without rescanning earlier text. Tool arguments need not wait for the whole object either: the tool name returns as soon as it is parsed, and arguments stream as JSON fragments along DSML boundaries.",
           "refs": [
             "recipe.stream"
           ],
           "kind": "explanation"
         }
       ],
-      "scope": "The source statements below retain their exact scope. Diagram layouts and demo parameters are teaching aids; use the linked source context when interpreting deployment settings.",
+      "scope": "Below are the source statements this chapter relies on. Diagram layouts and demo parameters are for explanation; take deployment settings from the sources.",
       "takeaways": [
         "Distinguish special tokens from ordinary text.",
         "Grammar constraints update valid candidates during generation.",
@@ -851,8 +820,8 @@
     {
       "blocks": [
         {
-          "title": "Expert route: identify each tensor’s role",
-          "text": "Several mechanisms meet in a model’s forward path. Recall that a [[residual]] retains an input while adding a transformation, [[sparse-attention]] reads a selected set of positions, and [[sinkhorn]] alternates row and column normalization. These definitions provide vocabulary for following the interfaces; they do not replace evidence for this model’s implementation. This expert chapter traces where data is produced and consumed in the public code, rather than deriving unverified training motivations from inference operations.",
+          "title": "Vocabulary first",
+          "text": "The last chapter moves from the system into the model. A few terms first: a [[residual]] adds a sublayer's output back to its input; [[sparse-attention]] scores candidate positions and runs the main attention only on the selected ones; [[sinkhorn]] alternately normalizes a matrix's rows and columns. These are general definitions for reading the interfaces. This chapter follows the pinned code to show where data comes from and where it goes, without guessing at training motivations.",
           "refs": [
             "bg.representation",
             "bg.sparse",
@@ -861,66 +830,59 @@
           "kind": "explanation"
         },
         {
-          "title": "Scenario: why shared indices are not enough",
-          "text": "Suppose a later layer receives position indices selected by an earlier layer. It still needs the matching KV data and an interpretation of those coordinates. Sharing indices does not automatically mean sharing the cache itself. The public topology object organizes source relationships for KV, indexer K and top-k separately. Its constructor processes configuration, builds mappings and then validates them. Reading these static dependencies first makes the runtime tensors easier to follow: a value can only be reused correctly when its source and consumers agree.",
-          "refs": [
-            "model.index"
-          ],
-          "kind": "example"
-        },
-        {
-          "title": "Separate representation from the algorithm",
-          "text": "[[ngram-hash|N-gram hashing]] explains addressing a lookup table from consecutive token fragments. [[fp8]] and [[mx]] describe numeric representation and scaling. Lookup, projection, index selection and cache storage answer different questions. When reading a low-precision field, determine whether it applies to weights, activations, the indexer or the main KV. Similar format names are not evidence that all those objects share one representation or scaling granularity. Trace the object as well as the format.",
-          "refs": [
-            "bg.ngram",
-            "bg.fp8",
-            "bg.mx",
-            "model.precision"
-          ],
-          "kind": "example"
-        },
-        {
-          "title": "Start with the residual streams",
-          "text": "Finally, zoom into the model. This chapter follows interfaces in the pinned code: start with the residual streams entering mHC, then inspect how a side branch contributes to [[hidden-state|hidden state]]s. The main path gives a reading order, while the branches identify modules to open as you trace the relationships.",
+          "title": "Reading order",
+          "text": "The main figure reads top to bottom: first how the residual streams enter mHC mixing, then how the Engram side branch injects information into [[hidden-state|hidden state]]s, and finally how compressed KV and the indexer select and reuse state across layers inside attention. Every box maps to a code module you can open.",
           "refs": [
             "model.mhc"
-          ],
-          "kind": "explanation"
-        },
-        {
-          "title": "Follow a side branch back",
-          "text": "Take the Engram branch next. An n-gram hash obtains embeddings, which pass through projection and a gate before entering hidden states. Lookup, transformation, and injection are adjacent steps with distinct inputs and outputs. Following them separately turns the branch into a concrete sequence of operations in the implementation.",
-          "refs": [
-            "model.engram"
           ],
           "kind": "explanation"
         },
         {
           "title": "Trace one mixing operation",
-          "text": "The mHC path connects a Sinkhorn call with mixing across residual streams. Identify the incoming streams, then follow where the mixed result goes. This reading method attaches the main-path arrows to inspectable call relationships and gives you an entry point for continuing into the attention and [[moe|MoE]] modules shown in the schematic.",
+          "text": "This model has not one residual path but several parallel residual streams. mHC combines them with a mixing matrix, which the code first passes through Sinkhorn normalization (sinkhorn_normalize) so that each row and each column sums to roughly 1. Mark the streams entering the mix, then follow the mixed result into attention and [[moe|MoE]].",
           "refs": [
-            "model.mhc"
+            "model.mhc",
+            "bg.sinkhorn"
+          ],
+          "kind": "explanation"
+        },
+        {
+          "title": "Follow a side branch back",
+          "text": "The Engram branch has three steps, each with its own inputs and outputs in the code: an [[ngram-hash|n-gram hash]] of consecutive tokens addresses a sharded table and fetches an embedding; a projection follows; a gate then fuses the result into the hidden states. It is a lookup inside the model, not retrieval from external documents.",
+          "refs": [
+            "model.engram",
+            "bg.ngram"
           ],
           "kind": "explanation"
         },
         {
           "title": "Trace selection and reuse",
-          "text": "Follow compressed KV and the indexer as separate inputs to attention. Query scoring produces selected KV indices. Cross-layer topology maintains separate sharing mappings for KV, indexer K, and selected indices; consumers use these relationships to read from earlier source layers. Pick a consumer, find its source layer, then return to the diagram to identify the corresponding reuse path.",
+          "text": "Attention has two branches here: compressed KV and a sparse indexer. The indexer scores the compressed KV for each query and selects the top-k positions, and the main attention reads only those. A cross-layer topology object records three sharing relations separately: which layer the KV, the indexer K and the selected indices each come from; later layers (consumers) read from their source layers accordingly. Pick a consumer layer, find its source, then locate that reuse path in the figure.",
           "refs": [
             "model.index"
           ],
           "kind": "explanation"
         },
         {
-          "title": "Check the representation being used",
-          "text": "While tracing data, keep track of the particular weight or cache object you are reading. The official description assigns different format conventions to Main KV, Indexer KV, routed-expert weights, and [[swa|SWA]] KV. Identify the object before reading its format and scaling rule. This connects interface relationships with the representation used by the data moving through them.",
+          "title": "Scenario: why shared indices are not enough",
+          "text": "Suppose a later layer receives position indices selected by an earlier one. The indices alone are not enough: it also needs to know which KV they refer to and how to interpret the coordinates. Sharing indices therefore does not mean sharing the cache. The topology constructor below processes the configuration, builds each layer's source mapping and then validates it; these static relations are fixed before anything runs. Reading them first makes the runtime tensors much easier to follow.",
           "refs": [
+            "model.index"
+          ],
+          "kind": "example"
+        },
+        {
+          "title": "Check the representation being used",
+          "text": "Finally, keep data representations apart. [[fp8]] and [[mx]] describe how numbers are encoded and scaled, and different objects use different formats: the Q&A gives Main KV per-16 scaling with e4m3; Indexer KV and MoE routed-expert weights use per-32, ue8m0 MXFP4; SWA KV is stored as MXFP8. When you meet a low-precision field, first check which object it describes rather than assuming that everything named FP shares one format.",
+          "refs": [
+            "bg.fp8",
+            "bg.mx",
             "model.precision"
           ],
           "kind": "explanation"
         }
       ],
-      "scope": "This remains a code guide. Paragraphs marked inferred describe calls and data relationships; training motivations and effects are outside what these inference interfaces establish.",
+      "scope": "This chapter is a code guide. Paragraphs marked as inferred describe calls and data relationships only; they are not official statements about design motivation or effect.",
       "takeaways": [
         "Read static dependencies before runtime data.",
         "Sharing indices differs from sharing KV.",
@@ -938,14 +900,15 @@
     "tiers": "<16K / 16–64K / 64–256K / ≥256K",
     "cost": "Quadratic cost(q,c) → solve chunk q",
     "encoding": "Special-token boundaries → parallel spans",
-    "stream": "UTF-8 buffer + KMP matching across chunks"
+    "stream": "UTF-8 buffer + KMP matching across chunks",
+    "efficientUnit": "{p}-device P + {d}-device D"
   },
   "evidenceTitle": "Sources and scope",
   "scrollFigure": "Scroll horizontally to explore the full diagram",
   "decodeLab": {
     "title": "Decode lab: can guessing ahead save time?",
     "intro": "Once decoding is underway, another way to save time is to propose candidate tokens and verify them together. Having seen how a batch is scheduled, explore how DSpark chooses the candidates worth checking.",
-    "lead": "Lower an early confidence slider and watch later candidates lose value too. Then switch to fixed length and compare the choices made from exactly the same proposals.",
+    "lead": "Lower the confidence of an early position (say the second) and watch the positions after it stop being worth verifying. Then switch to fixed length and compare how the two strategies treat the same candidates.",
     "scope": "The sliders and timing curve explain a trade-off. Production allocates a shared budget across requests; official reported results are listed separately in the demo.",
     "background": {
       "title": "Draft first, then verify",
@@ -1002,7 +965,7 @@
     "bytes": "Bytes per element",
     "size": "Total KV",
     "read": "Ideal KV read per step",
-    "formula": "K and V × tokens × layers × KV heads × head dimension × bytes per element",
+    "formula": "Two (K and V) × tokens × layers × KV heads × head dimension × bytes per element",
     "playTitle": "Try it: the autoregressive loop",
     "play": "Play",
     "pause": "Pause",
@@ -1055,7 +1018,7 @@
       {
         "id": "phases",
         "title": "Process the prompt, then generate",
-        "text": "[[prefill-decode|Prefill and decode]] are two work shapes of the same model. Every prompt position is known up front, so prefill computes them together. Decode handles 1 new position per request per step, and the next position waits for sampling.\n\nBoth read the weights on every forward pass. In prefill one read serves many positions, so arithmetic units stay busy. In a small decode batch one read serves few positions and history KV must be read too, so time goes to moving data and [[bandwidth]] becomes the limit.\n\nThis is a tendency rather than a rule: batch size, attention design and hardware shift the bottleneck. In MoE, each step reads only the activated experts.",
+        "text": "[[prefill-decode|Prefill and decode]] are two work shapes of the same model. Every prompt position is known up front, so prefill computes them together. Decode handles 1 new position per request per step, and the next position waits for sampling.\n\nBoth read the weights on every forward pass. In prefill one read serves many positions, so arithmetic units stay busy. In a small decode batch one read serves few positions and history KV must be read too, so time goes to moving data and [[bandwidth]] becomes the limit.\n\nThis is a tendency rather than a rule: batch size, attention design and hardware shift the bottleneck. In MoE, a step reads only the selected experts' weights, though with a large batch the selected set approaches all experts.",
         "refs": [
           "bg.prefill_decode",
           "bg.moe"
@@ -1086,7 +1049,7 @@
       {
         "id": "metrics",
         "title": "Decide what kind of fast you need",
-        "text": "Three questions come first: [[ttft|TTFT]] asks how soon a reply starts, [[tpot|TPOT]] how quickly it continues, and [[throughput]] how much work the system completes.\n\n[[goodput]] also requires meeting latency objectives. High [[gpu-utilization]] only means kernels were often running during the sampling period; it does not prove the arithmetic units were saturated.\n\nTo read a performance plot, check the axis directions and workload first, then the [[pareto|Pareto front]]. Each point on the front is a tradeoff; none wins on every metric. Decide whether waiting time or total capacity matters more, then choose a point.",
+        "text": "Three questions come first: [[ttft|TTFT]] asks how soon a reply starts, [[tpot|TPOT]] how quickly it continues, and [[throughput]] how much work the system completes.\n\n[[goodput]] also requires meeting latency objectives. High [[gpu-utilization]] only means a kernel was running for most of the measurement window; it does not prove the arithmetic units were saturated.\n\nTo read a performance plot, check the axis directions and workload first, then the [[pareto|Pareto front]]. Each point on the front is a tradeoff; none wins on every metric. Decide whether waiting time or total capacity matters more, then choose a point.",
         "refs": [
           "bg.metrics",
           "bg.utilization",
