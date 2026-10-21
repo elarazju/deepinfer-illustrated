@@ -1,11 +1,10 @@
 node_modules/
 dist/
 vendor/
-research/*.txt
-research/*.pdf
+public/figures/
 .DS_Store
 *.log
-public/figures/
-research/screenshots/
-research/audit-montages/
-research/tutorial-audit/*.png
+
+# Working notes, QA output and screenshots stay on the local machine.
+research/
+REPORT.md

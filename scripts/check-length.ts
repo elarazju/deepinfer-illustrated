@@ -18,5 +18,6 @@ for(const lang of ['zh','en']){
     counts.push({chapter:chapter.id,lang,paragraphsOnly:count(paragraphs),visible:count(visible),withDetails:count(all),unit:lang==='zh'?'non-whitespace characters':'words'});
   }
 }
+fs.mkdirSync('research',{recursive:true});
 fs.writeFileSync('research/content-lengths.json',JSON.stringify(counts,null,2));
 console.table(counts);

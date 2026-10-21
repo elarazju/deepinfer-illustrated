@@ -14,7 +14,8 @@
   <header class="chapter-heading"><div class="chapter-index">{String(0).padStart(2,'0')}</div><div><h2>{t.title}</h2><p>{t.intro}</p></div></header>
   {#each t.sections as section,i}
     <section id={`basics-${section.id}`} class="basics-section">
-      <h3>{section.title}</h3><p class="prose"><RichText text={section.text} {locale}/></p>
+      <h3>{section.title}</h3>
+      <div class="prose">{#each section.text.split('\n\n') as paragraph}<p><RichText text={paragraph} {locale}/></p>{/each}</div>
       <p>{#each section.refs as id}<FactBadge {id} {locale}/>{/each}</p>
       {#if section.figure}<Figure kind={section.figure} {locale} {theme} number={`00${String.fromCharCode(97+i)}`} source={section.refs[0]}/>{/if}
       {#if section.id==='generation'}<Autoregressive {locale}/>{/if}

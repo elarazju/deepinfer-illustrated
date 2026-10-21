@@ -18,6 +18,7 @@ try{
     await context.close();
   }
 }finally{await browser.close();}
+await fs.mkdir('research',{recursive:true});
 await fs.writeFile('research/accessibility-results.json',JSON.stringify(results,null,2));
 const violations=results.flatMap(r=>r.violations.map(v=>({lang:r.lang,theme:r.theme,id:v.id,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary}))})));
 console.log(JSON.stringify(violations,null,2));

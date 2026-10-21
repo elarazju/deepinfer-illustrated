@@ -1313,4 +1313,7 @@ footer a {
 .chapter-navigation { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding: 1.5rem 0; }
 .chapter-navigation a { max-width: 46%; font-size: .8rem; }
 .chapter-navigation strong { display: block; margin-top: .4rem; font-size: 1rem; }
-.figure-reading { flex-basis: 100%; margin: .5rem 0; line-height: 1.7; }
+figcaption { flex-wrap: wrap; }
+.figure-reading { order: 3; flex-basis: 100%; margin: .5rem 0 0; line-height: 1.7; }
+.prose p.illustrative { display: inline-block; margin: 0 0 8px; }
+.prereqs .term-wrap .term { padding: .25rem .6rem; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 1rem; }

@@ -1,8 +1,9 @@
 <script lang="ts">
   import ChapterNav from '../lib/ChapterNav.svelte';
   import type { ReadingPath } from '../lib/routes';
-  import { chapters, dictionaries, facts, terms, type Locale } from '../lib/data';
+  import { chapters, dictionaries, facts, type Locale } from '../lib/data';
   import CodeSnippet from '../lib/CodeSnippet.svelte';
+  import Term from '../lib/Term.svelte';
   import RichText from '../lib/RichText.svelte';
   import Figure from '../figures/Figure.svelte';
   import FactBadge from '../lib/FactBadge.svelte';
@@ -30,7 +31,7 @@
     <div><p class="eyebrow">{copy.short}</p><h2>{copy.title}</h2><p class="chapter-intro"><RichText text={copy.intro} {locale}/></p></div>
   </header>
   <p class="chapter-meta"><strong>{t.chapterUi[chapter.level]}</strong> · {chapter.minutes} {t.chapterUi.minutes}</p>
-  <div class="prereqs"><span>{t.chapterUi.prereqs}:</span>{#each chapter.prereqs as id}<a href={`#term-${id}`}>{terms[id][locale].term}</a>{/each}</div>
+  <div class="prereqs"><span>{t.chapterUi.prereqs}:</span>{#each chapter.prereqs as id}<Term {id} {locale}/>{/each}</div>
   <p class="question"><span aria-hidden="true">↳</span> {copy.question}</p>
   {#if chapter.closed}<NotOpenSource {locale}/>{/if}
   {#if chapter.id === 'model'}

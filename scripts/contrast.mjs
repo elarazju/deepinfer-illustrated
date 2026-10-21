@@ -23,6 +23,7 @@ try {
     }
   }
 }finally{await browser.close();}
+await fs.mkdir('research',{recursive:true});
 await fs.writeFile('research/contrast-results.json',JSON.stringify(results,null,2));
 if(results.some(r=>!r.passes))throw Error(JSON.stringify(results.filter(r=>!r.passes)));
 console.log(`PASS: ${results.length} text/token color pairs exceed 4.5:1.`);

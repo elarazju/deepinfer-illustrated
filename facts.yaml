@@ -331,20 +331,27 @@ facts:
   - {"id": "snippet.model", "source": "code", "ref": "deepinfer/model_executor/models/v4_modules/cross_layer.py:56", "status": "confirmed", "zh": "静态拓扑先于运行时数据", "en": "Static topology precedes runtime values", "snippet": {"start": 56, "end": 59, "text": "    def __init__(self, cfg: AttrDict, num_layers: int) -> None:\n        self._process_cfg(cfg)\n        self._build_layer_maps(num_layers, cfg.num_hidden_layers)\n        self._validate(cfg)", "notes": [{"line": 56, "zh": "构造函数接收配置和总层数。", "en": "Construction receives configuration and the layer count."}, {"line": 57, "zh": "配置先统一处理，再建立各层来源映射。", "en": "Configuration is processed before per-layer source maps are built."}, {"line": 59, "zh": "校验在构造阶段执行；后续复用依赖这些关系合法。", "en": "Validation runs at construction, before runtime reuse relies on these relationships."}]}}
   - {"id": "snippet.decode", "source": "code", "ref": "deepinfer/model_executor/layers/tilelang_ops/cuda/schedule_mtp_varlen.py:29", "status": "confirmed", "zh": "逐位置累积前缀存活概率", "en": "Accumulate prefix survival by position", "snippet": {"start": 29, "end": 37, "text": "            acc = 1.0\n            T.pdl_sync()\n            prev_idx = remap[pid]\n            if prev_idx == -1:\n                acc = 0.0\n            for j in T.serial(nextn):\n                if prev_idx != -1:\n                    acc = acc * prev_confidence_rates[prev_idx, j]\n                cum_rates[pid, j] = acc", "notes": [{"line": 29, "zh": "累乘从单位值开始，再取得上一轮请求位置。", "en": "The product starts at unity and obtains the previous request position."}, {"line": 31, "zh": "新请求没有历史置信度，走单独处理。", "en": "Fresh requests have no previous confidence and take a separate path."}, {"line": 34, "zh": "沿草稿位置连续相乘，把每个前缀的估计存下来。", "en": "Successive draft positions multiply into stored prefix estimates."}]}}
 demo_defaults:
-  swaWindow: { length: 140, window: 128 }
+  swaWindow: { length: 384, window: 128 }
   eplb:
-    original: E3
-    replicas: [E3′, E3″]
+    # Every device has the same number of slots; unused redundant slots render as empty.
+    slots: 3
     hotLoad: 60
     maxLoad: 70
+    replicaGroups:
+      - {original: E3, replicas: [E3′, E3″]}
+      - {original: E5, replicas: [E5′]}
     before:
       - [{name: E0, load: 10}, {name: E1, load: 10}]
       - [{name: E2, load: 10}, {name: E3, load: 60}]
       - [{name: E4, load: 10}, {name: E5, load: 20}]
     after:
-      - [{name: E0, load: 10}, {name: E1, load: 10}, {name: E3′, load: 20}]
-      - [{name: E2, load: 10}, {name: E4, load: 10}, {name: E3, load: 20}]
-      - [{name: E5, load: 20}, {name: E3″, load: 20}]
+      - [{name: E0, load: 10}, {name: E3′, load: 20}, {name: E5′, load: 10}]
+      - [{name: E2, load: 10}, {name: E3, load: 20}, {name: E4, load: 10}]
+      - [{name: E1, load: 10}, {name: E3″, load: 20}, {name: E5, load: 10}]
+  moe:
+    # Gate scores for one token over four routed experts; top-k picks the highest.
+    scores: [0.08, 0.46, 0.34, 0.12]
+    k: 2
   examples:
     experts: [3]
     routing: [100, 1000, 200, 2000]

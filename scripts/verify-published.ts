@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import path from 'node:path';
 import assert from 'node:assert/strict';
 import { chromium } from '@playwright/test';
 import {figureKinds} from '../src/lib/figure-kinds.mjs';
@@ -53,7 +54,9 @@ try {
     results.push({ lang, theme, width, status: 'passed', downloads: links.length, exportCommit:manifest.commit, errors });
     await page.close();
   }
-  await fs.writeFile(process.env.RESULT_PATH ?? 'research/published-results.json', JSON.stringify({
+  const resultPath = process.env.RESULT_PATH ?? 'research/published-results.json';
+  await fs.mkdir(path.dirname(resultPath), { recursive: true });
+  await fs.writeFile(resultPath, JSON.stringify({
     base, checkedAt: new Date().toISOString(), results
   }, null, 2));
   console.log(JSON.stringify(results));

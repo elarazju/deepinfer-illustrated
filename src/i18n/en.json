@@ -116,7 +116,7 @@
       "transfer": "KV transfer",
       "reuse": "Prefix reuse",
       "caption": "E / P / D disaggregation",
-      "howToRead": "Follow input into Prefill and the cache transfer into Decode. Green boxes are compute roles, purple is storage, and dashed boxes are unpublished components. P and D abbreviate Prefill and Decode; their counts are devices, not requests. E denotes the vision encoder."
+      "howToRead": "Requests flow from the Vision Encoder into Prefill, which hands state to Decode. Green boxes are compute roles in the open-source engine; the gray dashed box is the unreleased cache store, and purple arrows are cache reads and writes. Numbers beside EP are expert-parallel sizes; E, P and D stand for vision encoding, Prefill and Decode."
     },
     "timeline": {
       "sync": "Synchronous",
@@ -146,13 +146,14 @@
       "replica": "Replica of a popular expert",
       "workflow": "Measure load → allocate replicas → move weights",
       "caption": "Illustrative layout, not actual expert counts",
-      "howToRead": "Orange marks the hot expert; numbers encode illustrative load. Primes identify replicas of the same logical expert. Balanced bars appear on the right; official parameters are separate below.",
+      "howToRead": "Every device has the same number of slots; dashed gray cells are unused redundant slots. The orange cell is the hot expert and numbers are illustrative load. Primes mark replicas of the same logical expert. Once replicas fill the redundant slots, the load bars on the right even out. Official Q&A parameters sit below the line.",
       "before": "Observed load",
       "allocate": "Replicate",
       "after": "After placement",
       "toy": "Grid and loads are illustrative",
       "sameWeights": "Same expert weights",
-      "splitLoad": "Share the hot workload"
+      "splitLoad": "Share the hot workload",
+      "slot": "Empty"
     },
     "yoco": {
       "input": "Uncached input",
@@ -169,7 +170,7 @@
       "tokens": "Input tokens",
       "cache": "Block KV",
       "replayLength": "Replay window",
-      "howToRead": "The upper panel separates local state from reusable global KV. Purple paths transfer cache; green paths compute. The lower timeline shows work needed after a cache hit."
+      "howToRead": "Top: the encoder processes input tokens and its final hidden states are projected into purple Block KV. Bottom: on every prefill the decoder replays only the prompt tail (green cells) to rebuild SWA, while the purple arrow shows Block KV reused directly. Encoder recovery after a cache miss is covered by the interactive lab in this chapter."
     },
     "storage": {
       "block": "Block KV",
@@ -182,7 +183,7 @@
       "restore": "Remote fetch / replay",
       "overlap": "Overlap layer transfer and forward",
       "caption": "Overlap layer transfer and forward",
-      "howToRead": "Purple is persistent cache and blue arrows are transfers. Dashed boxes are unpublished services. Read fan-out and the number of encoded fragments are different quantities."
+      "howToRead": "The two rows are the Block KV and SWA KV paths. Gray dashed boxes are unreleased storage and directory services; the green box is device memory on the compute node. Blue arrows show data movement. Read fan-out and the number of encoded fragments are different quantities."
     },
     "routing": {
       "request": "Incoming request",
@@ -193,8 +194,8 @@
       "decode": "Decode",
       "patches": "Image patch count",
       "encoder": "Vision Encoder",
-      "caption": "Vision Encoder",
-      "howToRead": "Follow how cache-hit information reaches routing and work reaches compute pools. Dashed boxes identify unpublished production services."
+      "caption": "Each stage balances on its own load signal",
+      "howToRead": "Requests split into three branches by stage. Each branch uses a different load signal (gray dashed boxes, unreleased production services) to pick a compute pool (green boxes): context length for Prefill, request count times KV length for Decode, image patch count for the Vision Encoder."
     },
     "recipe": {
       "request": "API request",
@@ -222,47 +223,60 @@
       "howToRead": "Boxes identify inspectable code modules. Connections guide code reading rather than assert a performance-validated architecture. Read inferences with their source badges."
     },
     "basics-autoregressive": {
-      "caption": "Output grows step by step; KV follows processed positions",
-      "prompt": "Known prompt",
-      "later": "Generate onward",
+      "caption": "Each step appends one output; the cache covers only processed positions",
+      "prompt": "First step: read the prompt, sample one token",
+      "later": "Two steps later",
       "tokens": "Token sequence",
       "cache": "Computed K / V",
-      "pending": "Sampled; KV pending",
-      "howToRead": "Orange marks the prompt, green the output and purple cached positions. A dashed cell is newly sampled: its KV is computed in the next pass."
+      "pending": "Just sampled; KV next step",
+      "append": "Appended as the next input",
+      "howToRead": "Orange cells are the prompt, green cells are generated output and purple cells are computed K / V. The dashed cell at the end of each row is the token just sampled: its KV is computed in the next forward pass. The arrow shows the new output being appended to the sequence."
     },
     "basics-prefill-decode": {
       "caption": "One model, two work shapes",
-      "prefill": "Prefill: known input",
-      "decode": "Decode: new position",
-      "many": "Known positions together",
-      "single": "Depends on the last step",
-      "compute": "Long prompts: often compute-bound",
-      "memory": "Small batches: often bandwidth-bound",
-      "weights": "Weight reads reused within a batch",
-      "kv": "Read relevant historical KV",
-      "howToRead": "Green cells are current work; purple cells are cached history. Arrows show dependencies, not timing ratios. Bottleneck labels depend on workload."
+      "prefill": "Prefill: the whole prompt at once",
+      "decode": "Decode: one new position per step",
+      "many": "Every prompt position is computed",
+      "single": "Only the newest position is computed",
+      "workBar": "Compute in one forward pass",
+      "readBar": "Data read in one forward pass",
+      "weightPart": "Weights",
+      "kvPart": "History KV",
+      "weights": "Weights are read once and shared by all positions",
+      "kv": "Weights serve one new position; history KV is read too",
+      "compute": "Compute-heavy: often compute-bound",
+      "memory": "Read-heavy: often bandwidth-bound",
+      "scale": "Bar lengths are relative, not measured; batch size, attention design and hardware shift the bottleneck",
+      "howToRead": "Each cell in the top row is a position: green cells are computed in this forward pass, purple cells are history KV that is only read. The two bars compare compute and data read in the same pass; the more reading outweighs compute, the more memory bandwidth limits speed."
     },
     "basics-moe": {
-      "caption": "Route to experts, then combine results",
+      "caption": "The gate scores experts, keeps the top k and combines them by weight",
       "token": "Token vector",
       "gate": "Gate scores",
       "experts": "Routed experts",
       "combine": "Combine",
-      "selected": "Selected routes",
-      "howToRead": "Green experts and solid lines are selected for this token. Gray cells are unselected. Identifiers and selection counts are illustrative."
+      "idle": "Not selected",
+      "weighted": "Score-weighted",
+      "rule": "Keep the k highest-scoring experts",
+      "toy": "Scores and expert count are illustrative",
+      "howToRead": "The gate gives each expert a score (bar length). The k highest-scoring experts are selected: green boxes and green arrows. Gray dashed boxes are experts not selected for this token and do no work for it. Selected outputs are combined, weighted by score."
     },
     "basics-parallel": {
-      "caption": "DP partitions data; EP distributes experts",
-      "dp": "DP: same weights, different data",
-      "ep": "EP: different experts",
+      "caption": "Attention uses DP, MoE uses EP: one MoE layer on two devices",
+      "device": "Device",
       "request": "Request",
-      "copy": "Matching model replica",
-      "dispatch": "Dispatch tokens to experts",
-      "combine": "Combine expert outputs",
-      "howToRead": "Left: identical weights handle different requests. Right: distributed experts exchange tokens. Device counts are illustrative."
+      "attention": "Attention (full copy)",
+      "experts": "Experts",
+      "next": "On to the next layer",
+      "dpNote": "Same weights, own requests",
+      "epNote": "Each holds some experts",
+      "dispatch": "all-to-all dispatch",
+      "combine": "all-to-all combine",
+      "toy": "Device and expert counts are illustrative",
+      "howToRead": "Each dashed column is one device; the layer runs top to bottom. In attention both devices hold the same weights and process their own requests (DP). In the MoE stage each device holds only some experts (EP), so tokens travel to the device holding their selected experts and the results travel back."
     },
     "overview": {
-      "howToRead": "Arrows follow request processing. Brown denotes CPU work, green GPU work, blue transfers; gray dashed boxes are unpublished services.",
+      "howToRead": "Arrows follow the order of processing. Brown boxes are CPU-side protocol work and green boxes are GPU compute; gray dashed boxes are unreleased services, including prefix matching, routing and PD transfer. Select any stop to open its chapter.",
       "caption": "Choose a stop to follow the data into its chapter."
     },
     "swa-window": {
@@ -271,7 +285,8 @@
       "local": "Sliding window: recent positions only",
       "window": "Window size",
       "toy": "Illustrative sequence length",
-      "howToRead": "Each cell is a token position. Green KV is visible, gray is hidden in this layer, and orange is the current position. The window includes the current position and never reaches into the future."
+      "howToRead": "Each thin bar is a token position: green KV is visible to the current position, gray history is hidden in this layer and orange is the current position. Full attention (top) sees all history; the sliding window (bottom) sees only the most recent stretch, including the current position and never the future.",
+      "hidden": "History this layer cannot see"
     }
   },
   "dspark": {
@@ -1017,7 +1032,7 @@
       {
         "id": "generation",
         "title": "What happens inside a conversation",
-        "text": "Text first passes through a [[tokenizer]] to become [[token]] IDs, then an [[embedding]] turns them into vectors. A forward pass moves those vectors through the model layers; their intermediate representation is called a [[hidden-state]]. The final scores describe candidates for the next position. [[sampling|Sampling]] selects a token and appends it to the sequence, providing input for the next iteration. This [[autoregressive|autoregressive generation]] loop continues until an end marker or length limit. The player below illustrates the loop without running a language model.",
+        "text": "Your text is first split by a [[tokenizer]] into [[token]] IDs, then an [[embedding]] turns them into vectors.\n\nA forward pass moves those vectors through the layers; the internal representation passed between layers is a [[hidden-state]]. The last layer scores candidates for the next position, and [[sampling|sampling]] picks one token.\n\nThe chosen token is appended to the sequence and becomes the next input. Repeating this until an end marker or length limit is [[autoregressive|autoregressive generation]]. The player below shows the loop without running a real model.",
         "refs": [
           "bg.token",
           "bg.representation",
@@ -1040,7 +1055,7 @@
       {
         "id": "phases",
         "title": "Process the prompt, then generate",
-        "text": "[[prefill-decode|Prefill and decode]] have different work shapes. Prompt positions are already known, so prefill processes many positions together. Ordinary decode handles 1 new position per request per step, with later positions depending on sampling. A sufficiently long prefill tends to occupy the arithmetic units; a small decode batch can instead spend much of its time reading weights and historical KV, making [[bandwidth]] important. This is a tendency, not a universal rule: batch size, attention design and hardware change the bottleneck. In MoE, only relevant activated expert weights are read, rather than every expert in the model.",
+        "text": "[[prefill-decode|Prefill and decode]] are two work shapes of the same model. Every prompt position is known up front, so prefill computes them together. Decode handles 1 new position per request per step, and the next position waits for sampling.\n\nBoth read the weights on every forward pass. In prefill one read serves many positions, so arithmetic units stay busy. In a small decode batch one read serves few positions and history KV must be read too, so time goes to moving data and [[bandwidth]] becomes the limit.\n\nThis is a tendency rather than a rule: batch size, attention design and hardware shift the bottleneck. In MoE, each step reads only the activated experts.",
         "refs": [
           "bg.prefill_decode",
           "bg.moe"
@@ -1060,7 +1075,7 @@
       {
         "id": "parallel",
         "title": "Split the data, or split the model",
-        "text": "[[dp|Data parallelism]] gives different inputs to matching model replicas. [[tp|Tensor parallelism]] partitions a layer computation, while [[ep|expert parallelism]] distributes experts across devices. EP sends token representations to the selected experts and returns the results using dispatch and combine [[all-to-all]] exchanges. These choices can be combined: the DeepInfer Q&A describes attention DP together with MoE EP. The drawing compares the main DP and EP distinction; its device and expert counts are illustrative.",
+        "text": "[[dp|Data parallelism]] gives different inputs to matching model replicas; [[ep|expert parallelism]] places different experts on different devices. ([[tp|Tensor parallelism]], which splits one layer's matrices, is not covered here.)\n\nUnder EP, tokens travel to the devices holding their selected experts and the results travel back. These two steps are [[all-to-all]] exchanges. The schemes can be combined: the DeepInfer Q&A describes attention DP together with MoE EP. The drawing below shows that combination for one MoE layer; device and expert counts are illustrative.",
         "refs": [
           "bg.parallel",
           "bg.ep",
@@ -1071,7 +1086,7 @@
       {
         "id": "metrics",
         "title": "Decide what kind of fast you need",
-        "text": "[[ttft|TTFT]] asks how soon a reply starts; [[tpot|TPOT]] asks how quickly it continues; [[throughput]] counts total completed work. [[goodput]] also requires meeting latency objectives. High [[gpu-utilization]] only means kernels were active during much of the sampling period; it does not prove all arithmetic units were saturated. To read a performance plot, first check the axis directions and workload, then inspect the [[pareto|Pareto front]]. Points on the front represent tradeoffs. Decide whether responsiveness or capacity matters more before choosing one.",
+        "text": "Three questions come first: [[ttft|TTFT]] asks how soon a reply starts, [[tpot|TPOT]] how quickly it continues, and [[throughput]] how much work the system completes.\n\n[[goodput]] also requires meeting latency objectives. High [[gpu-utilization]] only means kernels were often running during the sampling period; it does not prove the arithmetic units were saturated.\n\nTo read a performance plot, check the axis directions and workload first, then the [[pareto|Pareto front]]. Each point on the front is a tradeoff; none wins on every metric. Decide whether waiting time or total capacity matters more, then choose a point.",
         "refs": [
           "bg.metrics",
           "bg.utilization",

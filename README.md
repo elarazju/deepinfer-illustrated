@@ -1,102 +1,102 @@
-# DeepInfer Illustrated
+# 图解 DeepInfer
 
-An unofficial, bilingual visual guide to a request's journey through DeepInfer.
-Svelte + TypeScript + Vite, hand-authored SVG, and D3-powered teaching models.
+跟着一个请求，看它怎样穿过 DeepSeek 开源的推理框架 [DeepInfer](https://github.com/deepseek-ai/DeepInfer)。
 
-[Open the website](https://elarazju.github.io/deepinfer-illustrated/) · [Verification report](REPORT.md)
+👉 **在线阅读：https://elarazju.github.io/deepinfer-illustrated/** （中文 / English）
 
-Upstream evidence is pinned to `8b16149741a4935e1dec8cea27853f273b374c5b`.
-Production-only cache and routing services are explicitly distinguished from released code.
-No model inference or accelerator benchmark is performed by this project.
+## 为什么做这个
 
-## Develop
+DeepInfer 开源的时候，官方的讲解材料很少：README 里有两张性能图，另外就是一份中文的部署 Q&A PDF。代码本身写得很扎实，但要搞清楚"一个请求进来之后到底发生了什么"，得在 C++、Python 和 TileLang kernel 之间来回翻。
+
+这个网站是读代码时画的图整理出来的。它按请求经过的顺序展开：协议编码 → 前缀匹配 → Prefill 路由 → 图像编码 → Prefill → PD 传输 → Decode → 流式返回。每一站对应一章，讲它解决什么问题，以及 DeepInfer 是怎么做的。
+
+## 怎么读
+
+- **刚接触大模型推理？** 先看第 0 章"读前须知"。那里用几张小图讲了 KV Cache、Prefill 与 Decode、MoE、DP 与 EP 这些后面反复出现的概念。
+- **首页标题下方可以选阅读路线**：新手、懂推理基础、只想看代码。选好之后，侧边栏会标出推荐顺序。
+- **带虚线下划线的词可以点开看解释**，页尾还有一份可以搜索的术语表。
+- **有几处可以动手的演示**：自回归生成播放器、KV 缓存增长、异步调度时间线、DSpark 投机验证、SWA 回放窗口。拖一拖滑块，比读一段文字直观得多。
+
+## 关于准确性
+
+我们尽量让每一句话都能找到出处，所以正文旁边会有一个小标签：
+
+| 标签 | 含义 |
+|---|---|
+| 代码可查 | 能在锁定版本的源码里找到对应位置，点进去就是那几行 |
+| 官方 Q&A | 来自官方部署 Q&A，标签上写着页码 |
+| 据代码推断 | 代码里能看到这么做，但官方没有解释原因，是我们的理解 |
+| 背景知识 | 通用概念（比如 KV Cache 是什么），链接到公开的论文或文档 |
+
+另外几点需要说明：
+
+- 内容基于 DeepInfer 的 commit [`8b16149`](https://github.com/deepseek-ai/DeepInfer/tree/8b16149741a4935e1dec8cea27853f273b374c5b)（0.1.0 版本）。之后仓库更新了，部分细节可能会对不上。
+- KVCache 存储和各类负载均衡服务**没有开源**。这些章节只能依据官方 Q&A 来写，图里用灰色虚线框标出来。
+- 演示里可以拖动的数字都是示意值。我们没有在 SM100 或 Ascend 上跑过模型，也不声称复现了任何性能数据。
+- 这是一个非官方项目，和 DeepSeek 没有关系。
+
+看到写错的地方，欢迎开 issue。附上对应的代码行或 Q&A 页码会帮大忙。
+
+## 本地运行
+
+需要 Node.js 20.19 或 22.12 以上的版本（CI 用的是 24）。
 
 ```sh
 npm ci
-npm run dev
-npm run check
-npm test
-npm run build
-npm run build:full
-npm run length
+npm run dev          # 本地预览，默认 http://127.0.0.1:5173
+npm test             # 交互演示背后几个小模型的单元测试
+npm run check        # 类型检查 + 事实库检查
 ```
 
-For local source-line verification:
+可下载的 SVG/PNG 图不放在仓库里，需要时自己生成：
 
 ```sh
-git clone https://github.com/deepseek-ai/DeepInfer vendor/deepinfer
+npm run build:full   # 用浏览器导出全部图片，再打包网站
+```
+
+导出时默认用本机安装的 Chrome。没有装的话，先运行 `npx playwright install chromium`，再设置 `BROWSER_CHANNEL=chromium`。只改了文字、不需要重新出图时，用 `npm run build` 就够了。
+
+想让检查脚本顺便核对代码行号，可以把上游仓库 clone 到 `vendor/`（这个目录不会提交）：
+
+```sh
+GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/deepseek-ai/DeepInfer vendor/deepinfer
 git -C vendor/deepinfer checkout 8b16149741a4935e1dec8cea27853f273b374c5b
 ```
 
-Use `GIT_LFS_SKIP_SMUDGE=1` when cloning. The checkout is ignored and read-only to the site.
+## 想改内容的话
 
-## Evidence and figures
+几个关键文件：
 
-`facts.yaml` is the canonical claim registry. Displayed claim paragraphs use source
-badges; longer reading sections in both locale dictionaries reference registered facts.
-Simulation parameters live separately under `demo_defaults`, explicitly marked
-as authored teaching values. Source claims and demonstration results must not be conflated.
+- `facts.yaml`：网站上出现的每个数字和机制描述都登记在这里，并写明出处。`npm run check` 会拦下正文里没登记的数字，所以加新说法时请先在这里加一条。
+- `glossary.yaml`：术语表。正文里写 `[[kv-cache]]` 或 `[[kv-cache|显示的文字]]`，就会变成可以点开的术语。
+- `src/i18n/zh.json`、`src/i18n/en.json`：中英文文案，两边的结构必须一致。
+- `src/figures/`：每张图一个 Svelte 组件，都是手写的 SVG。颜色统一走 `src/lib/tokens.css` 里的变量：棕色是 CPU，绿色是 GPU，紫色是存储，蓝色是网络，灰色虚线是未开源的部分。
+- `src/interactive/`：交互演示。背后的计算放在 `src/lib/models.ts`，有对应的单元测试。
 
-`npm run build` checks and bundles the app, reusing local exports. It warns if
-`public/figures/manifest.json` is absent. Use `npm run build:full` to regenerate
-all 112 SVG/PNG assets (14 figures × 2 languages × 2 themes × 2 formats) before
-bundling. Install Chrome, or install Playwright Chromium and set
-`BROWSER_CHANNEL=chromium`. CI runs this full build and fails if export fails.
-The published manifest binds each image hash to the deployed commit. Generated
-images are ignored by Git; run the full build once to populate downloads.
+改完图之后，可以先开着 `npm run dev`，再跑这几个浏览器检查：
 
-For focused iteration with the dev server already running, `npm run export` updates
-`public/figures/`. `PREVIEW_URL` selects the server. PNG exports wait for the same
-web fonts as the live diagrams; standalone SVG text uses its declared fonts with
-system fallbacks when those fonts are unavailable.
+```sh
+node scripts/figure-audit.mjs      # 图里的文字有没有越界或叠在一起
+npx tsx scripts/browser-qa.ts      # 中英文、深浅色、桌面和手机宽度下的页面
+npx tsx scripts/accessibility.ts   # axe 无障碍检查
+```
 
-The fourteen diagram components have named translation fields and share SVG primitives.
-Chapter metadata is imported by both the app and validation scripts. Tutorial prose
-is shown by default; exact source statements remain in each chapter's evidence drawer.
+检查结果和截图会写到 `research/` 目录。这个目录只留在本地，不会提交。
 
-`npx tsx scripts/browser-qa.ts` checks Chrome and Playwright WebKit, keyboard
-interaction, reduced motion, responsive overflow, and captures sections at desktop
-and mobile widths. Install WebKit first with `npx playwright install webkit`.
-Playwright WebKit is not certification on actual Safari or iOS hardware.
+## 部署
 
-## Beginner learning layer
+推送到 `main` 分支后，GitHub Actions 会跑测试、导出图片，然后发布到 GitHub Pages。如果要部署到别的地址，记得同步修改几处写死的地址：`index.html` 里的分享图、`src/App.svelte` 里的仓库链接，以及 `scripts/export-svg.ts` 里写进导出图的链接。
 
-The basics chapter introduces generation, KV memory, Prefill/Decode, MoE,
-parallelism and latency metrics, with two teaching interactions and three self-tests.
-Choose a beginner, advanced or code route; `?path=beginner|advanced|code` overrides
-saved preferences. Storage and media-query failures do not prevent reading.
+## 许可
 
-`glossary.yaml` contains bilingual definitions and source references. Use
-`[[term-id]]` or `[[term-id|label]]` in prose rendered by `RichText`; introduce a term
-once per chapter. Definitions open with focus, hover or touch, and Escape restores
-focus. The searchable glossary links back to actual appearances.
+代码使用 [MIT](LICENSE)，原创的文字和插图使用 [CC BY 4.0](CONTENT-LICENSE.md)。DeepInfer 源码、官方文档、字体等第三方内容保留各自的许可。
 
-`background` facts have verified public source URLs and a separate badge. They
-explain general concepts; **they do not establish DeepInfer implementation or
-performance claims**. DeepInfer claims still require Q&A, README or locked code.
-`CodeSnippet` uses exact excerpts of at most 20 lines, checked against the local
-pinned checkout. Chapter metadata records prerequisites, difficulty and estimated
-reading time; estimates are editorial, not measured user-study results.
+---
 
-`npm run length` reports visible prose separately from folded source details;
-length is not a build gate. `node scripts/check-schema-negative.mjs` checks that
-invalid references, unknown terms and malformed markup are rejected (run without
-concurrent editing). `node scripts/routes-qa.mjs`, `node scripts/terms-qa.mjs`,
-`npx tsx scripts/accessibility.ts` and `node scripts/contrast.mjs` exercise the
-navigation, term controls and accessibility. These browser checks expect a local
-dev server on port 5173. Full matrix screenshots are in `research/screenshots/`.
+## English
 
-## Publish
+**DeepInfer Illustrated** is an unofficial, bilingual visual guide to [DeepInfer](https://github.com/deepseek-ai/DeepInfer), the inference framework DeepSeek open-sourced. It follows a single request from protocol encoding to the streamed response, with one chapter per stop, a beginner's primer, a searchable glossary and a few interactive demos. [Read it online](https://elarazju.github.io/deepinfer-illustrated/).
 
-The owner authorized the v2 release on 2026-10-20; deployed source is
-`90df09cd96502e6504a909a2f648f21e16a15e73`. The GitHub Actions workflow builds and
-deploys `main` to GitHub Pages. Deployment verification is recorded in REPORT.md.
-Enable Pages with GitHub Actions as its source in the repository settings.
-Static assets use a relative base so the project works under a repository subpath.
-Update the public project URL in SEO, source links, and export attribution if moving it.
+Every claim carries a small source label: a line in the pinned source code, a page in the official Q&A, our own reading of the code, or a public paper for general background. The cache store and load balancers were not open-sourced, so those chapters rely on the Q&A alone and appear as gray dashed boxes in the diagrams. Numbers you can drag in the demos are illustrative, not measurements.
 
-See [REPORT.md](REPORT.md) and [the tutorial review](research/TUTORIAL-REVIEW.md)
-for current verification and limits. These are agent checks, not human certification.
-Initial screenshots are preserved in the [v0.1.0 release](https://github.com/elarazju/deepinfer-illustrated/releases/tag/v0.1.0).
-New screenshots and generated diagrams are kept out of source commits; history is not rewritten.
-Code: MIT. Original content: CC BY 4.0. Upstream material retains its own licenses.
+Run `npm ci && npm run dev` to preview locally. Corrections are very welcome. Please open an issue, ideally with the code line or Q&A page.

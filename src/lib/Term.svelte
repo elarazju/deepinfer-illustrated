@@ -21,10 +21,21 @@
     open=false;pinned=false;dismissed=true;
     if(restore)trigger.focus();
   }
-  function outside(event:PointerEvent){if(open&&!wrapper.contains(event.target as Node))close();}
   function blur(event:FocusEvent){if(!wrapper.contains(event.relatedTarget as Node)){open=false;pinned=false;dismissed=false;}}
+  // A page holds many terms; only the open one listens on window.
+  $effect(()=>{
+    if(!open)return;
+    const outside=(event:PointerEvent)=>{if(!wrapper.contains(event.target as Node))close();};
+    const escape=(event:KeyboardEvent)=>{if(event.key==='Escape'){event.preventDefault();close(true);}};
+    const reposition=()=>show();
+    addEventListener('pointerdown',outside);addEventListener('keydown',escape);
+    addEventListener('scroll',reposition,{passive:true});addEventListener('resize',reposition);
+    return ()=>{
+      removeEventListener('pointerdown',outside);removeEventListener('keydown',escape);
+      removeEventListener('scroll',reposition);removeEventListener('resize',reposition);
+    };
+  });
 </script>
-<svelte:window onpointerdown={outside} onkeydown={(event)=>{if(event.key==='Escape'&&open){event.preventDefault();close(true);}}} onscroll={()=>{if(open)show();}} onresize={()=>{if(open)show();}}/>
 <span role="group" class="term-wrap" bind:this={wrapper} onfocusout={blur}
   onpointerenter={()=>{dismissed=false;show();}} onpointerleave={()=>{if(!pinned && !wrapper.contains(document.activeElement))open=false;}}>
   <button bind:this={trigger} type="button" class="term" data-term={id}
